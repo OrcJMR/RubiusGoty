@@ -727,7 +727,7 @@ var Core = {
         tankSpeed: 10, //скорость танка по умолчанию
         tankDirection: 'up', //направление танка по умолчанию
         tileBrickSrc: './images/brick.png', //путь спрайта с кирпичом
-        tileForestSrc: './images/forest.png', //путь спрайта с лесом
+        tileForestSrc: './images/grass.png', //путь спрайта с лесом
         tileSteelSrc: './images/steel.png', //путь спрайта со сталью
         tileWaterSrc: './images/water.png', //путь спрайта с водой
         UpdateTimerInterval: 50, //интервал, при котором вызывается ф-ция перерисовки сцены
