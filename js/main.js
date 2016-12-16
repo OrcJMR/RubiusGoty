@@ -726,10 +726,10 @@ var Core = {
         tileTankSrc: './images/tank.png', //путь к спрайту с танком
         tankSpeed: 10, //скорость танка по умолчанию
         tankDirection: 'up', //направление танка по умолчанию
-        tileBrickSrc: './images/brick.png', //путь спрайта с кирпичом
+        tileBrickSrc: './images/grass.png', //путь спрайта с кирпичом
         tileForestSrc: './images/grass.png', //путь спрайта с лесом
-        tileSteelSrc: './images/steel.png', //путь спрайта со сталью
-        tileWaterSrc: './images/water.png', //путь спрайта с водой
+        tileSteelSrc: './images/grass.png', //путь спрайта со сталью
+        tileWaterSrc: './images/grass.png', //путь спрайта с водой
         UpdateTimerInterval: 50, //интервал, при котором вызывается ф-ция перерисовки сцены
         mapEditorButtonId: 'mapEditor-Button', //ID кнопки перехода в редактор карт
         changeMapSelectId: 'changeMap-select', //ID <select'a> карт
