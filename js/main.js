@@ -63,10 +63,12 @@ Game.prototype = {
     },
     //ф-ция рисует объект танка
     drawTank: function(scene, tank) {
-        scene.context.beginPath();
+        scene.context.save();
         //в зависимости от направления танка, он копирует участок изображения со всего изображения
-        scene.context.drawImage(tank.image, tank.direction * tank.width, 0, tank.width, tank.height, tank.x, tank.y, tank.width, tank.height);
-        scene.context.closePath();
+        scene.context.translate(tank.x + tank.width / 2, tank.y + tank.height / 2);
+        scene.context.rotate(tank.direction * Math.PI / 2);
+        scene.context.drawImage(tank.image, -tank.width / 2, -tank.height / 2, tank.width, tank.height);
+        scene.context.restore();
     },
     //ф-ция очищает контекст рендера
     clearScene: function(scene) {
@@ -86,66 +88,7 @@ Game.prototype = {
         this.drawTank(Core.Variables.MainScene, Core.Variables.PlayerTank);
     }
 };
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////Class: Keyboard/////////////////////////////
-///////////////Here I'm check input and parse it////////////////////////////////
-///////////Attributes: keyPressed and all's other it's functions////////////////
-////////////////////////////////////////////////////////////////////////////////
-function Keyboard() {
-    this.keyPressed = false; //нажата ли клавиша в текущий момент
-    return this;
-}
 
-Keyboard.prototype = {
-    //ф-ция конвертирует код клавиши в текстовое представление направления
-    convertCodeToDirection: function(code) {
-        switch (code) {
-            case 37:
-                return 'left';
-            case 38:
-                return 'up';
-            case 39:
-                return 'right';
-            case 40:
-                return 'down';
-            default:
-                return false;
-        }
-    },
-    //ф-ция обрабатывает нажатие клавиши вниз
-    keyDown: function(e) {
-        //конвертирует с кода в текстовое направление
-        var direction = this.convertCodeToDirection(e.keyCode);
-        if (direction) {
-            //и если было изменено направление, то задаем игровому танку новое направление
-            Core.Variables.PlayerTank.setDirection(direction);
-            this.keyPressed = true; //и еще поставим флаг нажатой клавиши
-            //Core.Variables.Console.writeDebug('Key is press: ' + this.keyPressed);
-            //Core.Variables.Console.writeDebug('Current direction: ' + direction);
-        }
-    },
-    //ф-ция обрабатывает отпускание клавиши
-    keyUp: function(e) {
-        //проверяем для начала, нажата ли клавиша со стрелками
-        //да, туповато TODO: optimize this function
-        var direction = this.convertCodeToDirection(e.keyCode);
-        if (direction) {
-            //просто снимаем флаг нажатой клавиши при отпускании
-            this.keyPressed = false;
-            //Core.Variables.Console.writeDebug('Key is press: ' + this.keyPressed);
-        }
-    },
-    //ф-ция вешает обработки клавиш на ф-ции
-    hookEvent: function() {
-        var self = this;
-        document.onkeydown = function(e) {
-            self.keyDown(e);
-        };
-        document.onkeyup = function(e) {
-            self.keyUp(e);
-        };
-    }
-};
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////Class: Game Timer////////////////////////////////
 //////////////////It's a main timer of game. We can start or stop game//////////
@@ -161,12 +104,10 @@ GameTimer.prototype = {
         game.gameTimer = setInterval(function() {
             game.drawScene();
         }, Core.Config.UpdateTimerInterval);
-        Core.Variables.Console.writeInfo('Game is start');
     },
     //ф-ция останавливает таймер в объекте игры
     stopGame: function(game) {
         clearInterval(game.gameTimer);
-        Core.Variables.Console.writeInfo('Game is stoped');
     }
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -209,7 +150,6 @@ Tank.prototype = {
     //ф-ция проверяет, находится ли танк внутри карты (верхняя грань)
     checkInsideMapUp: function(map) {
         if (this.y - this.speed >= map.offsetYMap) {
-            Core.Variables.Console.writeDebug('Tank inside map up');
             return true;
         } else {
             return false;
@@ -218,7 +158,6 @@ Tank.prototype = {
     //ф-ция проверяет, находится ли танк внутри карты (правая грань)
     checkInsideMapRight: function(map) {
         if (this.x + this.speed <= map.offsetXMap + map.mapWidth - this.width + this.speed - 6) { //TODO: fix this bug
-            Core.Variables.Console.writeDebug('Tank inside map right');
             return true;
         } else {
             return false;
@@ -227,7 +166,6 @@ Tank.prototype = {
     //ф-ция проверяет, находится ли танк внутри карты (нижняя грань)
     checkInsideMapDown: function(map) {
         if (this.y + this.speed < map.offsetYMap + map.mapHeight - this.height) { //TODO: fix this bug
-            Core.Variables.Console.writeDebug('Tank inside map down');
             return true;
         } else {
             return false;
@@ -236,7 +174,6 @@ Tank.prototype = {
     //ф-ция проверяет, находится ли танк внутри карты (левая грань)
     checkInsideMapLeft: function(map) {
         if (this.x >= map.offsetXMap + this.speed) {
-            Core.Variables.Console.writeDebug('Tank inside map left');
             return true;
         } else {
             return false;
@@ -304,16 +241,16 @@ Tank.prototype = {
     convertDirectionToInteger: function(direction) {
         switch (direction) {
             case 'up':
-                return 2;
+                return 0;//2;
                 break;
             case 'down':
-                return 3;
+                return 2;
                 break;
             case 'left':
-                return 1;
+                return 3;
                 break;
             case 'right':
-                return 0;
+                return 1;
                 break;
         }
     },
@@ -378,7 +315,6 @@ Tank.prototype = {
                 //если едем вверх, то берем верхнюю клетку от дула
                 //аналогично и остальные case
                 var blockUp = this.getBlockUp();
-                Core.Variables.Console.writeDebug('Block up = ' + blockUp);
                 //и в зависимости от блока
                 switch (blockUp) {
                     //запишем текущую клетку в свойства танка
@@ -422,7 +358,6 @@ Tank.prototype = {
                 //если едем вниз
             case 'down':
                 var blockDown = this.getBlockDown();
-                Core.Variables.Console.writeDebug('Block down = ' + blockDown);
                 switch (blockDown) {
                     case '-1':
                         if (this.currentCell != -1) {
@@ -456,7 +391,6 @@ Tank.prototype = {
                 //если едем влево
             case 'left':
                 var blockLeft = this.getBlockLeft();
-                Core.Variables.Console.writeDebug('Block left = ' + blockLeft);
                 switch (blockLeft) {
                     case '-1':
                         if (this.currentCell != -1) {
@@ -490,7 +424,6 @@ Tank.prototype = {
                 //если едем вправо
             case 'right':
                 var blockRight = this.getBlockRight();
-                Core.Variables.Console.writeDebug('Block right = ' + blockRight);
                 switch (blockRight) {
                     case '-1':
                         if (this.currentCell != -1) {
@@ -639,74 +572,9 @@ Map.prototype = {
                 option.text = map;
                 option.value = map;
                 //и добавляем в <select> карт на панели
-                Core.Variables.Events.changeMapSelect.appendChild(option);
+                //Core.Variables.Events.changeMapSelect.appendChild(option);
             }
         }
-    }
-};
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////Class: Console//////////////////////////////////
-/////////////////////////////Just for Debugging/////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-function Console() {
-    return this;
-}
-
-Console.prototype = {
-    //ф-ция проверяет, включен ли режим отладки
-    checkDebugMode: function() {
-        if (Core.Config.debugMode) {
-            return true;
-        } else {
-            return false;
-        }
-    },
-    //ф-ция просто записывает инфу в консоль
-    writeInfo: function(text) {
-        console.info(text);
-    },
-    //а эта ф-ция проверяет на дебаг-мод и если включен, выводит в консоль
-    writeDebug: function(text) {
-        if (this.checkDebugMode()) {
-            console.debug(text);
-        }
-    }
-};
-////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////CLASS: Events/////////////////////////////////////
-//////////////Обработчики событий в DOM/////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-function Events() {
-    //кнопка перехода на редактор карт
-    this.mapEditorButton = document.getElementById(Core.Config.mapEditorButtonId);
-    //<select> карты
-    this.changeMapSelect = document.getElementById(Core.Config.changeMapSelectId);
-    return this;
-}
-
-Events.prototype = {
-    //щелчок по кнопке "редактор карт"
-    mapEditorButtonOnClick: function() {
-        window.location = '/editor';
-    },
-    //изменение значения <select'a> карты
-    changeMapSelectOnChange: function() {
-        //загрузим новую маску карты
-        Core.Variables.Map.loadMask(this.changeMapSelect.value);
-        //расчитаем новое смещение
-        Core.Variables.Map.calculateOffsetMap();
-        //зададим новую позицию танку
-        Core.Variables.PlayerTank.setPosition(Core.Variables.Map.offsetXMap, Core.Variables.Map.offsetYMap);
-    },
-    //ф-ция вешает обработчики на все элементы
-    bindAllEvents: function() {
-        var self = this;
-        this.mapEditorButton.onmousedown = function() {
-            self.mapEditorButtonOnClick();
-        };
-        this.changeMapSelect.onchange = function() {
-            self.changeMapSelectOnChange();
-        };
     }
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -745,7 +613,6 @@ var Core = {
         Game: null, //сама игра, в которой происходит отрисовка кадров
         GameTimer: null, //игровой таймер, в нем только старт и стоп
         PlayerTank: null, //непосредственно сам игровой танк
-        Console: null, //объект консоли для дебага
         Map: null, //карта, которая вырисовывается на сцене
         Keyboard: null, //объект клавиатуры, который отвечает за события клавиатуры
         Events: null
@@ -757,12 +624,8 @@ var Core = {
     //вызывает целую кучу ф-ция и конструкторов
     //заполняет Core.Variables объекты
     InitializeGame: function() {
-        Core.Variables.Console = new Console(); //DONE
         Core.Variables.Keyboard = new Keyboard(); //DONE
-        Core.Variables.Keyboard.hookEvent(); //DONE
-        Core.Variables.Events = new Events(); //DONE
-        Core.Variables.Events.bindAllEvents(); //DONE
-        Core.Variables.MainScene = new Scene('scene'); //DONE
+        Core.Variables.MainScene = new Scene('gameCanvas'); //DONE
         Core.Variables.MainScene.recalcSize(); //DONE
         Core.Variables.Map = new Map(); //DONE
         Core.Variables.Map.loadMask('default'); //DONE
@@ -773,7 +636,6 @@ var Core = {
         Core.Variables.Game = new Game(); //DONE
         Core.Variables.GameTimer = new GameTimer(); //DONE
         Core.Variables.GameTimer.startGame(Core.Variables.Game); //DONE
-        Core.Variables.Console.writeInfo('Entry Point triggered'); //DONE
     },
     //точка входа в скрипт
     EntryPoint: function() {
