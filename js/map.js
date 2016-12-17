@@ -1,5 +1,5 @@
 
-function Map2(width, height, mapString){
+function Map(width, height, mapString){
     this.width = width;
     this.height = height;
     this.tilesImage = new Image();
@@ -10,7 +10,7 @@ function Map2(width, height, mapString){
     return this;
 }
 
-Map2.prototype = {
+Map.prototype = {
     tileWidth: 32,
     tileHeight: 32,
     getChar: function(x, y) {
