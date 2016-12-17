@@ -86,6 +86,12 @@ Game.prototype = {
         this.clearScene(Core.Variables.MainScene);
         this.drawMap(Core.Variables.MainScene, Core.Variables.Map);
         this.drawTank(Core.Variables.MainScene, Core.Variables.PlayerTank);
+
+        Game2.Logic();
+        Game2.Map.drawMap(Core.Variables.MainScene.context, 150, 150);
+        Core.Variables.MainScene.context.translate(150, 150);
+        Game2.RootEntity.draw(Core.Variables.MainScene.context);
+        Core.Variables.MainScene.context.translate(-150, -150);
     }
 };
 
@@ -577,6 +583,67 @@ Map.prototype = {
         }
     }
 };
+
+var Game2 = {
+    Map: new Map2(16, 12,
+    "...,,,,...,,,,,," +
+    ".,,,,,,,,,,,,,,," +
+    ",,,,..........,," +
+    ",,.....BBBBBBBB." +
+    ",......B,,,,,,B." +
+    ",......B,,,,,,B." +
+    ",,,....B,,,,,,B." +
+    ",,,,...B,,,,,,B." +
+    ".,,,,,.B,,,,,,B." +
+    "...,,,,B,,,,,,B." +
+    "....,,,BBBBBBBB." +
+    "......,,........"),
+    RootEntity: new ObjectGroup(0, 0, 0, [
+        new Sprite(100, 100, 45, 32, 32, "./images/tank.png"),
+        new ObjectGroup(200, 200, 0, [
+            new Box(-12,  0, 0,  8, 32, "brown"),
+            new Box( 12,  0, 0,  8, 32, "brown"),
+            new Box(  0,  0, 0, 24, 24, "green"),
+            new ObjectGroup(0, 0, 0, [
+                new Box(  0, 12, 0,  4, 24, "black")
+            ])
+        ])
+    ]),
+    Logic: function() {
+        var tank = this.RootEntity.items[1];
+        var barrel = tank.items[3];
+        if( Core.Variables.Keyboard.isDown('W')) {
+            tank.x -= Math.sin(tank.angle) * 3;
+            tank.y += Math.cos(tank.angle) * 3;
+        }
+        if( Core.Variables.Keyboard.isDown('S')) {
+            tank.x += Math.sin(tank.angle) * 3;
+            tank.y -= Math.cos(tank.angle) * 3;
+        }
+        if( Core.Variables.Keyboard.isDown('D')) {
+            tank.angle += 5 / 180 * Math.PI;
+            if( tank.angle > Math.PI * 2)
+                tank.angle -= Math.PI * 2;
+        }
+        if( Core.Variables.Keyboard.isDown('A')) {
+            tank.angle -= 5 / 180 * Math.PI;
+            if( tank.angle < 0)
+                tank.angle += Math.PI * 2;
+        }
+        if( Core.Variables.Keyboard.isDown('L')) {
+            barrel.angle += 5 / 180 * Math.PI;
+            if( barrel.angle > Math.PI * 2)
+                barrel.angle -= Math.PI * 2;
+        }
+        if( Core.Variables.Keyboard.isDown('J')) {
+            barrel.angle -= 5 / 180 * Math.PI;
+            if( barrel.angle < 0)
+                barrel.angle += Math.PI * 2;
+        }
+    }
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////CORE OF MY GAME////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

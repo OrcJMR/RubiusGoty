@@ -4,7 +4,6 @@ function Keyboard() {
     var closureSelf = this;
     document.onkeydown = function(e) { closureSelf.keyDown(e); };
     document.onkeyup = function(e) { closureSelf.keyUp(e); };
-    return this;
 }
 
 Keyboard.prototype = {
