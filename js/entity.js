@@ -53,7 +53,7 @@ function ObjectGroup(x, y, angle, items) {
     this.ctor();
     this.x = x;
     this.y = y;
-    this.angle = angle;
+    this.angle = angle / 180 * Math.PI;
     this.items = items;
 }
 
@@ -61,7 +61,7 @@ function Sprite(x, y, angle, width, height, image) {
     this.ctor();
     this.x = x;
     this.y = y;
-    this.angle = angle;
+    this.angle = angle / 180 * Math.PI;
     this.width = width;
     this.height = height;
     if( typeof image == 'string' ) {
@@ -76,7 +76,7 @@ function Box(x, y, angle, width, height, color) {
     this.ctor();
     this.x = x;
     this.y = y;
-    this.angle = angle;
+    this.angle = angle / 180 * Math.PI;
     this.width = width;
     this.height = height;
     this.color = color;

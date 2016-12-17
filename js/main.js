@@ -15,7 +15,7 @@ var Game = {
     "......,,........"),
     RootEntity: new ObjectGroup(0, 0, 0, [
         new Sprite(100, 100, 45, 32, 32, "./images/tank.png"),
-        new ObjectGroup(200, 200, 0, [
+        new ObjectGroup(200, 150, 180, [
             new Box(-12,  0, 0,  8, 32, "brown"),
             new Box( 12,  0, 0,  8, 32, "brown"),
             new Box(  0,  0, 0, 24, 24, "green"),
@@ -72,6 +72,8 @@ var App = {
         App.Canvas.width = window.innerWidth;
         App.Canvas.height = window.innerHeight;
         App.Context = App.Canvas.getContext('2d');
+
+        App.Context.scale(1.5, 1.5);
 
         MainLoop.setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }
