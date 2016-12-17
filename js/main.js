@@ -86,12 +86,6 @@ Game.prototype = {
         this.clearScene(Core.Variables.MainScene);
         this.drawMap(Core.Variables.MainScene, Core.Variables.Map);
         this.drawTank(Core.Variables.MainScene, Core.Variables.PlayerTank);
-
-        Game2.Logic();
-        Game2.Map.drawMap(Core.Variables.MainScene.context, 150, 150);
-        Core.Variables.MainScene.context.translate(150, 150);
-        Game2.RootEntity.draw(Core.Variables.MainScene.context);
-        Core.Variables.MainScene.context.translate(-150, -150);
     }
 };
 
@@ -609,34 +603,36 @@ var Game2 = {
             ])
         ])
     ]),
-    Logic: function() {
-        var tank = this.RootEntity.items[1];
+    Logic: function(delta) {
+        var tank = Game2.RootEntity.items[1];
         var barrel = tank.items[3];
+        var linSpeed = 60/1000; //px/msec
+        var angSpeed = 90/1000; //deg/msec
         if( Core.Variables.Keyboard.isDown('W')) {
-            tank.x -= Math.sin(tank.angle) * 3;
-            tank.y += Math.cos(tank.angle) * 3;
+            tank.x -= Math.sin(tank.angle) * delta * linSpeed;
+            tank.y += Math.cos(tank.angle) * delta * linSpeed;
         }
         if( Core.Variables.Keyboard.isDown('S')) {
-            tank.x += Math.sin(tank.angle) * 3;
-            tank.y -= Math.cos(tank.angle) * 3;
+            tank.x += Math.sin(tank.angle) * delta * linSpeed;
+            tank.y -= Math.cos(tank.angle) * delta * linSpeed;
         }
         if( Core.Variables.Keyboard.isDown('D')) {
-            tank.angle += 5 / 180 * Math.PI;
+            tank.angle += delta * angSpeed / 180 * Math.PI;
             if( tank.angle > Math.PI * 2)
                 tank.angle -= Math.PI * 2;
         }
         if( Core.Variables.Keyboard.isDown('A')) {
-            tank.angle -= 5 / 180 * Math.PI;
+            tank.angle -= delta * angSpeed / 180 * Math.PI;
             if( tank.angle < 0)
                 tank.angle += Math.PI * 2;
         }
         if( Core.Variables.Keyboard.isDown('L')) {
-            barrel.angle += 5 / 180 * Math.PI;
+            barrel.angle += delta * angSpeed / 180 * Math.PI;
             if( barrel.angle > Math.PI * 2)
                 barrel.angle -= Math.PI * 2;
         }
         if( Core.Variables.Keyboard.isDown('J')) {
-            barrel.angle -= 5 / 180 * Math.PI;
+            barrel.angle -= delta * angSpeed / 180 * Math.PI;
             if( barrel.angle < 0)
                 barrel.angle += Math.PI * 2;
         }
@@ -707,6 +703,20 @@ var Core = {
     //точка входа в скрипт
     EntryPoint: function() {
         Core.InitializeGame();
+
+        var end = function(fps, panic) {
+            if (panic) {
+                var discardedTime = Math.round(MainLoop.resetFrameDelta());
+                console.warn('Main loop panicked, probably because the browser tab was put in the background. Discarding ' + discardedTime + 'ms');
+            }
+        }
+        var draw = function(interpolationPercentage) {
+            Core.Variables.MainScene.context.clearRect(0, 0, Core.Variables.MainScene.width, Core.Variables.MainScene.height);
+            Game2.Map.drawMap(Core.Variables.MainScene.context, 0, 0);
+            Game2.RootEntity.draw(Core.Variables.MainScene.context);
+        }
+
+        MainLoop.setUpdate(Game2.Logic).setDraw(draw).setEnd(end).start();
     }
 };
 //этой ф-цией дожидаюсь полной загрузки страницы
