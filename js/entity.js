@@ -44,6 +44,23 @@ var EntityBase = {
                 }
             }
     },
+
+    // takes an obj in descendantParent's coordinate system, and changes its coordinates to this'.
+    // this must be a predecessor of descendantParent
+    changeCoordinatesFromDescendant: function(obj, descendantParent) {
+        var currentParent = descendantParent,
+            lastX, lastY, lastA;
+        while (currentParent != this) {
+            lastX = obj.x,
+            lastY = obj.y,
+            lastA = obj.angle;
+            obj.x = currentParent.x - Math.sin(currentParent.angle) * lastY + Math.cos(currentParent.angle) * lastX;
+            obj.y = currentParent.y + Math.cos(currentParent.angle) * lastY + Math.sin(currentParent.angle) * lastX;
+            obj.angle = currentParent.angle + lastA;
+
+            currentParent = currentParent.parent;
+        };
+    }
 }
 
 function ObjectGroup(x, y, angle, behaviors, items) {
@@ -51,9 +68,8 @@ function ObjectGroup(x, y, angle, behaviors, items) {
     this.y = y;
     this.angle = angle / 180 * Math.PI;
     this.items = items;
-    items.forEach(function(item, i, arr){
-        item.parent = this
-    })
+    for(var i = 0, len = this.items.length; i < len; i++)
+        this.items[i].parent = this;
     this._behaviors = {};
     for(var i = 0; i < behaviors.length; i++)
         this.addBehavior(behaviors[i]);

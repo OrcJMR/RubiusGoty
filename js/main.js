@@ -45,6 +45,15 @@ var Game = {
         barrel.moveAngSpeed = 0;
         if( App.Keyboard.isDown('L')) barrel.moveAngSpeed += angSpeed;
         if( App.Keyboard.isDown('J')) barrel.moveAngSpeed -= angSpeed;
+
+        if( App.Keyboard.isDown('K')) {
+            var bullet = new Box(0, 20, 0, 3, 5, "orange", [
+                new Behavior.Move(0, 0.5), 
+                new Behavior.LifeInBounds(0,0,400,400)
+            ]);
+            this.RootEntity.changeCoordinatesFromDescendant(bullet, barrel);
+            this.RootEntity.items.push(bullet);
+        }
     }
 }
 
