@@ -1,10 +1,12 @@
 
 var EntityBase = {
-    ctor: function() {
-        this.xSpeed = 0;
-        this.ySpeed = 0;
-        this.angSpeed = 0;
+
+    addBehavior: function(beh) {
+        var name = beh.name;
+        beh.init(this);
+        this._behaviors[name] = beh.exec;
     },
+
     draw: function(ctx) {
         if(typeof this.items != 'undefined')
             this.items.forEach(function(item, i, arr){
@@ -25,40 +27,39 @@ var EntityBase = {
         else
             console.debug("Underconfigured object, unable to draw");
     },
-    update: function(delta) {
-        if(this.ySpeed != 0) {
-            this.x -= Math.sin(this.angle) * delta * this.ySpeed;
-            this.y += Math.cos(this.angle) * delta * this.ySpeed;
-        }
-        if(this.xSpeed != 0) {
-            this.x -= Math.cos(this.angle) * delta * this.xSpeed;
-            this.y -= Math.sin(this.angle) * delta * this.xSpeed;
-        }
-        if(this.angSpeed != 0) {
-            this.angle += delta * this.angSpeed / 180 * Math.PI;
-            if( this.angle < 0)
-                this.angle += Math.PI * 2;
-            if( this.angle > Math.PI * 2)
-                this.angle -= Math.PI * 2;
-        }
 
+    update: function(delta) {
+
+        // run updates
+        for(var behavior in this._behaviors)
+            this._behaviors[behavior](this, delta);
+
+        // run updates on children an remove dead children, if any
         if(typeof this.items != 'undefined')
-            this.items.forEach(function(item, i, arr){
-                item.update(delta);
-            });
-    }
+            for(var i = 0; i < this.items.length; i++) {
+                this.items[i].update(delta);
+                if(this.items[i].dead){
+                    this.items.splice(i, 1);
+                    i--;
+                }
+            }
+    },
 }
 
-function ObjectGroup(x, y, angle, items) {
-    this.ctor();
+function ObjectGroup(x, y, angle, behaviors, items) {
     this.x = x;
     this.y = y;
     this.angle = angle / 180 * Math.PI;
     this.items = items;
+    items.forEach(function(item, i, arr){
+        item.parent = this
+    })
+    this._behaviors = {};
+    for(var i = 0; i < behaviors.length; i++)
+        this.addBehavior(behaviors[i]);
 }
 
-function Sprite(x, y, angle, width, height, image) {
-    this.ctor();
+function Sprite(x, y, angle, width, height, image, behaviors) {
     this.x = x;
     this.y = y;
     this.angle = angle / 180 * Math.PI;
@@ -70,16 +71,23 @@ function Sprite(x, y, angle, width, height, image) {
         image = imgObj;
     }
     this.image = image;
+    this._behaviors = {};
+    if(typeof behaviors != 'undefined')
+        for(var i = 0; i < behaviors.length; i++)
+            this.addBehavior(behaviors[i]);
 }
 
-function Box(x, y, angle, width, height, color) {
-    this.ctor();
+function Box(x, y, angle, width, height, color, behaviors) {
     this.x = x;
     this.y = y;
     this.angle = angle / 180 * Math.PI;
     this.width = width;
     this.height = height;
     this.color = color;
+    this._behaviors = {};
+    if(typeof behaviors != 'undefined')
+        for(var i = 0; i < behaviors.length; i++)
+            this.addBehavior(behaviors[i]);
 }
 
 ObjectGroup.prototype = EntityBase;

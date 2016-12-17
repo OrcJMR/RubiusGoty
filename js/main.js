@@ -13,38 +13,38 @@ var Game = {
     "...,,,,B,,,,,,B." +
     "....,,,BBBBBBBB." +
     "......,,........"),
-    RootEntity: new ObjectGroup(0, 0, 0, [
-        new Sprite(100, 100, 45, 32, 32, "./images/tank.png"),
-        new ObjectGroup(200, 150, 180, [
+    RootEntity: new ObjectGroup(0, 0, 0, [], [
+        new ObjectGroup(200, 150, 180, [new Behavior.Move], [
             new Box(-12,  0, 0,  8, 32, "brown"),
             new Box( 12,  0, 0,  8, 32, "brown"),
             new Box(  0,  0, 0, 24, 24, "green"),
-            new ObjectGroup(0, 0, 0, [
+            new ObjectGroup(0, 0, 0, [new Behavior.Move], [
                 new Box(  0, 12, 0,  4, 24, "black")
             ])
-        ])
+        ]),
+        new Sprite(100, 100, 45, 32, 32, "./images/tank.png", [new Behavior.TimedLife(5000), new Behavior.Move(0,-0.01,-0.01)]),
     ]),
     Logic: function(delta) {
-        var tank = Game.RootEntity.items[1];
+        var tank = this.RootEntity.items[0];
         var barrel = tank.items[3];
         var linSpeed = 60/1000; //px/msec
         var angSpeed = 90/1000; //deg/msec
 
-        tank.ySpeed = 0;
-        if( App.Keyboard.isDown('W'))  tank.ySpeed += linSpeed;
-        if( App.Keyboard.isDown('S'))  tank.ySpeed -= linSpeed;
+        tank.moveYSpeed = 0;
+        if( App.Keyboard.isDown('W'))  tank.moveYSpeed += linSpeed;
+        if( App.Keyboard.isDown('S'))  tank.moveYSpeed -= linSpeed;
 
-        tank.xSpeed = 0;
-        if( App.Keyboard.isDown('E'))  tank.xSpeed += linSpeed;
-        if( App.Keyboard.isDown('Q'))  tank.xSpeed -= linSpeed;
+        tank.moveXSpeed = 0;
+        if( App.Keyboard.isDown('E'))  tank.moveXSpeed += linSpeed;
+        if( App.Keyboard.isDown('Q'))  tank.moveXSpeed -= linSpeed;
 
-        tank.angSpeed = 0;
-        if( App.Keyboard.isDown('D')) tank.angSpeed += angSpeed;
-        if( App.Keyboard.isDown('A')) tank.angSpeed -= angSpeed;
+        tank.moveAngSpeed = 0;
+        if( App.Keyboard.isDown('D')) tank.moveAngSpeed += angSpeed;
+        if( App.Keyboard.isDown('A')) tank.moveAngSpeed -= angSpeed;
         
-        barrel.angSpeed = 0;
-        if( App.Keyboard.isDown('L')) barrel.angSpeed += angSpeed;
-        if( App.Keyboard.isDown('J')) barrel.angSpeed -= angSpeed;
+        barrel.moveAngSpeed = 0;
+        if( App.Keyboard.isDown('L')) barrel.moveAngSpeed += angSpeed;
+        if( App.Keyboard.isDown('J')) barrel.moveAngSpeed -= angSpeed;
     }
 }
 
