@@ -29,39 +29,31 @@ var Game = {
         var barrel = tank.items[3];
         var linSpeed = 60/1000; //px/msec
         var angSpeed = 90/1000; //deg/msec
-        if( App.Keyboard.isDown('W')) {
-            tank.x -= Math.sin(tank.angle) * delta * linSpeed;
-            tank.y += Math.cos(tank.angle) * delta * linSpeed;
-        }
-        if( App.Keyboard.isDown('S')) {
-            tank.x += Math.sin(tank.angle) * delta * linSpeed;
-            tank.y -= Math.cos(tank.angle) * delta * linSpeed;
-        }
-        if( App.Keyboard.isDown('D')) {
-            tank.angle += delta * angSpeed / 180 * Math.PI;
-            if( tank.angle > Math.PI * 2)
-                tank.angle -= Math.PI * 2;
-        }
-        if( App.Keyboard.isDown('A')) {
-            tank.angle -= delta * angSpeed / 180 * Math.PI;
-            if( tank.angle < 0)
-                tank.angle += Math.PI * 2;
-        }
-        if( App.Keyboard.isDown('L')) {
-            barrel.angle += delta * angSpeed / 180 * Math.PI;
-            if( barrel.angle > Math.PI * 2)
-                barrel.angle -= Math.PI * 2;
-        }
-        if( App.Keyboard.isDown('J')) {
-            barrel.angle -= delta * angSpeed / 180 * Math.PI;
-            if( barrel.angle < 0)
-                barrel.angle += Math.PI * 2;
-        }
+
+        tank.ySpeed = 0;
+        if( App.Keyboard.isDown('W'))  tank.ySpeed += linSpeed;
+        if( App.Keyboard.isDown('S'))  tank.ySpeed -= linSpeed;
+
+        tank.xSpeed = 0;
+        if( App.Keyboard.isDown('E'))  tank.xSpeed += linSpeed;
+        if( App.Keyboard.isDown('Q'))  tank.xSpeed -= linSpeed;
+
+        tank.angSpeed = 0;
+        if( App.Keyboard.isDown('D')) tank.angSpeed += angSpeed;
+        if( App.Keyboard.isDown('A')) tank.angSpeed -= angSpeed;
+        
+        barrel.angSpeed = 0;
+        if( App.Keyboard.isDown('L')) barrel.angSpeed += angSpeed;
+        if( App.Keyboard.isDown('J')) barrel.angSpeed -= angSpeed;
     }
 }
 
 
 var App = {
+    UpdateFrame: function(delta) {
+        Game.Logic(delta);
+        Game.RootEntity.update(delta);
+    },
     DrawFrame: function(interpolationPercentage) {
         App.Context.clearRect(0, 0, App.Canvas.width, App.Canvas.height);
         Game.Map.drawMap(App.Context, 0, 0);
@@ -81,7 +73,7 @@ var App = {
         App.Canvas.height = window.innerHeight;
         App.Context = App.Canvas.getContext('2d');
 
-        MainLoop.setUpdate(Game.Logic).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
+        MainLoop.setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }
 };
 

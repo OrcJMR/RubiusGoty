@@ -1,5 +1,10 @@
 
 var EntityBase = {
+    ctor: function() {
+        this.xSpeed = 0;
+        this.ySpeed = 0;
+        this.angSpeed = 0;
+    },
     draw: function(ctx) {
         if(typeof this.items != 'undefined')
             this.items.forEach(function(item, i, arr){
@@ -19,10 +24,33 @@ var EntityBase = {
         }
         else
             console.debug("Underconfigured object, unable to draw");
+    },
+    update: function(delta) {
+        if(this.ySpeed != 0) {
+            this.x -= Math.sin(this.angle) * delta * this.ySpeed;
+            this.y += Math.cos(this.angle) * delta * this.ySpeed;
+        }
+        if(this.xSpeed != 0) {
+            this.x -= Math.cos(this.angle) * delta * this.xSpeed;
+            this.y -= Math.sin(this.angle) * delta * this.xSpeed;
+        }
+        if(this.angSpeed != 0) {
+            this.angle += delta * this.angSpeed / 180 * Math.PI;
+            if( this.angle < 0)
+                this.angle += Math.PI * 2;
+            if( this.angle > Math.PI * 2)
+                this.angle -= Math.PI * 2;
+        }
+
+        if(typeof this.items != 'undefined')
+            this.items.forEach(function(item, i, arr){
+                item.update(delta);
+            });
     }
 }
 
 function ObjectGroup(x, y, angle, items) {
+    this.ctor();
     this.x = x;
     this.y = y;
     this.angle = angle;
@@ -30,6 +58,7 @@ function ObjectGroup(x, y, angle, items) {
 }
 
 function Sprite(x, y, angle, width, height, image) {
+    this.ctor();
     this.x = x;
     this.y = y;
     this.angle = angle;
@@ -44,6 +73,7 @@ function Sprite(x, y, angle, width, height, image) {
 }
 
 function Box(x, y, angle, width, height, color) {
+    this.ctor();
     this.x = x;
     this.y = y;
     this.angle = angle;
