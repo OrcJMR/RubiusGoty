@@ -27,6 +27,8 @@ var Game = {
             ])
         ]);
         this.RootEntity.addChild(this.Tank);
+        this.Tank.Barrel = this.Tank.items[4];
+        this.Tank.Barrel.recoil = 0;
     },
     spawnDirt: function(left, back, move) {
         var sign = back ? -1 : 1;
@@ -44,51 +46,48 @@ var Game = {
         this.RootEntity.changeCoordinatesFromDescendant(dirt, parent);
         this.RootEntity.addChild(dirt, 0);
     },
+    ConsumeInputs: function(timestamp) {
+        var driveSpeed = 60/1000; //px/msec
+        var turnSpeed = 90/1000; //deg/msec 
+        Game.Tank.moveYSpeed = driveSpeed * App.Inputs.ThrottleInput.read(timestamp);
+        Game.Tank.moveXSpeed = driveSpeed/2 * App.Inputs.StrafeInput.read(timestamp);
+        Game.Tank.moveAngSpeed = turnSpeed * App.Inputs.TankTurnInput.read(timestamp);
+        Game.Tank.Barrel.moveAngSpeed = turnSpeed * App.Inputs.TurretTurnInput.read(timestamp);
+        var fireState = App.Inputs.FireInput.read(timestamp);
+        if(fireState == 1)
+            Game.Tank.Barrel.firing = true;
+        Game.Tank.Barrel.recoil = Math.min(fireState, 0);
+    },
     Logic: function(delta) {
-        var tank = this.Tank;
-        var barrel = this.Tank.items[4];
-        var linSpeed = 60/1000; //px/msec
-        var angSpeed = 90/1000; //deg/msec
-
-        tank.moveYSpeed = 0;
-        if( App.Keyboard.isDown('W'))  tank.moveYSpeed += linSpeed;
-        if( App.Keyboard.isDown('S'))  tank.moveYSpeed -= linSpeed;
-        if( tank.moveYSpeed != 0) {
-            var back = tank.moveYSpeed > 0;
+        
+        if( this.Tank.moveYSpeed != 0) {
+            var back = this.Tank.moveYSpeed > 0;
             this.spawnDirt(true, back, true);
             this.spawnDirt(false, back, true);
         }
 
-        tank.moveXSpeed = 0;
-        if( App.Keyboard.isDown('E'))  tank.moveXSpeed += linSpeed;
-        if( App.Keyboard.isDown('Q'))  tank.moveXSpeed -= linSpeed;
-
-        tank.moveAngSpeed = 0;
-        if( App.Keyboard.isDown('D')) tank.moveAngSpeed += angSpeed;
-        if( App.Keyboard.isDown('A')) tank.moveAngSpeed -= angSpeed;
-        if( tank.moveYSpeed == 0 && tank.moveAngSpeed != 0 ) {
-            var cw = tank.moveAngSpeed > 0;
+        if( this.Tank.moveYSpeed == 0 && this.Tank.moveAngSpeed != 0 ) {
+            var cw = this.Tank.moveAngSpeed > 0;
             this.spawnDirt(true, cw);
             this.spawnDirt(false, !cw);
         }
         
-        barrel.moveAngSpeed = 0;
-        if( App.Keyboard.isDown('L')) barrel.moveAngSpeed += angSpeed;
-        if( App.Keyboard.isDown('J')) barrel.moveAngSpeed -= angSpeed;
-
-        if( App.Keyboard.isDown('K')) {
+        if( this.Tank.Barrel.firing) {
             var bullet = new Box(0, 20, 0, 3, 5, "orange", [
                 new Behavior.Move(0, 0.5), 
                 new Behavior.LifeInBounds(0,0,500,400)
             ]);
-            this.RootEntity.changeCoordinatesFromDescendant(bullet, barrel);
+            this.RootEntity.changeCoordinatesFromDescendant(bullet, this.Tank.Barrel);
             this.RootEntity.addChild(bullet);
+            this.Tank.Barrel.firing = false;
         }
+        this.Tank.Barrel.items[0].y = 12 + this.Tank.Barrel.recoil * 6;
     }
 }
 
 
 var App = {
+    Inputs: {},
     UpdateFrame: function(delta) {
         Game.Logic(delta);
         Game.RootEntity.update(delta);
@@ -111,12 +110,17 @@ var App = {
         App.Canvas.width = window.innerWidth;
         App.Canvas.height = window.innerHeight;
         App.Context = App.Canvas.getContext('2d');
-
         App.Context.scale(1.5, 1.5);
+
+        App.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
+        App.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
+        App.Inputs.StrafeInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
+        App.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'L', 'J');
+        App.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'K', 1000, true);
 
         Game.Setup();
 
-        MainLoop.setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
+        MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }
 };
 
