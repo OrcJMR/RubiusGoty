@@ -4,14 +4,14 @@ var Game = {
     "...,,,,...,,,,,," +
     ".,,,,,,,,,,,,,,," +
     ",,,,..........,," +
-    ",,.....BBBBBBBB." +
+    ",,.....BB:BB:BB." +
     ",......B,,,,,,B." +
-    ",......B,,,,,,B." +
-    ",,,....B,,,,,,B." +
-    ",,,,...B,,,,,,B." +
-    ".,,,,,.B,,,,,,B." +
+    ",......B,,,,,,:." +
+    ",,,....,,,,,,,B." +
+    ",,,,...,,,,,,,B." +
+    ".,,,,,.B,,,,,,:." +
     "...,,,,B,,,,,,B." +
-    "....,,,BBBBBBBB." +
+    "....,,,BB:BB:BB." +
     "......,,........"),
     RootEntity: new ObjectGroup(0, 0, 0, [], [
         new Sprite(100, 100, 45, 32, 32, "./images/tank.png", [new Behavior.TimedLife(5000), new Behavior.Move(0,-0.01,-0.01)]),
@@ -29,6 +29,9 @@ var Game = {
         this.RootEntity.addChild(this.Tank);
         this.Tank.Barrel = this.Tank.items[4];
         this.Tank.Barrel.recoil = 0;
+        this.Tank.width = 32; //this is for collision detection
+        this.Tank.height = 32;
+        this.Tank.collider = new Collider(this.Map, "B:");
     },
     spawnDirt: function(left, back, move) {
         var sign = back ? -1 : 1;
@@ -121,7 +124,7 @@ var App = {
 
         Game.Setup();
 
-        PlaySound("./sound/bl-slaughter.mp3", 90, true);
+        //PlaySound("./sound/bl-slaughter.mp3", 90, true);
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }

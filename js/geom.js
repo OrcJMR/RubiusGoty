@@ -12,8 +12,7 @@ Geom.Point.prototype.Rotate = function(angle){
     var sina = Math.sin(angle);
     return new Geom.Point(
         this.x*cosa - this.y*sina,
-        this.x*sina + this.y*cosa,
-    )
+        this.x*sina + this.y*cosa);
 }
 
 Geom.Point.prototype.Translate = function(x, y){
@@ -21,7 +20,7 @@ Geom.Point.prototype.Translate = function(x, y){
 }
 
 Geom.Mbr = function(xmin, xmax, ymin, ymax){
-    this.xmin = xmain;
+    this.xmin = xmin;
     this.xmax = xmax;
     this.ymin = ymin;
     this.ymax = ymax;
@@ -38,7 +37,7 @@ Geom.Rect = function(x, y, width, height, angle){
 Geom.Rect.prototype.Rotate = function(angle){
     var cosa = Math.cos(angle);
     var sina = Math.sin(angle);
-    var newrect = new GeomHelper.Rect(
+    var newrect = new Geom.Rect(
         this.x*cosa - this.y*sina,
         this.x*sina + this.y*cosa,
         this.width,
@@ -53,6 +52,9 @@ Geom.Rect.prototype.Translate = function(x, y){
 }
 
 Geom.Rect.prototype.GetMbr = function(){
+    var w = this.width;
+    var h = this.height;
+    
     var p = (new Geom.Point(w/2, -h/2)).Rotate(this.angle).Translate(this.x, this.y);
 
     var xmin = p.x;
@@ -92,7 +94,7 @@ Geom.Intersect = function(rect1, rect2){
         var xmin = -r1.width/2;
         var xmax = r1.width/2;
         var ymin = -r1.height/2;
-        var ymax = r1.heigth/2;
+        var ymax = r1.height/2;
 
         return (mbr.xmax > xmin) && (mbr.xmin < xmax) && (mbr.ymax > ymin) && (mbr.ymin < ymax); //if r2 projection on r1 edges overlaps the edges
     }

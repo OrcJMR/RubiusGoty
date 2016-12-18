@@ -9,7 +9,7 @@ Behavior.Move = function(vx, vy, va) {
         obj.moveXSpeed = vx || 0;
         obj.moveYSpeed = vy || 0;
         obj.moveAngSpeed = va || 0;
-    }
+    };
 };
 Behavior.Move.prototype = {
     name: "move",
@@ -22,40 +22,45 @@ Behavior.Move.prototype = {
             return true;
         }
 
+        var newx = obj.x;
+        var newy = obj.y;
+        var newAngle = obj.angle;
+
         if(obj.moveYSpeed != 0) {
-            var newx = obj.x - Math.sin(obj.angle) * delta * obj.moveYSpeed;
-            var newy = obj.y + Math.cos(obj.angle) * delta * obj.moveYSpeed;
-
-            if (NoCollision(newx, newy)){
-                obj.x = newx;
-                obj.y = newy;
-            }
-            else{
-                obj.moveXSpeed = 0;
-                obj.moveYSpeed = 0;
-            }
+            newx -= Math.sin(obj.angle) * delta * obj.moveYSpeed;
+            newy += Math.cos(obj.angle) * delta * obj.moveYSpeed;
         }
+
         if(obj.moveXSpeed != 0) {
-            var newx = obj.x - Math.cos(obj.angle) * delta * obj.moveXSpeed;
-            var newy = obj.y + Math.sin(obj.angle) * delta * obj.moveXSpeed;
-
-            if (NoCollision(newx, newy)){
-                obj.x = newx;
-                obj.y = newy;
-            }
-            else{
-                obj.moveXSpeed = 0;
-                obj.moveYSpeed = 0;
-            }
+            newx -= Math.cos(obj.angle) * delta * obj.moveXSpeed;
+            newy += Math.sin(obj.angle) * delta * obj.moveXSpeed;
         }
+
         if(obj.moveAngSpeed != 0) {
-            obj.angle += delta * obj.moveAngSpeed / 180 * Math.PI;
-            if( obj.angle < 0)
-                obj.angle += Math.PI * 2;
-            if( obj.angle > Math.PI * 2)
-                obj.angle -= Math.PI * 2;
+            newAngle += delta * obj.moveAngSpeed / 180 * Math.PI;
+            if( newAngle < 0)
+                newAngle += Math.PI * 2;
+            if( newAngle > Math.PI * 2)
+                newAngle -= Math.PI * 2;
         }
 
+        var apply = true;
+
+        if (obj.collider){
+            var objRect = new Geom.Rect(newx, newy, obj.width, obj.height, newAngle);
+            if (obj.collider.IsCollided(objRect)){
+                apply = false;
+                if (obj.OnCollision){
+                    obj.OnCollision();
+                }
+            }
+        }
+
+        if (apply){
+            obj.x = newx;
+            obj.y = newy;
+            obj.angle = newAngle;
+        }
     }
 };
 

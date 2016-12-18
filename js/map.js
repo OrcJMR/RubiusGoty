@@ -47,6 +47,10 @@ Map.prototype = {
                 ctx.drawImage(this.tilesImage, 64, 96, 32, 32,
                     x*this.tileWidth, y*this.tileHeight, this.tileWidth, this.tileHeight);
                 break;
+            case ':':
+                ctx.drawImage(this.tilesImage, 96, 32, 32, 32,
+                    x*this.tileWidth, y*this.tileHeight, this.tileWidth, this.tileHeight);
+                break;
             default:
         }
     }
