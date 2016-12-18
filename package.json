@@ -1,0 +1,23 @@
+{
+  "name": "orcjmr.github.io",
+  "version": "1.0.0",
+  "description": "Things still missing from this product:",
+  "main": "index.js",
+  "dependencies": {
+    "ws": "^1.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OrcJMR/orcjmr.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OrcJMR/orcjmr.github.io/issues"
+  },
+  "homepage": "https://github.com/OrcJMR/orcjmr.github.io#readme"
+}
