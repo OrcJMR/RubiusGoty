@@ -14,14 +14,6 @@ Behavior.Move = function(vx, vy, va) {
 Behavior.Move.prototype = {
     name: "move",
     exec: function(obj, delta) {
-
-        var NoCollision = function(x, y){
-            if (x < 0 || y < 0 || x > 400 || y > 400){
-                return false;
-            }            
-            return true;
-        }
-
         var newx = obj.x;
         var newy = obj.y;
         var newAngle = obj.angle;

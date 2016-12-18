@@ -80,10 +80,16 @@ var Game = {
                 new Behavior.Move(0, 0.5), 
                 new Behavior.LifeInBounds(0,0,500,400)
             ]);
+            bullet.collider = new Collider(this.Map, "B");
+            bullet.OnCollision = function(){
+                this.dead = true;
+                PlaySound("./sound/splat.wav", 100);
+            };
+
             this.RootEntity.changeCoordinatesFromDescendant(bullet, this.Tank.Barrel);
             this.RootEntity.addChild(bullet);
             this.Tank.Barrel.firing = false;
-            PlaySound("./sound/tank-fire.wav", 100);
+            PlaySound("./sound/tank-fire.wav", 80);
         }
         this.Tank.Barrel.items[0].y = 12 + this.Tank.Barrel.recoil * 6;
     }
@@ -124,7 +130,7 @@ var App = {
 
         Game.Setup();
 
-        //PlaySound("./sound/bl-slaughter.mp3", 90, true);
+        PlaySound("./sound/bl-slaughter.mp3", 90, true);
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }
