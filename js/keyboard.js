@@ -22,7 +22,7 @@ function KeyboardCooldownInput(kybd, char, cooldown, manualRefire) {
     this.kybd = kybd;
     this.char = char;
     this.cooldown = cooldown;
-    this.lastFired = Number.MIN_VALUE;
+    this.lastFired = Number.MIN_SAFE_INTEGER;
     this.manualRefire = manualRefire;
     this.armed = true;
 }

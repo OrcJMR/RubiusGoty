@@ -80,6 +80,7 @@ var Game = {
             this.RootEntity.changeCoordinatesFromDescendant(bullet, this.Tank.Barrel);
             this.RootEntity.addChild(bullet);
             this.Tank.Barrel.firing = false;
+            PlaySound("./sound/tank-fire.wav", 100);
         }
         this.Tank.Barrel.items[0].y = 12 + this.Tank.Barrel.recoil * 6;
     }
@@ -119,6 +120,8 @@ var App = {
         App.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'K', 1000, true);
 
         Game.Setup();
+
+        PlaySound("./sound/bl-slaughter.mp3", 90, true);
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }
