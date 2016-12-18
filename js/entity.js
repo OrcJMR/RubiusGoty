@@ -11,6 +11,8 @@ var EntityBase = {
         if(typeof this.items != 'undefined')
             this.items.forEach(function(item, i, arr){
                 ctx.save();
+                if(typeof item.alpha != 'undefined')
+                    ctx.globalAlpha = item.alpha;
                 ctx.translate(item.x, item.y);
                 ctx.rotate(item.angle);
                 item.draw(ctx);
@@ -43,6 +45,14 @@ var EntityBase = {
                     i--;
                 }
             }
+    },
+
+    addChild: function(child, index) {
+        if(typeof index == 'undefined')
+            this.items.push(child);
+        else
+            this.items.splice(index, 0, child);
+        child.parent = this;
     },
 
     // takes an obj in descendantParent's coordinate system, and changes its coordinates to this'.

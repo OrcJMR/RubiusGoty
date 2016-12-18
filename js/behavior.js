@@ -74,3 +74,15 @@ Behavior.LifeInBounds.prototype = {
                 obj.dead = true;
     }
 };
+
+Behavior.Custom = function(func) {
+    this.init = function(obj) {
+        obj.customFunc = func
+    }
+};
+Behavior.Custom.prototype = {
+        name: "custom",
+        exec: function(obj, delta) {
+            obj.customFunc(delta)
+    }
+};

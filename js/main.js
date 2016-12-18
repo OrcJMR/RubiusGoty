@@ -14,25 +14,50 @@ var Game = {
     "....,,,BBBBBBBB." +
     "......,,........"),
     RootEntity: new ObjectGroup(0, 0, 0, [], [
-        new ObjectGroup(200, 150, 180, [new Behavior.Move], [
+        new Sprite(100, 100, 45, 32, 32, "./images/tank.png", [new Behavior.TimedLife(5000), new Behavior.Move(0,-0.01,-0.01)]),
+    ]),
+    Setup: function() {
+        this.Tank = new ObjectGroup(200, 150, 180, [new Behavior.Move], [
             new Box(-12,  0, 0,  8, 32, "brown"),
             new Box( 12,  0, 0,  8, 32, "brown"),
             new Box(  0,  0, 0, 24, 24, "green"),
+            new Box(  0,-12, 0, 12, 8, "darkolivegreen"),
             new ObjectGroup(0, 0, 0, [new Behavior.Move], [
                 new Box(  0, 12, 0,  4, 24, "black")
             ])
-        ]),
-        new Sprite(100, 100, 45, 32, 32, "./images/tank.png", [new Behavior.TimedLife(5000), new Behavior.Move(0,-0.01,-0.01)]),
-    ]),
+        ]);
+        this.RootEntity.addChild(this.Tank);
+    },
+    spawnDirt: function(left, back, move) {
+        var sign = back ? -1 : 1;
+        var offset = move ? 14 : 14;
+        var speed = move ? -0.03 : -0.05;
+        var rnd = Math.random() / 2 + 0.5;
+        var dirt = new Box(-3 + Math.random()*6, offset*sign, 160 + Math.random() * 40, 3, 3, "darkgoldenrod", [
+            new Behavior.Move,
+            new Behavior.TimedLife(300),
+            new Behavior.Custom(function() { 
+                this.alpha = this.lifeTimeout / 100;
+                this.moveYSpeed = this.lifeTimeout / 300 * rnd * speed * sign; })
+        ]);
+        var parent = left ? this.Tank.items[1] : this.Tank.items[0];
+        this.RootEntity.changeCoordinatesFromDescendant(dirt, parent);
+        this.RootEntity.addChild(dirt, 0);
+    },
     Logic: function(delta) {
-        var tank = this.RootEntity.items[0];
-        var barrel = tank.items[3];
+        var tank = this.Tank;
+        var barrel = this.Tank.items[4];
         var linSpeed = 60/1000; //px/msec
         var angSpeed = 90/1000; //deg/msec
 
         tank.moveYSpeed = 0;
         if( App.Keyboard.isDown('W'))  tank.moveYSpeed += linSpeed;
         if( App.Keyboard.isDown('S'))  tank.moveYSpeed -= linSpeed;
+        if( tank.moveYSpeed != 0) {
+            var back = tank.moveYSpeed > 0;
+            this.spawnDirt(true, back, true);
+            this.spawnDirt(false, back, true);
+        }
 
         tank.moveXSpeed = 0;
         if( App.Keyboard.isDown('E'))  tank.moveXSpeed += linSpeed;
@@ -41,6 +66,11 @@ var Game = {
         tank.moveAngSpeed = 0;
         if( App.Keyboard.isDown('D')) tank.moveAngSpeed += angSpeed;
         if( App.Keyboard.isDown('A')) tank.moveAngSpeed -= angSpeed;
+        if( tank.moveYSpeed == 0 && tank.moveAngSpeed != 0 ) {
+            var cw = tank.moveAngSpeed > 0;
+            this.spawnDirt(true, cw);
+            this.spawnDirt(false, !cw);
+        }
         
         barrel.moveAngSpeed = 0;
         if( App.Keyboard.isDown('L')) barrel.moveAngSpeed += angSpeed;
@@ -49,10 +79,10 @@ var Game = {
         if( App.Keyboard.isDown('K')) {
             var bullet = new Box(0, 20, 0, 3, 5, "orange", [
                 new Behavior.Move(0, 0.5), 
-                new Behavior.LifeInBounds(0,0,400,400)
+                new Behavior.LifeInBounds(0,0,500,400)
             ]);
             this.RootEntity.changeCoordinatesFromDescendant(bullet, barrel);
-            this.RootEntity.items.push(bullet);
+            this.RootEntity.addChild(bullet);
         }
     }
 }
@@ -83,6 +113,8 @@ var App = {
         App.Context = App.Canvas.getContext('2d');
 
         App.Context.scale(1.5, 1.5);
+
+        Game.Setup();
 
         MainLoop.setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }
