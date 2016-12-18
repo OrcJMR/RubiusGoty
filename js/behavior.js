@@ -14,13 +14,39 @@ Behavior.Move = function(vx, vy, va) {
 Behavior.Move.prototype = {
     name: "move",
     exec: function(obj, delta) {
+
+        var NoCollision = function(x, y){
+            if (x < 0 || y < 0 || x > 400 || y > 400){
+                return false;
+            }            
+            return true;
+        }
+
         if(obj.moveYSpeed != 0) {
-            obj.x -= Math.sin(obj.angle) * delta * obj.moveYSpeed;
-            obj.y += Math.cos(obj.angle) * delta * obj.moveYSpeed;
+            var newx = obj.x - Math.sin(obj.angle) * delta * obj.moveYSpeed;
+            var newy = obj.y + Math.cos(obj.angle) * delta * obj.moveYSpeed;
+
+            if (NoCollision(newx, newy)){
+                obj.x = newx;
+                obj.y = newy;
+            }
+            else{
+                obj.moveXSpeed = 0;
+                obj.moveYSpeed = 0;
+            }
         }
         if(obj.moveXSpeed != 0) {
-            obj.x -= Math.cos(obj.angle) * delta * obj.moveXSpeed;
-            obj.y -= Math.sin(obj.angle) * delta * obj.moveXSpeed;
+            var newx = obj.x - Math.cos(obj.angle) * delta * obj.moveXSpeed;
+            var newy = obj.y + Math.sin(obj.angle) * delta * obj.moveXSpeed;
+
+            if (NoCollision(newx, newy)){
+                obj.x = newx;
+                obj.y = newy;
+            }
+            else{
+                obj.moveXSpeed = 0;
+                obj.moveYSpeed = 0;
+            }
         }
         if(obj.moveAngSpeed != 0) {
             obj.angle += delta * obj.moveAngSpeed / 180 * Math.PI;
@@ -29,6 +55,7 @@ Behavior.Move.prototype = {
             if( obj.angle > Math.PI * 2)
                 obj.angle -= Math.PI * 2;
         }
+
     }
 };
 
