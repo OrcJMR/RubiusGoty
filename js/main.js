@@ -5,10 +5,17 @@ var App = {
         Game.Logic(delta);
         Game.RootEntity.update(delta);
     },
+    globalScale: 2,
     DrawFrame: function(interpolationPercentage) {
         App.Context.clearRect(0, 0, App.Canvas.width, App.Canvas.height);
+        App.Context.save();
+        App.Context.scale(App.globalScale, App.globalScale);
         Game.Map.drawMap(App.Context, 0, 0);
         Game.RootEntity.draw(App.Context);
+        App.Context.restore();
+        App.Context.lineWidth = 2;
+        App.Context.strokeStyle = "#f00";
+        App.Context.strokeRect(0, 0, 1024, 768);
     },
     EndFrame: function(fps, panic) {
             if (panic) {
@@ -23,7 +30,10 @@ var App = {
         App.Canvas.width = window.innerWidth;
         App.Canvas.height = window.innerHeight;
         App.Context = App.Canvas.getContext('2d');
-        App.Context.scale(1.5, 1.5);
+        App.Context.mozImageSmoothingEnabled = false;
+        App.Context.webkitImageSmoothingEnabled = false;
+        App.Context.msImageSmoothingEnabled = false;
+        App.Context.imageSmoothingEnabled = false;
 
         App.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
         App.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
@@ -49,7 +59,6 @@ var documentReadyInterval = setInterval(function() {
             if (App.Canvas != undefined) {
                 App.Canvas.width = window.innerWidth;
                 App.Canvas.height = window.innerHeight;
-                App.Context.scale(1.5, 1.5);
             }
         };
     }
