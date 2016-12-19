@@ -5,7 +5,7 @@ var Game = {
         new Sprite(100, 100, 45, 32, 32, "./images/tank.png", [new Behavior.TimedLife(5000), new Behavior.Move(0,-0.01,-0.01)]),
     ]),
     Setup: function() {
-        this.Tank = new ObjectGroup(200, 150, 180, [new Behavior.Move], [
+        this.Tank = new ObjectGroup(200, 150, 180, [new Behavior.MoveTank], [
             new Box(-12,  0, 0,  8, 32, "brown"),
             new Box( 12,  0, 0,  8, 32, "brown"),
             new Box(  0,  0, 0, 24, 24, "green"),
@@ -15,6 +15,10 @@ var Game = {
             ])
         ]);
         this.RootEntity.addChild(this.Tank);
+        this.Tank.LeftTrack = this.Tank.items[0];
+        this.Tank.LeftTrack.torque = 0;
+        this.Tank.RightTrack = this.Tank.items[1];
+        this.Tank.RightTrack.torque = 0;
         this.Tank.Barrel = this.Tank.items[4];
         this.Tank.Barrel.recoil = 0;
         this.Tank.width = 32; //this is for collision detection
@@ -39,10 +43,14 @@ var Game = {
     },
     ConsumeInputs: function(timestamp) {
         var driveSpeed = 60/1000; //px/msec
-        var turnSpeed = 90/1000; //deg/msec 
-        Game.Tank.moveYSpeed = driveSpeed * App.Inputs.ThrottleInput.read(timestamp);
-        Game.Tank.moveXSpeed = driveSpeed/2 * App.Inputs.StrafeInput.read(timestamp);
-        Game.Tank.moveAngSpeed = turnSpeed * App.Inputs.TankTurnInput.read(timestamp);
+        var turnSpeed = 90/1000; //deg/msec
+        
+        Game.Tank.LeftTrack.torque = App.Inputs.LeftTrackInput.read(timestamp);
+        Game.Tank.RightTrack.torque = App.Inputs.RightTrackInput.read(timestamp);
+        
+        //Game.Tank.moveYSpeed = driveSpeed * App.Inputs.LeftTrackInput.read(timestamp);
+        //Game.Tank.moveXSpeed = driveSpeed/2 * App.Inputs.StrafeInput.read(timestamp);
+        //Game.Tank.moveAngSpeed = turnSpeed * App.Inputs.RightTrackInput.read(timestamp);
         Game.Tank.Barrel.moveAngSpeed = turnSpeed * App.Inputs.TurretTurnInput.read(timestamp);
         var fireState = App.Inputs.FireInput.read(timestamp);
         if(fireState == 1)
@@ -51,14 +59,14 @@ var Game = {
     },
     Logic: function(delta) {
         
-        if( this.Tank.moveYSpeed != 0) {
-            var back = this.Tank.moveYSpeed > 0;
+        if( Math.abs(this.Tank.speed) > 1E-02) {
+            var back = this.Tank.speed > 0;
             this.spawnDirt(true, back, true);
             this.spawnDirt(false, back, true);
         }
 
-        if( this.Tank.moveYSpeed == 0 && this.Tank.moveAngSpeed != 0 ) {
-            var cw = this.Tank.moveAngSpeed > 0;
+        if( Math.abs(this.Tank.speed) < 1E-02 && Math.abs(this.Tank.rotationSpeed) > 1E-02 ) {
+            var cw = this.Tank.speed > 0;
             this.spawnDirt(true, cw);
             this.spawnDirt(false, !cw);
         }
@@ -110,8 +118,8 @@ var App = {
         App.Context = App.Canvas.getContext('2d');
         App.Context.scale(1.5, 1.5);
 
-        App.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
-        App.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
+        App.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'A', 'Z');
+        App.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'S', 'X');
         App.Inputs.StrafeInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
         App.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'L', 'J');
         App.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'K', 300, false);
