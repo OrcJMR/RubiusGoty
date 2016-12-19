@@ -100,6 +100,13 @@ var Game = {
             PlaySound("./sound/tank-fire.wav", 80);
         }
         this.Tank.Barrel.items[0].y = 12 + this.Tank.Barrel.recoil * 6;
+
+        l('t1tl').style.visibility = Game.Tank.Barrel.moveAngSpeed < -1E-6 ? "visible" : "hidden";
+        l('t1tr').style.visibility = Game.Tank.Barrel.moveAngSpeed > 1E-6 ? "visible" : "hidden";
+        l('t1lf').style.visibility = Game.Tank.LeftTrack.torque > 1E-6 ? "visible" : "hidden";
+        l('t1lb').style.visibility = Game.Tank.LeftTrack.torque < -1E-6 ? "visible" : "hidden";
+        l('t1rf').style.visibility = Game.Tank.RightTrack.torque > 1E-6 ? "visible" : "hidden";
+        l('t1rb').style.visibility = Game.Tank.RightTrack.torque < -1E-6 ? "visible" : "hidden";
     }
 }
 

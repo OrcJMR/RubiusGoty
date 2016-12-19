@@ -1,12 +1,24 @@
 <html>
     <head>
         <link href="css/main.css" rel="stylesheet" type="text/css"/>
-        <title>Orc test</title>
+        <title>Team City!</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
         <div class="canvas-container">
             <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <div class="tank-scheme" style="top:132px">
+            <div id="t1tl" class="scheme-overlay" style="left:32px;top:0px;background-image:url(images/arrow-rot-left.png)" ></div>
+            <div id="t1tr" class="scheme-overlay" style="right:32px;top:0px;background-image:url(images/arrow-rot-left.png);transform:scaleX(-1)" ></div>
+            <div id="t1lf" class="scheme-overlay" style="left:16px;top:64px;background-image:url(images/arrow-top.png)" ></div>
+            <div id="t1lb" class="scheme-overlay" style="left:16px;top:128px;background-image:url(images/arrow-top.png);transform:scaleY(-1)" ></div>
+            <div id="t1rf" class="scheme-overlay" style="right:16px;top:64px;background-image:url(images/arrow-top.png)" ></div>
+            <div id="t1rb" class="scheme-overlay" style="right:16px;top:128px;background-image:url(images/arrow-top.png);transform:scaleY(-1)" ></div>
+        </div>
+
+        <div class="tank-scheme" style="top:520px">
         </div>
 
         <script src="js/sound.js"></script>

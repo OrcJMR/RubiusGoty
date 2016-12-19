@@ -13,6 +13,21 @@
     -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
 }
 
+.tank-scheme{
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    left: 776px;
+}
+
+.scheme-overlay{
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
 .spacer{
     clear: both;
 }

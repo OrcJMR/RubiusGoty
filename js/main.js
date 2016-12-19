@@ -1,21 +1,28 @@
 
+function l(what) {return document.getElementById(what);}
+
 var App = {
     Inputs: {},
     UpdateFrame: function(delta) {
         Game.Logic(delta);
         Game.RootEntity.update(delta);
     },
-    globalScale: 2,
+    globalScale: 1.5,
     DrawFrame: function(interpolationPercentage) {
-        App.Context.clearRect(0, 0, App.Canvas.width, App.Canvas.height);
-        App.Context.save();
-        App.Context.scale(App.globalScale, App.globalScale);
-        Game.Map.drawMap(App.Context, 0, 0);
-        Game.RootEntity.draw(App.Context);
-        App.Context.restore();
-        App.Context.lineWidth = 2;
-        App.Context.strokeStyle = "#f00";
-        App.Context.strokeRect(0, 0, 1024, 768);
+        var ctx = App.Context;
+        ctx.clearRect(0, 0, App.Canvas.width, App.Canvas.height);
+        ctx.save();
+        ctx.scale(App.globalScale, App.globalScale);
+        Game.Map.drawMap(ctx, 0, 0);
+        Game.RootEntity.draw(ctx);
+        ctx.restore();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#f00";
+        ctx.strokeRect(0, 0, 1024, 768);
+        ctx.strokeStyle = "#0a0";
+        ctx.strokeRect(8, 8, 752, 752);
+        ctx.drawImage(App.tankPH, 776, 136, 240, 240);
+        ctx.drawImage(App.tankPH, 776, 520, 240, 240);
     },
     EndFrame: function(fps, panic) {
             if (panic) {
@@ -24,6 +31,10 @@ var App = {
             }
     },
     EntryPoint: function() {
+
+        App.tankPH = new Image();
+        App.tankPH.src = "./images/tank.png";
+
 
         App.Keyboard = new Keyboard();
         App.Canvas = document.getElementById('gameCanvas');
