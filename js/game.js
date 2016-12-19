@@ -5,7 +5,7 @@ var Game = {
         new Sprite(100, 100, 45, 32, 32, "./images/tank.png", [new Behavior.TimedLife(5000), new Behavior.Move(0,-0.01,-0.01)]),
     ]),
     Setup: function() {
-        this.Tank = new ObjectGroup(200, 150, 180, [new Behavior.MoveTank], [
+        this.Tank = new ObjectGroup(450, 140, 90, [new Behavior.MoveTank], [
             new Box(-12,  0, 0,  8, 32, "brown"),
             new Box( 12,  0, 0,  8, 32, "brown"),
             new Box(  0,  0, 0, 24, 24, "green"),
