@@ -40,10 +40,11 @@ Behavior.Move.prototype = {
 
         if (obj.collider){
             var objRect = new Geom.Rect(newx, newy, obj.width, obj.height, newAngle);
-            if (obj.collider.IsCollided(objRect)){
+            var colliderRetVal = obj.collider.IsCollided(objRect);
+            if (colliderRetVal){
                 apply = false;
                 if (obj.OnCollision){
-                    obj.OnCollision();
+                    obj.OnCollision( colliderRetVal.tileX, colliderRetVal.tileY );
                 }
             }
         }
@@ -80,6 +81,11 @@ Behavior.MoveTank.prototype = {
         var ltraction = ltile ? ltile.tractionFactor : 1;
         var rtile = Game.Map.getTileAt(rtx, rty);
         var rtraction = rtile ? rtile.tractionFactor : 1;
+
+        if( Math.random() < 0.01 )
+            Game.Map.degradeTileAt(ltx, lty);
+        if( Math.random() < 0.01 )
+            Game.Map.degradeTileAt(rtx, rty);
 
         obj.rotationSpeed = obj.rotationSpeed + (obj.LeftTrack.torque * ltraction - obj.RightTrack.torque * rtraction) * delta * obj.maxRotationSpeed / 1000;
         if (Math.abs(obj.rotationSpeed) > obj.maxRotationSpeed) obj.rotationSpeed = Math.sign(obj.rotationSpeed) * obj.maxRotationSpeed;

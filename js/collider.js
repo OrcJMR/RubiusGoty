@@ -28,7 +28,7 @@ Collider.prototype.IsCollided = function(rect){
 
                     if (Geom.Intersect(rect, tileRect))
                     {
-                        return true;
+                        return {tileX: tileX, tileY: tileY};
                     }
                 }
             }

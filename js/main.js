@@ -74,7 +74,8 @@ var Game = {
                 new Behavior.LifeInBounds(0,0,1000,1000)
             ]);
             bullet.collider = new Collider(this.Map, "B");
-            bullet.OnCollision = function(){
+            bullet.OnCollision = function(x, y){
+                Game.Map.degradeTile(x, y);
                 this.dead = true;
                 PlaySound("./sound/splat.wav", 100);
             };

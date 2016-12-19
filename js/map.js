@@ -4,7 +4,7 @@ function Map(){
     this.width = 48;
     this.height = 24;
 
-    this.terrainString = 
+    var terrain = 
     "..............................,||,||,..........." +
     "..............................,||,||,..........." +
     "........,...................,,,||,||,,.........." +
@@ -58,10 +58,11 @@ function Map(){
 
     this.tilesImage = new Image();
     this.tilesImage.src = "./images/tiles-winter-2.png"
-    if(this.terrainString.length != this.width * this.height)
+    if(terrain.length != this.width * this.height)
         throw "Cannot load map from string!";
 
-    this.buildingString = buildings ? buildings : Array(this.terrainString.length + 1).join(' ');
+    this.terrainArray = Array.from(terrain);
+    this.buildingArray = buildings ? Array.from(buildings) : Array.from(Array(this.terrainString.length + 1).join(' ')); // looks stupid, but wtf
 
     this.tileDictionary = {};
     this.tileDictionary['.'] = {tileX: 0, tileY: 0, variants: 8, traction: 1};
@@ -103,27 +104,45 @@ Map.prototype = {
     tileArtHeight: 16,
     getTerrainChar: function(x, y) {
         var index = y*this.width + x;
-        return this.terrainString.charAt(index);
+        return this.terrainArray[index];
+    },
+    setTerrainChar: function(x, y, char) {
+        var index = y*this.width + x;
+        this.terrainArray[index] = char;
     },
     getBuildingChar: function(x, y) {
         var index = y*this.width + x;
-        return this.buildingString.charAt(index);
+        return this.buildingArray[index];
     },
-    getTile: function(x, y) {
-        var tchar = this.getTerrainChar(x, y);
-        var bchar = this.getBuildingChar(x, y);
-        return {
-            terrain: tchar,
-            building: bchar,
-            tractionFactor: this.tileDictionary[tchar].traction,
-            passable: tchar != 'B' && bchar == ' ',
-        };
+    getTile: function(xcell, ycell) {
+        var tchar = this.getTerrainChar(xcell, ycell);
+        var bchar = this.getBuildingChar(xcell, ycell);
+        if( xcell >= 0 && xcell < this.width && ycell >= 0 && ycell < this.height )
+            return {
+                terrain: tchar,
+                building: bchar,
+                tractionFactor: this.tileDictionary[tchar].traction,
+                passable: tchar != 'B' && bchar == ' ',
+            };
     },
     getTileAt: function(xpx, ypx) {
         var xcell = Math.floor(xpx / this.tileWidth);
         var ycell = Math.floor(ypx / this.tileHeight);
-        if( xcell >= 0 && xcell < this.width && ycell >= 0 && ycell < this.height )
-            return this.getTile(xcell, ycell);
+        return this.getTile(xcell, ycell);
+    },
+    degradation: ".,:;& Bc",
+    degradeTile: function(xcell, ycell) {
+        if( xcell >= 0 && xcell < this.width && ycell >= 0 && ycell < this.height ) {
+            var char = this.getTerrainChar(xcell, ycell);
+            var idx = this.degradation.indexOf(char);
+            if( idx > -1 && idx + 1 < this.degradation.length && this.degradation.charAt(idx + 1) != ' ')
+                this.setTerrainChar(xcell, ycell, this.degradation.charAt(idx + 1));
+        }
+    },
+    degradeTileAt: function(xpx, ypx) {
+        var xcell = Math.floor(xpx / this.tileWidth);
+        var ycell = Math.floor(ypx / this.tileHeight);
+        this.degradeTile(xcell, ycell);
     },
     drawMap: function(ctx, x, y) {
         ctx.save();
