@@ -1,18 +1,6 @@
 
 var Game = {
-    Map: new Map(16, 12,
-    "...,,,,...,,,,,," +
-    ".,,,,,,,,,,,,,,," +
-    ",,,,..........,," +
-    ",,.....BB:BB:BB." +
-    ",......B,,,,,,B." +
-    ",......B,,,,,,:." +
-    ",,,....,,,,,,,B." +
-    ",,,,...,,,,,,,B." +
-    ".,,,,,.B,,,,,,:." +
-    "...,,,,B,,,,,,B." +
-    "....,,,BB:BB:BB." +
-    "......,,........"),
+    Map: new Map(),
     RootEntity: new ObjectGroup(0, 0, 0, [], [
         new Sprite(100, 100, 45, 32, 32, "./images/tank.png", [new Behavior.TimedLife(5000), new Behavior.Move(0,-0.01,-0.01)]),
     ]),
@@ -31,7 +19,7 @@ var Game = {
         this.Tank.Barrel.recoil = 0;
         this.Tank.width = 32; //this is for collision detection
         this.Tank.height = 32;
-        this.Tank.collider = new Collider(this.Map, "B:");
+        this.Tank.collider = new Collider(this.Map, "B");
     },
     spawnDirt: function(left, back, move) {
         var sign = back ? -1 : 1;
@@ -78,7 +66,7 @@ var Game = {
         if( this.Tank.Barrel.firing) {
             var bullet = new Box(0, 20, 0, 3, 5, "orange", [
                 new Behavior.Move(0, 0.5), 
-                new Behavior.LifeInBounds(0,0,500,400)
+                new Behavior.LifeInBounds(0,0,1000,1000)
             ]);
             bullet.collider = new Collider(this.Map, "B");
             bullet.OnCollision = function(){
@@ -126,11 +114,11 @@ var App = {
         App.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
         App.Inputs.StrafeInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
         App.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'L', 'J');
-        App.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'K', 1000, true);
+        App.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'K', 300, false);
 
         Game.Setup();
 
-        PlaySound("./sound/bl-slaughter.mp3", 90, true);
+        //PlaySound("./sound/bl-slaughter.mp3", 90, true);
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }

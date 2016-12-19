@@ -1,0 +1,7 @@
+Snow	ffffff	HSV noise 8 0 0 25
+Dirt	873e09	HSV noise 3 0 25 50
+	transition
+		color ffffff to alpha
+		levels - alpha range to thirds of alpha histogram
+Concrt  bababa	HSV noise 8 0 0 25
+Asphalt	505050  HSV noise 
