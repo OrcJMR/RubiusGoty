@@ -59,22 +59,32 @@ Behavior.Move.prototype = {
 Behavior.MoveTank = function(leftTrackSpeed, rightTrackSpeed) {
     this.init = function(obj) {
         obj.speed = 0;
-        obj.maxSpeed = 60/1000; //px/msec
+        obj.maxSpeed = 120/1000; //px/msec
         obj.rotationSpeed = 0;
-        obj.maxRotationSpeed = 90/1000; //deg/msec
+        obj.maxRotationSpeed = 180/1000; //deg/msec
     };
 };
 Behavior.MoveTank.prototype = {
-    name: "move",
+    name: "movetank",
     exec: function(obj, delta) {
         var newx = obj.x;
         var newy = obj.y;
         var newAngle = obj.angle;
 
-        obj.rotationSpeed = obj.rotationSpeed + (obj.LeftTrack.torque - obj.RightTrack.torque) * delta * obj.maxRotationSpeed / 500;
+        var ltx = obj.x - Math.cos(obj.angle) * obj.LeftTrack.x - Math.sin(obj.angle) * obj.LeftTrack.y;
+        var lty = obj.y + Math.cos(obj.angle) * obj.LeftTrack.y - Math.sin(obj.angle) * obj.LeftTrack.x;
+        var rtx = obj.x - Math.cos(obj.angle) * obj.RightTrack.x - Math.sin(obj.angle) * obj.RightTrack.y;
+        var rty = obj.y + Math.cos(obj.angle) * obj.RightTrack.y - Math.sin(obj.angle) * obj.RightTrack.x;
+
+        var ltile = Game.Map.getTileAt(ltx, lty);
+        var ltraction = ltile ? ltile.tractionFactor : 1;
+        var rtile = Game.Map.getTileAt(rtx, rty);
+        var rtraction = rtile ? rtile.tractionFactor : 1;
+
+        obj.rotationSpeed = obj.rotationSpeed + (obj.LeftTrack.torque * ltraction - obj.RightTrack.torque * rtraction) * delta * obj.maxRotationSpeed / 1000;
         if (Math.abs(obj.rotationSpeed) > obj.maxRotationSpeed) obj.rotationSpeed = Math.sign(obj.rotationSpeed) * obj.maxRotationSpeed;
         
-        obj.speed = obj.speed + (obj.LeftTrack.torque + obj.RightTrack.torque) / 2 * delta * obj.maxSpeed / 500;
+        obj.speed = obj.speed + (obj.LeftTrack.torque * ltraction + obj.RightTrack.torque * rtraction) / 2 * delta * obj.maxSpeed / 1000;
         if (Math.abs(obj.speed) > obj.maxSpeed) obj.speed = Math.sign(obj.speed) * obj.maxSpeed;
         
         if(obj.speed != 0) {

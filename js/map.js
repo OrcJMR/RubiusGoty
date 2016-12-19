@@ -119,6 +119,12 @@ Map.prototype = {
             passable: tchar != 'B' && bchar == ' ',
         };
     },
+    getTileAt: function(xpx, ypx) {
+        var xcell = Math.floor(xpx / this.tileWidth);
+        var ycell = Math.floor(ypx / this.tileHeight);
+        if( xcell >= 0 && xcell < this.width && ycell >= 0 && ycell < this.height )
+            return this.getTile(xcell, ycell);
+    },
     drawMap: function(ctx, x, y) {
         ctx.save();
         ctx.translate(x, y);

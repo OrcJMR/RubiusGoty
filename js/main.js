@@ -25,7 +25,7 @@ var Game = {
         this.Tank.height = 32;
         this.Tank.collider = new Collider(this.Map, "B");
     },
-    spawnDirt: function(left, back, move) {
+    spawnDirt: function(parent, back, move) {
         var sign = back ? -1 : 1;
         var offset = move ? 14 : 14;
         var speed = move ? -0.03 : -0.05;
@@ -37,7 +37,6 @@ var Game = {
                 this.alpha = this.lifeTimeout / 100;
                 this.moveYSpeed = this.lifeTimeout / 300 * rnd * speed * sign; })
         ]);
-        var parent = left ? this.Tank.items[1] : this.Tank.items[0];
         this.RootEntity.changeCoordinatesFromDescendant(dirt, parent);
         this.RootEntity.addChild(dirt, 0);
     },
@@ -59,16 +58,14 @@ var Game = {
     },
     Logic: function(delta) {
         
-        if( Math.abs(this.Tank.speed) > 1E-02) {
-            var back = this.Tank.speed > 0;
-            this.spawnDirt(true, back, true);
-            this.spawnDirt(false, back, true);
+        if( Math.abs(this.Tank.LeftTrack.torque) > 1E-02) {
+            var back = this.Tank.LeftTrack.torque > 0;
+            this.spawnDirt(this.Tank.RightTrack, back, true);
         }
 
-        if( Math.abs(this.Tank.speed) < 1E-02 && Math.abs(this.Tank.rotationSpeed) > 1E-02 ) {
-            var cw = this.Tank.speed > 0;
-            this.spawnDirt(true, cw);
-            this.spawnDirt(false, !cw);
+        if( Math.abs(this.Tank.RightTrack.torque) > 1E-02) {
+            var back = this.Tank.RightTrack.torque > 0;
+            this.spawnDirt(this.Tank.LeftTrack, back, true);
         }
         
         if( this.Tank.Barrel.firing) {
@@ -119,10 +116,10 @@ var App = {
         App.Context.scale(1.5, 1.5);
 
         App.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'A', 'Z');
-        App.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'S', 'X');
-        App.Inputs.StrafeInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
-        App.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'L', 'J');
-        App.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'K', 300, false);
+        App.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'C');
+        //App.Inputs.StrafeInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
+        App.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
+        App.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'W', 300, false);
 
         Game.Setup();
 
