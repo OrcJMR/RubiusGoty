@@ -23,7 +23,14 @@ var Game = {
         this.Tank.Barrel.recoil = 0;
         this.Tank.width = 32; //this is for collision detection
         this.Tank.height = 32;
-        this.Tank.collider = new Collider(this.Map, "B");
+        this.Tank.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
+        this.Tank.class = "tank"
+
+        var tankBot = new Sprite(300, 200, 45, 32, 32, "./images/tank.png", [new Behavior.Move(0,-0.01,-0.01)]);
+        tankBot.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
+        tankBot.class = "tankbot";
+        this.RootEntity.addChild(tankBot);
+
     },
     spawnDirt: function(parent, back, move) {
         var sign = back ? -1 : 1;
@@ -87,12 +94,26 @@ var Game = {
                 new Behavior.Move(0, 0.5), 
                 new Behavior.LifeInBounds(0,0,1000,1000)
             ]);
-            bullet.collider = new Collider(this.Map, "B");
-            bullet.OnCollision = function(x, y){
+            bullet.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
+            bullet.OnMapCollision = function(x, y){
                 Game.Map.degradeTile(x, y);
                 this.dead = true;
                 PlaySound("./sound/splat.wav", 100);
             };
+            bullet.OnObjectCollision = function(obj){
+                if (obj.class == "tankbot"){
+                    obj.moveXSpeed /= 3;
+                    obj.moveYSpeed /= 3;
+                    obj.moveAngSpeed /= 3;
+                    obj.class = "deadtankbot";
+                    if (obj.setImage){
+                        obj.setImage("./images/deadtank.png");
+                    }
+                    obj.addBehavior(new Behavior.TimedLife(3000));
+                }
+                this.dead = true;
+                PlaySound("./sound/splat.wav", 100);
+            }
 
             this.RootEntity.changeCoordinatesFromDescendant(bullet, this.Tank.Barrel);
             this.RootEntity.addChild(bullet);

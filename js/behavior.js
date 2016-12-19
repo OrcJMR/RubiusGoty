@@ -40,11 +40,18 @@ Behavior.Move.prototype = {
 
         if (obj.collider){
             var objRect = new Geom.Rect(newx, newy, obj.width, obj.height, newAngle);
-            var colliderRetVal = obj.collider.IsCollided(objRect);
+            var colliderRetVal = obj.collider.IsCollided(objRect, obj);
             if (colliderRetVal){
                 apply = false;
-                if (obj.OnCollision){
-                    obj.OnCollision( colliderRetVal.tileX, colliderRetVal.tileY );
+
+                if (colliderRetVal.tileX){
+                    if (obj.OnMapCollision){
+                        obj.OnMapCollision( colliderRetVal.tileX, colliderRetVal.tileY );
+                    }
+                } else{
+                    if (obj.OnObjectCollision){
+                        obj.OnObjectCollision(colliderRetVal);
+                    }
                 }
             }
         }
@@ -113,10 +120,17 @@ Behavior.MoveTank.prototype = {
 
         if (obj.collider){
             var objRect = new Geom.Rect(newx, newy, obj.width, obj.height, newAngle);
-            if (obj.collider.IsCollided(objRect)){
+            var colliderRetVal = obj.collider.IsCollided(objRect, obj);
+            if (colliderRetVal){
                 apply = false;
-                if (obj.OnCollision){
-                    obj.OnCollision();
+                if (colliderRetVal.tileX){
+                    if (obj.OnMapCollision){
+                        obj.OnMapCollision( colliderRetVal.tileX, colliderRetVal.tileY );
+                    }
+                } else{
+                    if (obj.OnObjectCollision){
+                        obj.OnObjectCollision(colliderRetVal);
+                    }
                 }
             }
         }

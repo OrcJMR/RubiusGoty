@@ -1,11 +1,14 @@
 // collision detector
 
-function Collider(map, impassableBlocks){
+function Collider(map, impassableBlocks, rootEntity, impassableObjects){
     this.map = map;
     this.impassableBlocks = impassableBlocks;
+    this.rootEntity = rootEntity;
+    this.impassableObjects = impassableObjects;
 }
 
-Collider.prototype.IsCollided = function(rect){
+Collider.prototype.IsCollided = function(rect, sourceObject){
+    //check map
     var tw = this.map.tileWidth;
     var th = this.map.tileHeight;
 
@@ -34,6 +37,21 @@ Collider.prototype.IsCollided = function(rect){
                     {
                         return {tileX: tileX, tileY: tileY};
                     }
+                }
+            }
+        }
+    }
+
+    //check objects
+
+    if (this.rootEntity && this.impassableObjects){
+        for (var i = 0; i < this.rootEntity.items.length; i++){
+            var obj = this.rootEntity.items[i];
+            if (obj != sourceObject && obj.class && this.impassableObjects.indexOf(obj.class) > -1){
+                var objRect = new Geom.Rect(obj.x, obj.y, obj.width, obj.height, obj.angle);
+                if (Geom.Intersect(rect, objRect))
+                {
+                    return obj;
                 }
             }
         }

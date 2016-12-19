@@ -118,4 +118,13 @@ function Box(x, y, angle, width, height, color, behaviors) {
 
 ObjectGroup.prototype = EntityBase;
 Sprite.prototype = EntityBase;
+Sprite.prototype.setImage = function(image){
+    if( typeof image == 'string' ) {
+        var imgObj = new Image();
+        imgObj.src = image;
+        image = imgObj;
+    }
+    this.image = image;
+}
+
 Box.prototype = EntityBase;
