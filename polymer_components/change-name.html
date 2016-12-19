@@ -1,0 +1,21 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="change-name">
+    <template>
+
+<a href="#" on-tap="changeName">Change name</a>
+    </template>
+</dom-module>
+
+<script>
+
+    Polymer({
+        is: 'change-name',
+        ready: function() {
+        },
+        changeName: function() {
+            localStorage.setItem('username', '');
+            GoTo('/');
+        },
+
+    });
+</script>

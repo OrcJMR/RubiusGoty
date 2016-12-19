@@ -1,0 +1,44 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="choose-team-page">
+    <template>
+
+
+        <div class="section"></div>
+        <main>
+
+            <center>
+Hi, {{name}}!
+                Choose your team:
+                <div class='row'>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect indigo' on-tap="join1">Team 1</button>
+                </div>
+                <div class='row'>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect yellow' on-tap="join2">Team 2</button>
+                </div>
+
+            </center>
+
+
+
+            <div class="section"></div>
+            <div class="section"></div>
+        </main>
+
+        <change-name></change-name>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'choose-team-page',
+        ready: function() {
+            this.name = localStorage.getItem("username");
+        },
+        join1: function() {
+            GoTo('/team/1');
+        },
+        join2: function() {
+            GoTo('/team/2');
+        }
+    });
+</script>

@@ -1,0 +1,21 @@
+{
+  "name": "orcjmr.github.io",
+  "homepage": "https://github.com/OrcJMR/orcjmr.github.io",
+  "authors": [
+    "Shaddix <artur.drobinskiy@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.1"
+  }
+}

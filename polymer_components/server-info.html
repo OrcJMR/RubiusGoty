@@ -1,0 +1,32 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="server-info">
+    <template>
+        Team 1:
+        <template is="dom-repeat" items="{{model.team1.members}}">
+            <div>Name: <span>{{item.name}}</span> <b>{{item.position}}</b></div>
+        </template>
+        Team 2:
+        <template is="dom-repeat" items="{{model.team2.members}}">
+            <div>Name: <span>{{item.name}}</span> <b>{{item.position}}</b></div>
+        </template>
+
+    </template>
+</dom-module>
+
+<script>
+
+    Polymer({
+        is: 'server-info',
+        ready: function() {
+            this.model = Sockets.ViewModel;
+
+            var that = this;
+            Sockets.UpdateCallback = function () {
+                that.set('model', Sockets.ViewModel);
+            }
+            Sockets.UpdateCallback();
+        },
+
+
+    });
+</script>

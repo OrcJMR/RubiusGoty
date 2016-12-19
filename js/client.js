@@ -10,10 +10,9 @@ var Sockets = (function() {
 
     _socket.onopen = function()
     {
-        Send({
-            type: 'join',
-            team: team,
-        });
+        if (viewModel.name) {
+            Send(viewModel);
+        }
     }
 
     _socket.onmessage = function(msg){
@@ -25,11 +24,23 @@ var Sockets = (function() {
     };
 
     return {
-        SetName: function(name) {
+        Init: function(name, team, position) {
+            viewModel =
+            {
+                type: 'join',
+                team: team,
+                position: position,
+                name: name
+            };
+            Send(viewModel);
+        },
+        Close: function() {
             Send({
-                type: 'SetName',
-                name: name,
-            })
+                type: 'close'
+            });
+        },
+        Send: function(data) {
+            Send(data);
         }
     }
 })();

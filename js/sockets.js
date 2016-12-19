@@ -4,7 +4,11 @@
 
 var Sockets = (function() {
     var _socket = new WebSocket(webSocketUrl);
-    var team = 1;
+
+    var result = {
+        ViewModel: {},
+        UpdateCallback: null
+    };
 
     function Send(obj) {
         _socket.send(JSON.stringify(obj));
@@ -18,7 +22,17 @@ var Sockets = (function() {
     }
 
     _socket.onmessage = function(msg){
-        //var data = JSON.parse(msg.data);
+        var data = JSON.parse(msg.data);
+
+        if (data.type == 'ViewModel') {
+            result.ViewModel = data;
+            if (result.UpdateCallback) {
+                result.UpdateCallback();
+            }
+        }
+
         //alert(data.type);
     }
+
+    return result;
 })();

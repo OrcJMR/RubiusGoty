@@ -1,0 +1,48 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="controls-page">
+    <template>
+        <div class="section"></div>
+        <main>
+
+            <center>
+Hi, {{name}}! You are in Team {{teamId}}
+                Your position: {{positionId}}
+                <div class='row'>
+                    <button class='col s12 btn btn-large waves-effect purple'  data-action="forward" on-down="buttonDownAction" on-up="buttonUpAction">Forward</button>
+                </div>
+                <div class='row'>
+                    <button class='col s12 btn btn-large waves-effect green' data-action="backward" on-down="buttonDownAction" on-up="buttonUpAction">Backward</button>
+                </div>
+            </center>
+
+        </main>
+        <change-name></change-name>
+    </template>
+</dom-module>
+
+<script>
+    var model = {
+        type: 'clientState'
+    };
+    Polymer({
+        is: 'controls-page',
+        attached: function() {
+            this.name = localStorage.getItem("username");
+
+            Sockets.Init(this.name, this.teamId, this.positionId);
+        },
+        detached: function() {
+            Sockets.Close();
+        },
+        buttonDownAction: function (e) {
+            var action = e.target.dataset.action;
+            model[action] = 1;
+            Sockets.Send(model);
+        },
+        buttonUpAction: function (e) {
+            var action = e.target.dataset.action;
+            model[action] = 0;
+            Sockets.Send(model);
+        },
+    });
+</script>

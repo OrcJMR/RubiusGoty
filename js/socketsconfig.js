@@ -1,2 +1,2 @@
 var webSocketUrl = "ws://snotty-stallion.gomix.me";
-//var url = "ws://localhost:9090";
+//var webSocketUrl = "ws://localhost:9090";

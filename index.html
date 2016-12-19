@@ -3,8 +3,22 @@
         <link href="css/main.css" rel="stylesheet" type="text/css"/>
         <title>Team City!</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+        <link rel="import" href="bower_components/polymer/polymer.html">
+        <link rel="import" href="polymer_components/server-info.html">
     </head>
     <body>
+
+
+    <script src="js/socketsconfig.js"></script>
+    <script src="js/sockets.js"></script>
+
+    <div style="right:0px;  position: absolute;">
+        <server-info>
+        </server-info>
+    </div>
+
         <div class="canvas-container">
             <canvas id="gameCanvas"></canvas>
         </div>
@@ -32,7 +46,5 @@
         <script src="js/main.js"></script>
         <script src="js/collider.js"></script>
 
-        <script src="js/socketsconfig.js"></script>
-        <script src="js/sockets.js"></script>
     </body>
 </html>
