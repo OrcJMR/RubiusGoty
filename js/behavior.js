@@ -56,6 +56,63 @@ Behavior.Move.prototype = {
     }
 };
 
+Behavior.MoveTank = function(leftTrackSpeed, rightTrackSpeed) {
+    this.init = function(obj) {
+        obj.speed = 0;
+        obj.maxSpeed = 60/1000; //px/msec
+        obj.rotationSpeed = 0;
+        obj.maxRotationSpeed = 90/1000; //deg/msec
+    };
+};
+Behavior.MoveTank.prototype = {
+    name: "move",
+    exec: function(obj, delta) {
+        var newx = obj.x;
+        var newy = obj.y;
+        var newAngle = obj.angle;
+
+        obj.rotationSpeed = obj.rotationSpeed + (obj.LeftTrack.torque - obj.RightTrack.torque) * delta * obj.maxRotationSpeed / 500;
+        if (Math.abs(obj.rotationSpeed) > obj.maxRotationSpeed) obj.rotationSpeed = Math.sign(obj.rotationSpeed) * obj.maxRotationSpeed;
+        
+        obj.speed = obj.speed + (obj.LeftTrack.torque + obj.RightTrack.torque) / 2 * delta * obj.maxSpeed / 500;
+        if (Math.abs(obj.speed) > obj.maxSpeed) obj.speed = Math.sign(obj.speed) * obj.maxSpeed;
+        
+        if(obj.speed != 0) {
+            newx -= Math.sin(obj.angle) * delta * obj.speed;
+            newy += Math.cos(obj.angle) * delta * obj.speed;
+        }
+
+        if(obj.rotationSpeed != 0) {
+            newAngle += delta * obj.rotationSpeed / 180 * Math.PI;
+            if( newAngle < 0)
+                newAngle += Math.PI * 2;
+            if( newAngle > Math.PI * 2)
+                newAngle -= Math.PI * 2;
+        }
+
+        obj.speed *= 0.95; // get coef from terrain
+        obj.rotationSpeed *= 0.95; // get coef from terrain
+
+        var apply = true;
+
+        if (obj.collider){
+            var objRect = new Geom.Rect(newx, newy, obj.width, obj.height, newAngle);
+            if (obj.collider.IsCollided(objRect)){
+                apply = false;
+                if (obj.OnCollision){
+                    obj.OnCollision();
+                }
+            }
+        }
+
+        if (apply){
+            obj.x = newx;
+            obj.y = newy;
+            obj.angle = newAngle;
+        }
+    }
+};
+
 Behavior.TimedLife = function(time) {
     this.init = function(obj){
         obj.lifeTimeout = time || -1;
