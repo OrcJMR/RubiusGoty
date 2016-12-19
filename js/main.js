@@ -44,8 +44,22 @@ var Game = {
         var driveSpeed = 60/1000; //px/msec
         var turnSpeed = 90/1000; //deg/msec
         
-        Game.Tank.LeftTrack.torque = App.Inputs.LeftTrackInput.read(timestamp);
-        Game.Tank.RightTrack.torque = App.Inputs.RightTrackInput.read(timestamp);
+        var throttle = App.Inputs.ThrottleInput.read(timestamp);
+        var turning = App.Inputs.TankTurnInput.read(timestamp);
+
+        if(Math.abs(turning) < 1E-2) {
+            Game.Tank.LeftTrack.torque = throttle;
+            Game.Tank.RightTrack.torque = throttle;
+        } else if(Math.abs(throttle) < 1E-2) {
+            Game.Tank.LeftTrack.torque = turning;
+            Game.Tank.RightTrack.torque = -turning;
+        } else {
+            Game.Tank.LeftTrack.torque = (throttle + turning) / 2;
+            Game.Tank.RightTrack.torque = (throttle - turning) / 2;
+        }
+        
+        // Game.Tank.LeftTrack.torque = App.Inputs.LeftTrackInput.read(timestamp);
+        // Game.Tank.RightTrack.torque = App.Inputs.RightTrackInput.read(timestamp);
         
         //Game.Tank.moveYSpeed = driveSpeed * App.Inputs.LeftTrackInput.read(timestamp);
         //Game.Tank.moveXSpeed = driveSpeed/2 * App.Inputs.StrafeInput.read(timestamp);
@@ -116,11 +130,13 @@ var App = {
         App.Context = App.Canvas.getContext('2d');
         App.Context.scale(1.5, 1.5);
 
-        App.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'A', 'Z');
-        App.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'C');
+        App.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
+        App.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
+        // App.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'A', 'Z');
+        // App.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'C');
         //App.Inputs.StrafeInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
         App.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
-        App.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'W', 300, false);
+        App.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, '2', 300, false);
 
         Game.Setup();
 
@@ -138,6 +154,7 @@ var documentReadyInterval = setInterval(function() {
             if (App.Canvas != undefined) {
                 App.Canvas.width = window.innerWidth;
                 App.Canvas.height = window.innerHeight;
+                App.Context.scale(1.5, 1.5);
             }
         };
     }
