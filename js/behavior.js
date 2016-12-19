@@ -125,6 +125,16 @@ Behavior.MoveTank.prototype = {
             obj.x = newx;
             obj.y = newy;
             obj.angle = newAngle;
+        } else{
+            var s = Math.max(
+                Math.abs(obj.speed)*800,
+                Math.abs(obj.rotationSpeed)*200);
+            if (s > 15){
+                if (s > 100) s = 100;
+                PlaySound("./sound/crash.wav", s);
+            } 
+            obj.speed = 0;
+            obj.rotationSpeed = 0;
         }
     }
 };
