@@ -14,6 +14,52 @@ var Game = {
                 new Box(  0, 12, 0,  4, 24, "black")
             ])
         ]);
+/*
+        this.Tank1 = new ObjectGroup(0, 140, 90, [new Behavior.MoveTank], [
+            new Box(-12,  0, 0,  8, 32, "brown"),
+            new Box( 12,  0, 0,  8, 32, "brown"),
+            new Box(  0,  0, 0, 24, 24, "green"),
+            new Box(  0,-12, 0, 12, 8, "darkolivegreen"),
+            new ObjectGroup(0, 0, 0, [new Behavior.Move], [
+                new Box(  0, 12, 0,  4, 24, "black")
+            ])
+        ]);
+        this.Tank2 = new ObjectGroup(250, 140, 90, [new Behavior.MoveTank], [
+            new Box(-12,  0, 0,  8, 32, "brown"),
+            new Box( 12,  0, 0,  8, 32, "brown"),
+            new Box(  0,  0, 0, 24, 24, "green"),
+            new Box(  0,-12, 0, 12, 8, "darkolivegreen"),
+            new ObjectGroup(0, 0, 0, [new Behavior.Move], [
+                new Box(  0, 12, 0,  4, 24, "black")
+            ])
+        ]);
+
+        this.RootEntity.addChild(this.Tank1);
+        this.Tank1.LeftTrack = this.Tank1.items[0];
+        this.Tank1.LeftTrack.torque = 0;
+        this.Tank1.RightTrack = this.Tank1.items[1];
+        this.Tank1.RightTrack.torque = 0;
+        this.Tank1.Barrel = this.Tank1.items[4];
+        this.Tank1.Barrel.recoil = 0;
+        this.Tank1.width = 32; //this is for collision detection
+        this.Tank1.height = 32;
+        this.Tank1.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
+        this.Tank1.class = "tank"
+
+        this.RootEntity.addChild(this.Tank2);
+        this.Tank2.LeftTrack = this.Tank2.items[0];
+        this.Tank2.LeftTrack.torque = 0;
+        this.Tank2.RightTrack = this.Tank2.items[1];
+        this.Tank2.RightTrack.torque = 0;
+        this.Tank2.Barrel = this.Tank2.items[4];
+        this.Tank2.Barrel.recoil = 0;
+        this.Tank2.width = 32; //this is for collision detection
+        this.Tank2.height = 32;
+        this.Tank2.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
+        this.Tank2.class = "tank"
+        this.Tanks = [this.Tank1, this.Tank2, this.Tank];
+*/
+
         this.RootEntity.addChild(this.Tank);
         this.Tank.LeftTrack = this.Tank.items[0];
         this.Tank.LeftTrack.torque = 0;
@@ -25,6 +71,8 @@ var Game = {
         this.Tank.height = 32;
         this.Tank.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
         this.Tank.class = "tank"
+
+
 
         var tankBot = new Sprite(300, 200, 45, 32, 32, "./images/tank.png", [new Behavior.Move(0,-0.01,-0.01)]);
         tankBot.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
@@ -50,7 +98,37 @@ var Game = {
     ConsumeInputs: function(timestamp) {
         var driveSpeed = 60/1000; //px/msec
         var turnSpeed = 90/1000; //deg/msec
-        
+/*
+        Game.Tanks.forEach(function(tank) {
+
+            var throttle = tank.Inputs.ThrottleInput.read(timestamp);
+            var turning = tank.Inputs.TankTurnInput.read(timestamp);
+
+            if(Math.abs(turning) < 1E-2) {
+                tank.LeftTrack.torque = throttle;
+                tank.RightTrack.torque = throttle;
+            } else if(Math.abs(throttle) < 1E-2) {
+                tank.LeftTrack.torque = turning;
+                tank.RightTrack.torque = -turning;
+            } else {
+                tank.LeftTrack.torque = (throttle + turning) / 2;
+                tank.RightTrack.torque = (throttle - turning) / 2;
+            }
+
+            // tank.LeftTrack.torque = tank.Inputs.LeftTrackInput.read(timestamp);
+            // tank.RightTrack.torque = tank.Inputs.RightTrackInput.read(timestamp);
+
+            //tank.moveYSpeed = driveSpeed * tank.Inputs.LeftTrackInput.read(timestamp);
+            //tank.moveXSpeed = driveSpeed/2 * tank.Inputs.StrafeInput.read(timestamp);
+            //tank.moveAngSpeed = turnSpeed * tank.Inputs.RightTrackInput.read(timestamp);
+            tank.Barrel.moveAngSpeed = turnSpeed * tank.Inputs.TurretTurnInput.read(timestamp);
+            var fireState = tank.Inputs.FireInput.read(timestamp);
+            if(fireState == 1)
+                tank.Barrel.firing = true;
+            tank.Barrel.recoil = Math.min(fireState, 0);
+        });
+
+*/
         var throttle = App.Inputs.ThrottleInput.read(timestamp);
         var turning = App.Inputs.TankTurnInput.read(timestamp);
 
