@@ -4,6 +4,57 @@
 
 var Behavior = {}
 
+// Screen-space movement
+// impulses are in pixels per second and radians per second
+Behavior.BaseMove = {
+    protoInit: function(obj, impulseX, impulseY, impulseRot) {
+        obj.impulseX = impulseX || 0;
+        obj.impulseY = impulseY || 0;
+        obj.impulseRot = impulseRot || 0;
+    },
+    postExec: function(obj, delta){
+        obj.x += obj.impulseX / 1000 * delta;
+        obj.y += obj.impulseY / 1000 * delta;
+        obj.angle += obj.impulseRot / 1000 * delta;
+
+        if( obj.angle < 0)
+            obj.angle += Math.PI * 2;
+        if( obj.angle > Math.PI * 2)
+            obj.angle -= Math.PI * 2;
+    }
+}
+
+// Object-space movement
+// angular velocity is in degrees per second
+Behavior.SimpleMove = function(vFwd, vSide, vAng) {
+    this.init = function(obj) {
+        this.protoInit(obj, 0, 0, 0);
+        obj.forwardSpeed = vFwd || 0;
+        obj.sidewaysSpeed = vSide || 0;
+        obj.turnSpeed = vAng || 0;
+    };
+};
+Behavior.SimpleMove.prototype = {
+    __proto__: Behavior.BaseMove,
+    name: "simplemove",
+    exec: function(obj, delta) {
+        obj.impulseX = 0;
+        obj.impulseY = 0;
+
+        if(obj.forwardSpeed != 0) {
+            obj.impulseX -= Math.sin(obj.angle) * obj.forwardSpeed;
+            obj.impulseY += Math.cos(obj.angle) * obj.forwardSpeed;
+        }
+        if(obj.sidewaysSpeed != 0) {
+            obj.impulseX -= Math.cos(obj.angle) * obj.sidewaysSpeed;
+            obj.impulseY += Math.sin(obj.angle) * obj.sidewaysSpeed;
+        }
+        if(obj.turnSpeed != 0) {
+            obj.impulseRot = obj.turnSpeed / 180 * Math.PI;
+        }
+    }
+};
+
 Behavior.Move = function(vx, vy, va) {
     this.init = function(obj) {
         obj.moveXSpeed = vx || 0;
@@ -60,6 +111,80 @@ Behavior.Move.prototype = {
             obj.x = newx;
             obj.y = newy;
             obj.angle = newAngle;
+        }
+    }
+};
+
+Behavior.SteerTank = function(leftTrackSpeed, rightTrackSpeed) {
+    this.init = function(obj) {
+        this.protoInit(obj, 0, 0, 0)
+        obj.speed = 0;
+        obj.maxSpeed = 120/1000; //px/msec
+        obj.rotationSpeed = 0;
+        obj.maxRotationSpeed = 180/1000; //deg/msec
+    };
+};
+Behavior.SteerTank.prototype = {
+    __proto__: Behavior.BaseMove,
+    name: "steertank",
+    exec: function(obj, delta) {
+        var ltx = obj.x - Math.cos(obj.angle) * obj.LeftTrack.x - Math.sin(obj.angle) * obj.LeftTrack.y;
+        var lty = obj.y + Math.cos(obj.angle) * obj.LeftTrack.y - Math.sin(obj.angle) * obj.LeftTrack.x;
+        var rtx = obj.x - Math.cos(obj.angle) * obj.RightTrack.x - Math.sin(obj.angle) * obj.RightTrack.y;
+        var rty = obj.y + Math.cos(obj.angle) * obj.RightTrack.y - Math.sin(obj.angle) * obj.RightTrack.x;
+
+        var ltile = Game.Map.getTileAt(ltx, lty);
+        var ltraction = ltile ? ltile.tractionFactor : 1;
+        var rtile = Game.Map.getTileAt(rtx, rty);
+        var rtraction = rtile ? rtile.tractionFactor : 1;
+
+        if( Math.random() < 0.01 )
+            Game.Map.degradeTileAt(ltx, lty);
+        if( Math.random() < 0.01 )
+            Game.Map.degradeTileAt(rtx, rty);
+
+        var moveAngle = Math.atan2(obj.impulseX, obj.impulseY) - obj.angle;
+        
+        obj.impulseRot += (obj.LeftTrack.torque * ltraction - obj.RightTrack.torque * rtraction) * obj.maxRotationSpeed / 2;
+        //if (Math.abs(obj.rotationSpeed) > obj.maxRotationSpeed) obj.rotationSpeed = Math.sign(obj.rotationSpeed) * obj.maxRotationSpeed;
+        
+        // max 1 px/
+        var accel = (obj.LeftTrack.torque * ltraction + obj.RightTrack.torque * rtraction) * 2;
+        //if (Math.abs(obj.speed) > obj.maxSpeed) obj.speed = Math.sign(obj.speed) * obj.maxSpeed;
+        
+        obj.impulseX *= 0.95;
+        obj.impulseY *= 0.95;
+        obj.impulseRot *= 0.95;
+        obj.simpleMoveForward = accel;
+        if(accel != 0) {
+            obj.impulseX -= Math.sin(obj.angle) * accel;
+            obj.impulseY += Math.cos(obj.angle) * accel;
+        }
+        l("logTxt").innerHTML = 
+            "impX: " + obj.impulseX + 
+            "<br/>impY: " + obj.impulseY + 
+            "<br/>impRot: " + obj.impulseRot;
+    },
+    applyForcePoint: function(obj, xoffset, yoffset, torque, movementAngle, movementSpeed) {
+        var globalx = obj.x - Math.cos(obj.angle) * xoffset - Math.sin(obj.angle) * yoffset;
+        var globaly = obj.y + Math.cos(obj.angle) * yoffset - Math.sin(obj.angle) * xoffset;
+        var tile = Game.Map.getTileAt(globalx, globaly);
+        var traction = tile ? tile.tractionFactor : 1;
+        var angleToForcePoint = Math.atan2(yoffset, xoffset);
+
+        var brakeForce = 1;
+        var pullForce = 1;
+        if( torque == 0 ) {
+            // just apply braking
+            var braking = brakeForce * traction;
+            var moveForce = -braking * Math.cos(movementAngle - angleToForcePoint);
+            var torque = braking * Math.sin(movementAngle - angleToForcePoint) * Math.sqrt(xoffset*xoffset + yoffset*yoffset);
+            return {accel: moveForce, torque: torque};
+        } else {
+            // apply both torque and braking
+            var braking = brakeForce * traction * Math.abs(Math.sin(movementAngle));
+            var pull = pullForce * traction * Math.cos(movementAngle);
+            var moveForce = -braking * Math.sin(movementAngle - angleToForcePoint) + pull;
         }
     }
 };

@@ -5,10 +5,12 @@ var EntityBase = {
         var name = beh.name;
         beh.init(this);
         this._behaviors[name] = beh.exec;
+        if(beh.postExec)
+            this._postBehaviors[name] = beh.postExec;
     },
 
     draw: function(ctx) {
-        if(typeof this.items != 'undefined')
+        if(typeof this.items != 'undefined') {
             this.items.forEach(function(item, i, arr){
                 ctx.save();
                 if(typeof item.alpha != 'undefined')
@@ -18,8 +20,14 @@ var EntityBase = {
                 item.draw(ctx);
                 ctx.restore();
             });
-        else if(typeof this.image != 'undefined')
+            ctx.strokeStyle = "#f00";
+            ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+        }
+        else if(typeof this.image != 'undefined') {
             ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
+            ctx.strokeStyle = "#f00";
+            ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+        }
         else if(typeof this.color != 'undefined') {
             ctx.save();
             ctx.fillStyle = this.color;
@@ -30,7 +38,7 @@ var EntityBase = {
             console.debug("Underconfigured object, unable to draw");
     },
 
-    update: function(delta) {
+    behave: function(delta) {
 
         // run updates
         for(var behavior in this._behaviors)
@@ -39,12 +47,24 @@ var EntityBase = {
         // run updates on children an remove dead children, if any
         if(typeof this.items != 'undefined')
             for(var i = 0; i < this.items.length; i++) {
-                this.items[i].update(delta);
+                this.items[i].behave(delta);
                 if(this.items[i].dead){
                     this.items.splice(i, 1);
                     i--;
                 }
             }
+    },
+
+    postBehave: function(delta) {
+
+        // run updates
+        for(var behavior in this._postBehaviors)
+            this._postBehaviors[behavior](this, delta);
+
+        // run updates on children an remove dead children, if any
+        if(typeof this.items != 'undefined')
+            for(var i = 0; i < this.items.length; i++)
+                this.items[i].postBehave(delta);
     },
 
     addChild: function(child, index) {
@@ -81,6 +101,7 @@ function ObjectGroup(x, y, angle, behaviors, items) {
     for(var i = 0, len = this.items.length; i < len; i++)
         this.items[i].parent = this;
     this._behaviors = {};
+    this._postBehaviors = {};
     for(var i = 0; i < behaviors.length; i++)
         this.addBehavior(behaviors[i]);
 }
@@ -98,6 +119,7 @@ function Sprite(x, y, angle, width, height, image, behaviors) {
     }
     this.image = image;
     this._behaviors = {};
+    this._postBehaviors = {};
     if(typeof behaviors != 'undefined')
         for(var i = 0; i < behaviors.length; i++)
             this.addBehavior(behaviors[i]);
@@ -111,6 +133,7 @@ function Box(x, y, angle, width, height, color, behaviors) {
     this.height = height;
     this.color = color;
     this._behaviors = {};
+    this._postBehaviors = {};
     if(typeof behaviors != 'undefined')
         for(var i = 0; i < behaviors.length; i++)
             this.addBehavior(behaviors[i]);

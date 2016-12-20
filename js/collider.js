@@ -1,3 +1,66 @@
+
+function SoftCollider(objects){
+    this.objects = objects;
+}
+
+SoftCollider.prototype = {
+    CombineImpulses: function(array){
+        if(!array || array.length == 0)
+            return 0;
+        var max = Number.MIN_SAFE_INTEGER;
+        var min = Number.MAX_SAFE_INTEGER;
+        var sum = 0;
+        var allPositive = true;
+        var allNegative = true;
+        for(var i=0, count=array.length; i<count; i++){
+            if(array[i] > 0) {
+                allNegative = false;
+                if(array[i] > max) max = array[i];
+            }
+            if(array[i] < 0) {
+                allPositive = false;
+                if(array[i] < min) min = array[i];
+            }
+            sum += array[i];
+        }
+        if(allNegative) return min;
+        if(allPositive) return max;
+        return sum / array.length;
+    },
+    Process: function(){
+        //check objects
+
+        for(var i=0, count=this.objects.length; i<count; i++ ) {
+            var iObj = this.objects[i];
+            var iRect = new Geom.Rect(iObj.x + iObj.impulseX, iObj.y + iObj.impulseY, iObj.width, iObj.height, iObj.angle + iObj.impulseRot)
+            for( var j=i+1; j<count; j++) {
+                var jObj = this.objects[j];
+                var jRect = new Geom.Rect(jObj.x + jObj.impulseX, jObj.y + jObj.impulseY, jObj.width, jObj.height, jObj.angle + jObj.impulseRot)
+
+                if(Geom.Collide(iRect, jRect)) {
+                    if(!iObj.impulseArrayX) iObj.impulseArrayX = [];
+                    if(!iObj.impulseArrayY) iObj.impulseArrayY = [];
+                    iObj.impulseArrayX.push(iRect.impulseX);
+                    iObj.impulseArrayY.push(iRect.impulseY);
+                    if(!jObj.impulseArrayX) jObj.impulseArrayX = [];
+                    if(!jObj.impulseArrayY) jObj.impulseArrayY = [];
+                    jObj.impulseArrayX.push(jRect.impulseX);
+                    jObj.impulseArrayY.push(jRect.impulseY);
+                }
+            }
+        }
+        for(var i=0, count=this.objects.length; i<count; i++ ) {
+            var obj = this.objects[i];
+            if(obj.impulseArrayX) 
+                obj.impulseX -= this.CombineImpulses(obj.impulseArrayX);
+            if(obj.impulseArrayY) 
+                obj.impulseY -= this.CombineImpulses(obj.impulseArrayY);
+            delete obj.impulseArrayX;
+            delete obj.impulseArrayY;
+        }
+    }
+}
+
 // collision detector
 
 function Collider(map, impassableBlocks, rootEntity, impassableObjects){
@@ -33,9 +96,9 @@ Collider.prototype.IsCollided = function(rect, sourceObject){
                         0
                     )
 
-                    if (Geom.Intersect(rect, tileRect))
+                    if (Geom.Collide(rect, tileRect))
                     {
-                        return {tileX: tileX, tileY: tileY};
+                        return false;// {tileX: tileX, tileY: tileY};
                     }
                 }
             }

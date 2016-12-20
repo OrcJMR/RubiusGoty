@@ -1,11 +1,12 @@
 
 var Game = {
     Map: new Map(),
+    Colliders: [],
     RootEntity: new ObjectGroup(0, 0, 0, [], [
         new Sprite(100, 100, 45, 32, 32, "./images/tank.png", [new Behavior.TimedLife(5000), new Behavior.Move(0,-0.01,-0.01)]),
     ]),
     Setup: function() {
-        this.Tank = new ObjectGroup(450, 140, 90, [new Behavior.MoveTank], [
+        this.Tank = new ObjectGroup(450, 140, 90, [new Behavior.SteerTank], [
             new Box(-12,  0, 0,  8, 32, "brown"),
             new Box( 12,  0, 0,  8, 32, "brown"),
             new Box(  0,  0, 0, 24, 24, "green"),
@@ -22,15 +23,17 @@ var Game = {
         this.Tank.Barrel = this.Tank.items[4];
         this.Tank.Barrel.recoil = 0;
         this.Tank.width = 32; //this is for collision detection
-        this.Tank.height = 32;
+        this.Tank.height = 40;
         this.Tank.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
         this.Tank.class = "tank"
 
-        var tankBot = new Sprite(300, 200, 45, 32, 32, "./images/tank.png", [new Behavior.Move(0,-0.01,-0.01)]);
-        tankBot.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
+
+        // it atually goes backwards, because object direction is down, an sprite is rendered up
+        var tankBot = new Sprite(300, 200, 45, 32, 32, "./images/tank.png", [new Behavior.SimpleMove(-15, 0, -10)]);
         tankBot.class = "tankbot";
         this.RootEntity.addChild(tankBot);
 
+        this.Colliders.push(new SoftCollider([this.Tank, tankBot]));
     },
     spawnDirt: function(parent, back, move) {
         var sign = back ? -1 : 1;
@@ -78,23 +81,28 @@ var Game = {
         Game.Tank.Barrel.recoil = Math.min(fireState, 0);
     },
     Logic: function(delta) {
+
+        Game.RootEntity.behave(delta);
+        for(var i=0, count=Game.Colliders.length; i<count; i++)
+            Game.Colliders[i].Process();
+        Game.RootEntity.postBehave(delta);
         
-        if( Math.abs(this.Tank.LeftTrack.torque) > 1E-02) {
-            var back = this.Tank.LeftTrack.torque > 0;
-            this.spawnDirt(this.Tank.RightTrack, back, true);
+        if( Math.abs(Game.Tank.LeftTrack.torque) > 1E-02) {
+            var back = Game.Tank.LeftTrack.torque > 0;
+            Game.spawnDirt(Game.Tank.RightTrack, back, true);
         }
 
-        if( Math.abs(this.Tank.RightTrack.torque) > 1E-02) {
-            var back = this.Tank.RightTrack.torque > 0;
-            this.spawnDirt(this.Tank.LeftTrack, back, true);
+        if( Math.abs(Game.Tank.RightTrack.torque) > 1E-02) {
+            var back = Game.Tank.RightTrack.torque > 0;
+            Game.spawnDirt(Game.Tank.LeftTrack, back, true);
         }
         
-        if( this.Tank.Barrel.firing) {
+        if( Game.Tank.Barrel.firing) {
             var bullet = new Box(0, 20, 0, 3, 5, "orange", [
                 new Behavior.Move(0, 0.5), 
                 new Behavior.LifeInBounds(0,0,1000,1000)
             ]);
-            bullet.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
+            bullet.collider = new Collider(Game.Map, "B", Game.RootEntity, ["tank", "tankbot"]);
             bullet.OnMapCollision = function(x, y){
                 Game.Map.degradeTile(x, y);
                 this.dead = true;
@@ -115,12 +123,12 @@ var Game = {
                 PlaySound("./sound/splat.wav", 100);
             }
 
-            this.RootEntity.changeCoordinatesFromDescendant(bullet, this.Tank.Barrel);
-            this.RootEntity.addChild(bullet);
-            this.Tank.Barrel.firing = false;
+            Game.RootEntity.changeCoordinatesFromDescendant(bullet, Game.Tank.Barrel);
+            Game.RootEntity.addChild(bullet);
+            Game.Tank.Barrel.firing = false;
             PlaySound("./sound/tank-fire.wav", 80);
         }
-        this.Tank.Barrel.items[0].y = 12 + this.Tank.Barrel.recoil * 6;
+        Game.Tank.Barrel.items[0].y = 12 + Game.Tank.Barrel.recoil * 6;
 
         l('t1tl').style.visibility = Game.Tank.Barrel.moveAngSpeed < -1E-6 ? "visible" : "hidden";
         l('t1tr').style.visibility = Game.Tank.Barrel.moveAngSpeed > 1E-6 ? "visible" : "hidden";

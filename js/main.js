@@ -3,10 +3,6 @@ function l(what) {return document.getElementById(what);}
 
 var App = {
     Inputs: {},
-    UpdateFrame: function(delta) {
-        Game.Logic(delta);
-        Game.RootEntity.update(delta);
-    },
     globalScale: 1.5,
     DrawFrame: function(interpolationPercentage) {
         var ctx = App.Context;
@@ -58,7 +54,7 @@ var App = {
 
         //PlaySound("./sound/bl-slaughter.mp3", 90, true);
 
-        MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
+        MainLoop.setBegin(Game.ConsumeInputs).setUpdate(Game.Logic).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }
 };
 
