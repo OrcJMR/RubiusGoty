@@ -46,6 +46,7 @@ var App = {
         App.Context.msImageSmoothingEnabled = false;
         App.Context.imageSmoothingEnabled = false;
 
+        //App.Inputs.ThrottleInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'moveForward', 'moveBackward');
         App.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
         App.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
         // App.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'A', 'Z');
