@@ -46,7 +46,16 @@ var App = {
         App.Context.msImageSmoothingEnabled = false;
         App.Context.imageSmoothingEnabled = false;
 
-        //App.Inputs.ThrottleInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'moveForward', 'moveBackward');
+        /*
+        App.Inputs.ThrottleInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'moveForward', 'moveBackward');
+        App.Inputs.TankTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'turnRight', 'turnLeft');
+        App.Inputs.LeftTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'leftTrackForward', 'leftTrackBackward');
+        App.Inputs.RightTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'rightTrackForward', 'rightTrackBackward');
+        App.Inputs.StrafeInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'strafeRight', 'strafeLeft');
+        App.Inputs.TurretTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'turretLeft', 'turretRight');
+        App.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(function() {return Sockets.ViewModel.team1;}, 'fire'), '2', 300, false);
+*/
+
         App.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
         App.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
         // App.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'A', 'Z');

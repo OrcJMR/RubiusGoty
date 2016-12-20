@@ -2,6 +2,33 @@
 // Behaviors store their parameters inside target object.
 // Constructors construct init() with initial values, everything else is static.
 
+function NetworkCooldownInputKeyboardStub(team, property) {
+    this.team = team;
+    this.property = property;
+}
+NetworkCooldownInputKeyboardStub.prototype = {
+    isDown: function(char) {
+
+        var team = this.team();
+        if (!team)
+            return 0;
+        var flag1 = 0;
+        var that = this;
+        team.members.forEach(function (member) {
+            var state = member.state;
+            if (!state)
+                return;
+
+            if (state[that.property] == 1) {
+                flag1 = 1;
+            }
+
+        });
+
+        return flag1;
+    }
+};
+
 function NetworkBiDiInput(team, propertyForward, propertyBackward) {
     this.team = team;
     this.propertyForward = propertyForward;

@@ -5,14 +5,115 @@
         <main>
 
             <center>
-Hi, {{name}}! You are in Team {{teamId}}
+                Hi, {{name}}! You are in Team {{teamId}}
                 Your position: {{positionId}}
-                <div class='row'>
-                    <button class='col s12 btn btn-large waves-effect purple'  data-action="moveForward" on-down="buttonDownAction" on-up="buttonUpAction">Forward</button>
-                </div>
-                <div class='row'>
-                    <button class='col s12 btn btn-large waves-effect green' data-action="moveBackward" on-down="buttonDownAction" on-up="buttonUpAction">Backward</button>
-                </div>
+
+                <template is="dom-if" if="{{_equals(positionId, 'move')}}">
+                    <div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect purple' data-action="moveForward"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">Forward
+                            </button>
+                        </div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect green' data-action="moveBackward"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">Backward
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+
+                <template is="dom-if" if="{{_equals(positionId, 'turn')}}">
+                    <div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect purple' data-action="turnLeft"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">Left
+                            </button>
+                        </div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect green' data-action="turnRight"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">Right
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+
+                <template is="dom-if" if="{{_equals(positionId, 'leftTrack')}}">
+                    <div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect purple' data-action="leftTrackForward"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">left Track Forward
+                            </button>
+                        </div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect green' data-action="leftTrackBackward"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">left Track Backward
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+
+                <template is="dom-if" if="{{_equals(positionId, 'rightTrack')}}">
+                    <div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect purple' data-action="rightTrackForward"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">Right Track Forward
+                            </button>
+                        </div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect green' data-action="rightTrackBackward"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">Right Track Backward
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+
+                <template is="dom-if" if="{{_equals(positionId, 'strafe')}}">
+                    <div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect purple' data-action="strafeRight"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">Strafe Right
+                            </button>
+                        </div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect green' data-action="strafeLeft"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">Strafe Left
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+
+                <template is="dom-if" if="{{_equals(positionId, 'turret')}}">
+                    <div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect purple' data-action="turretRight"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">Turret Right
+                            </button>
+                        </div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect green' data-action="turretLeft"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">Turret Left
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+
+                <template is="dom-if" if="{{_equals(positionId, 'fire')}}">
+                    <div>
+                        <div class='row'>
+                            <button class='col s12 btn btn-large waves-effect purple' data-action="fire"
+                                    on-down="buttonDownAction" on-up="buttonUpAction">Fire
+                            </button>
+                        </div>
+
+                    </div>
+                </template>
             </center>
 
         </main>
@@ -26,12 +127,18 @@ Hi, {{name}}! You are in Team {{teamId}}
     };
     Polymer({
         is: 'controls-page',
-        attached: function() {
+        attached: function () {
             this.name = localStorage.getItem("username");
 
             Sockets.Init(this.name, this.teamId, this.positionId);
         },
-        detached: function() {
+        _equals: function (val1, val2) {
+            if (val1 == val2)
+                return true;
+
+            return false;
+        },
+        detached: function () {
             Sockets.Close();
         },
         buttonDownAction: function (e) {

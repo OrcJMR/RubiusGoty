@@ -3,9 +3,6 @@ var ClientViewModel = {
 };
 
 var Sockets = (function() {
-    var _socket = new WebSocket(webSocketUrl);
-    var team = 1;
-
     _socket.onopen = function()
     {
         _socket.sendJson(ClientViewModel);
@@ -30,7 +27,7 @@ var Sockets = (function() {
             _socket.sendJson(toSend);
         },
         Send: function(data) {
-            Send(data);
+            _socket.sendJson(data);
         }
     }
 })();
