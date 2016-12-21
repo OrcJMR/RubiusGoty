@@ -62,13 +62,20 @@ SoftCollider.prototype = {
         for(var i=0, count=this.objects.length; i<count; i++ ) {
             var obj = this.objects[i];
             var xmod, ymod;
+            var impulseScalar = obj.impulseX*obj.impulseX + obj.impulseY*obj.impulseY;
             if(obj.impulseArrayX) {
-                obj.impulseX += this.CombineImpulses(obj.impulseArrayX);
+                obj.impulseX += this.CombineImpulses(obj.impulseArrayX)/td;
                 xmod = this.CombineImpulses(obj.impulseArrayX);
             }
             if(obj.impulseArrayY) {
-                obj.impulseY += this.CombineImpulses(obj.impulseArrayY);
+                obj.impulseY += this.CombineImpulses(obj.impulseArrayY)/td;
                 ymod = this.CombineImpulses(obj.impulseArrayY);
+            }
+            var impulseScalar2 = obj.impulseX*obj.impulseX + obj.impulseY*obj.impulseY;
+            if(impulseScalar2 > impulseScalar){
+                var factor = Math.sqrt(impulseScalar2 / impulseScalar);
+                obj.impulseX /= factor;
+                obj.impulseY /= factor;
             }
             if(obj.mass == 5)
                 l("logTxt2").innerHTML += 

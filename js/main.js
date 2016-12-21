@@ -55,8 +55,8 @@ var App = {
             ctx.beginPath();
             ctx.moveTo(z.r1xmax - cross, z.r1ymax);
             ctx.lineTo(z.r1xmax + cross, z.r1ymax);
-            ctx.moveTo(z.r1xmax, z.r1ymax - cross);
-            ctx.lineTo(z.r1xmax, z.r1ymax + cross);
+            // ctx.moveTo(z.r-1xmax, z.r1ymax - cross);
+            // ctx.lineTo(z.r1xmax, z.r1ymax + cross);
             ctx.stroke();
 
             ctx.strokeStyle = "#af0";
@@ -71,20 +71,28 @@ var App = {
             ctx.beginPath();
             ctx.moveTo(z.r2xmin - cross, z.r2ymin);
             ctx.lineTo(z.r2xmin + cross, z.r2ymin);
-            ctx.moveTo(z.r2xmin, z.r2ymin - cross);
-            ctx.lineTo(z.r2xmin, z.r2ymin + cross);
+            // ctx.moveTo(z.r2xmin, z.r2ymin - cross);
+            // ctx.lineTo(z.r2xmin, z.r2ymin + cross);
+            ctx.stroke();
+
+            ctx.strokeStyle = "#fa0";
+            ctx.beginPath();
+            ctx.moveTo(z.r2xmin2 - cross, z.r2ymin2);
+            ctx.lineTo(z.r2xmin2 + cross, z.r2ymin2);
+            ctx.moveTo(z.r2xmin2, z.r2ymin2 - cross);
+            ctx.lineTo(z.r2xmin2, z.r2ymin2 + cross);
             ctx.stroke();
 
             ctx.strokeStyle = "#f00";
             ctx.beginPath();
             ctx.moveTo(z.r2xmin, z.r2ymin);
-            ctx.lineTo(z.r2xmin, z.r2ymin + z.penetrationDist);
+            ctx.lineTo(z.r2xmin, z.r2ymin + z.penetrationDistA);
             ctx.stroke();
 
             ctx.strokeStyle = "#0f0";
             ctx.beginPath();
             ctx.moveTo(z.r1xmax, z.r1ymax);
-            ctx.lineTo(z.r1xmax, z.r1ymax - z.penetrationDist);
+            ctx.lineTo(z.r1xmax, z.r1ymax + z.penetrationDistB);
             ctx.stroke();
 
             ctx.restore();
@@ -137,7 +145,7 @@ var App = {
 
         Game.Setup();
 
-        //PlaySound("./sound/bl-slaughter.mp3", 90, true);
+        PlaySound("./sound/bl-slaughter.mp3", 90, true);
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(Game.Logic).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }

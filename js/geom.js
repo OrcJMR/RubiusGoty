@@ -152,22 +152,30 @@ Geom.Collide = function(r1, r2){
             new Geom.Point(-w2/2, -h2/2).Rotate(r2rot.angle).Translate(r2rot.x, r2rot.y),
             new Geom.Point(w2/2, -h2/2).Rotate(r2rot.angle).Translate(r2rot.x, r2rot.y),
         ];
-        // coordinates of point with min y towards collision
+        // coordinates of two points with min y towards collision
         var r2ymin = Number.MAX_SAFE_INTEGER, r2xmin;
+        var r2ymin2 = Number.MAX_SAFE_INTEGER, r2xmin2;
         for(var i=0; i<4; i++) {
             if( p2pts[i].y < r2ymin) {
+                r2ymin2 = r2ymin;
+                r2xmin2 = r2xmin;
                 r2ymin = p2pts[i].y;
                 r2xmin = p2pts[i].x;
+            } else if( p2pts[i].y < r2ymin2) {
+                r2ymin2 = p2pts[i].y;
+                r2xmin2 = p2pts[i].x;
             }
         }
-        var penetrationDist = r2ymin - r1ymax2 - (r1ymax - r1ymax2) / (r1xmax - r1xmax2) * (r2xmin - r1xmax2);
+        var penetrationDistA = r2ymin - r1ymax2 - (r1ymax - r1ymax2) / (r1xmax - r1xmax2) * (r2xmin - r1xmax2);
+        var penetrationDistB = - r1ymax + r2ymin2 + (r2ymin - r2ymin2) / (r2xmin - r2xmin2) * (r1xmax - r2xmin2);
+        var penetrationDist = Math.min(penetrationDistA, penetrationDistB);
         var penetrationX = penetrationDist * Math.sin(collisionAngle);
         var penetrationY = penetrationDist * Math.cos(collisionAngle);
         var massSum = r1.mass + r2.mass;
-        r1.impulseX = penetrationX * r1.mass / massSum;
-        r2.impulseX = -penetrationX * r2.mass / massSum;
-        r1.impulseY = penetrationY * r1.mass / massSum;
-        r2.impulseY = -penetrationY * r2.mass / massSum;
+        r1.impulseX = penetrationX * r2.mass / massSum;
+        r2.impulseX = -penetrationX * r1.mass / massSum;
+        r1.impulseY = penetrationY * r2.mass / massSum;
+        r2.impulseY = -penetrationY * r1.mass / massSum;
         l("logTxt").innerHTML = 
             "colAng local: " + (collisionAngle + r1.angle).toPrecision(5) + 
             "<br/>colAng: " + collisionAngle.toPrecision(5) + 
@@ -179,7 +187,10 @@ Geom.Collide = function(r1, r2){
             "<br/>r1ymax2: " + r1ymax2.toPrecision(5) +
             "<br/>r2xmin: " + r2xmin.toPrecision(5) + 
             "<br/>r2ymin: " + r2ymin.toPrecision(5) +
-            "<br/>penetr: " + penetrationDist.toPrecision(5) +
+            "<br/>r2xmin2: " + r2xmin2.toPrecision(5) + 
+            "<br/>r2ymin2: " + r2ymin2.toPrecision(5) +
+            "<br/>penetrA: " + penetrationDistA.toPrecision(5) +
+            "<br/>penetrB: " + penetrationDistB.toPrecision(5) +
             "<br/>penetrX: " + penetrationX.toPrecision(5) +
             "<br/>penetrY: " + penetrationY.toPrecision(5) +
             "<br/>r1imp: " + r1.impulseX.toPrecision(5) + ";" + r1.impulseY.toPrecision(5) +
@@ -194,7 +205,10 @@ Geom.Collide = function(r1, r2){
             r1ymax2: r1ymax2,
             r2xmin: r2xmin,
             r2ymin: r2ymin,
-            penetrationDist: penetrationDist,
+            r2xmin2: r2xmin2,
+            r2ymin2: r2ymin2,
+            penetrationDistA: penetrationDistA,
+            penetrationDistB: penetrationDistB,
             penetrationX: penetrationX,
             penetrationY: penetrationY,
         };
