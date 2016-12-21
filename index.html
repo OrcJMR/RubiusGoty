@@ -26,17 +26,9 @@
 </head>
 
 <body>
-<script>
-
-    function GoTo(url) {
-        setTimeout(function() {
-            document.querySelector('app-router').go(url);
-        },10);
-    }
-</script>
 <app-router>
     <!-- matches an exact path -->
-    <app-route path="client.html" import="polymer_components/login-page.html"></app-route>
+    <app-route path="" import="polymer_components/login-page.html"></app-route>
     <app-route path="/chooseteam" import="polymer_components/choose-team-page.html"></app-route>
     <app-route path="/team/:teamId" import="polymer_components/choose-position-page.html"></app-route>
     <app-route path="/team/:teamId/position/:positionId" import="polymer_components/controls-page.html"></app-route>

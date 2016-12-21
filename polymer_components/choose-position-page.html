@@ -10,25 +10,25 @@
 Hi, {{name}}! You are in Team {{teamId}}
                 Choose your position:
                 <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect indigo'  data-position="turret" on-tap="setPosition">Turret</button>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.turret}}"  data-position="turret" on-tap="setPosition">Turret</button>
                 </div>
                 <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect yellow' data-position="move" on-tap="setPosition">Move</button>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.move}}" data-position="move" on-tap="setPosition">Move</button>
                 </div>
                 <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' data-position="turn" on-tap="setPosition">Turn</button>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.turn}}" data-position="turn" on-tap="setPosition">Turn</button>
                 </div>
                 <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' data-position="leftTrack" on-tap="setPosition">leftTrack</button>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.leftTrack}}" data-position="leftTrack" on-tap="setPosition">leftTrack</button>
                 </div>
                 <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' data-position="rightTrack" on-tap="setPosition">rightTrack</button>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.rightTrack}}" data-position="rightTrack" on-tap="setPosition">rightTrack</button>
                 </div>
                 <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' data-position="strafe" on-tap="setPosition">strafe</button>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.strafe}}" data-position="strafe" on-tap="setPosition">strafe</button>
                 </div>
                 <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' data-position="fire" on-tap="setPosition">fire</button>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.fire}}" data-position="fire" on-tap="setPosition">fire</button>
                 </div>
 
             </center>
@@ -47,7 +47,25 @@ Hi, {{name}}! You are in Team {{teamId}}
     Polymer({
         is: 'choose-position-page',
         ready: function() {
+            CheckClientNavigationShouldExit('choose-position');
+
             this.name = localStorage.getItem("username");
+            var positions = ['turret', 'move','turn','leftTrack','rightTrack','strafe','fire'];
+
+
+            var positionsTaken = {
+            };
+            positions.forEach(function (i) {positionsTaken[i] = true;});
+            this.positionsTaken = positionsTaken;
+
+        },
+        attached: function() {
+            var that = this;
+            Sockets.sendJson({type: 'getPositions', team: that.teamId});
+
+            Sockets.UpdateCallback = function () {
+                that.set('positionsTaken', Sockets.ViewModel.positionsTaken)
+            };
         },
         setPosition: function(e) {
             var position = e.target.dataset.position;

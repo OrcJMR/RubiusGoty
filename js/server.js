@@ -67,13 +67,7 @@ NetworkBiDiInput.prototype = {
     }
 }
 
-
-var Sockets = {
-    ViewModel: {},
-    UpdateCallback: null
-};
-
-var serverSockets = (function() {
+var Sockets = (function() {
 
     _socket.onopen = function()
     {
@@ -95,4 +89,9 @@ var serverSockets = (function() {
         }
 
     }
+
+    return {
+        ViewModel: {},
+        UpdateCallback: null
+    };
 })();

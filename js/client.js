@@ -1,7 +1,35 @@
 var ClientViewModel = {
-
+    type: 'join'
 };
 
+
+function GoTo(url) {
+    setTimeout(function() {
+        document.querySelector('app-router').go(url);
+    },10);
+}
+
+function GoToChooseTeam() {
+    GoTo('/chooseteam');
+}
+
+
+function CheckClientNavigationShouldExit(page) {
+    if (page == 'login-page') {
+        if (localStorage.getItem('username')) {
+            GoToChooseTeam();
+            return true;
+        }
+    } else {
+        if (!localStorage.getItem('username')) {
+            GoTo('/');
+            return true;
+        }
+    }
+
+    return false;
+
+}
 var Sockets = (function() {
     _socket.onopen = function()
     {
@@ -11,9 +39,18 @@ var Sockets = (function() {
     _socket.onmessage = function(msg){
         var data = JSON.parse(msg.data);
 
-        /*if (data.type == "viewModel") {
-            viewModel = data;
-        }*/
+
+        console.log(msg);
+
+        if (data.type == 'ViewModel') {
+            Sockets.ViewModel = data;
+            if (Sockets.UpdateCallback) {
+                Sockets.UpdateCallback();
+            }
+        } else if (data.type == 'kick') {
+            Sockets.Close();
+            GoTo('/');
+        }
     };
 
     return {
@@ -22,12 +59,16 @@ var Sockets = (function() {
             ClientViewModel.name = name;
             ClientViewModel.team = team;
             ClientViewModel.position = position;
-            var toSend = Object.assign({}, ClientViewModel);
-            toSend.type = 'join';
-            _socket.sendJson(toSend);
+            _socket.sendJson(ClientViewModel);
         },
-        Send: function(data) {
+        sendJson: function(data) {
             _socket.sendJson(data);
-        }
+        },
+        Close: function() {
+            _socket.sendJson({
+                type: 'close',
+            })
+        },
+        UpdateCallback: null,
     }
 })();

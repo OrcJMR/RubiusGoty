@@ -42,17 +42,11 @@
         return list[i];
     }
 
-    function GoToChooseTeam() {
-        GoTo('/chooseteam');
-    }
-
     Polymer({
         is: 'login-page',
         ready: function() {
-            if (localStorage.getItem('username')) {
-                GoToChooseTeam();
+            if (CheckClientNavigationShouldExit('login-page'))
                 return;
-            }
 
             this.name = randomEl(adjectives)+' '+randomEl(nouns);
         },

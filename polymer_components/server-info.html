@@ -13,6 +13,7 @@
                 <div>Name: <span>{{item.name}}</span> <b>{{item.position}}</b></div>
             </template>
         </div>
+        <button on-tap="kickAll">Kick all</button>
     </template>
 </dom-module>
 
@@ -29,6 +30,10 @@
             }
             Sockets.UpdateCallback();
         },
+
+        kickAll: function() {
+            _socket.sendJson({type: 'kickAll'});
+        }
 
 
     });

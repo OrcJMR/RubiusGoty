@@ -32,6 +32,7 @@ Hi, {{name}}!
     Polymer({
         is: 'choose-team-page',
         ready: function() {
+            CheckClientNavigationShouldExit('choose-team');
             this.name = localStorage.getItem("username");
         },
         join1: function() {
