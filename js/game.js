@@ -179,6 +179,11 @@ var Game = {
                 PlaySound("./sound/splat.wav", 100);
             };
             bullet.OnObjectCollision = function(obj){
+                if (obj.class == "tank"){
+                    obj.moveXSpeed /= 0;
+                    obj.moveYSpeed /= 0;
+                    obj.moveAngSpeed /= 0;                    
+                }
                 if (obj.class == "tankbot"){
                     obj.moveXSpeed /= 3;
                     obj.moveYSpeed /= 3;
