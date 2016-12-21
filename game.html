@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <link href="css/main.css" rel="stylesheet" type="text/css"/>
+        <title>Team City!</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+        <link rel="import" href="bower_components/polymer/polymer.html">
+        <link rel="import" href="polymer_components/server-info.html">
+    </head>
+    <body>
+
+    <script type="text/javascript" src="bower_components/reconnectingWebsocket/reconnecting-websocket.min.js"></script>
+    <script src="js/socketsconfig.js"></script>
+    <script src="js/server.js"></script>
+
+    <div style="right:0px;  position: absolute;">
+        <server-info>
+        </server-info>
+    </div>
+
+        <div class="canvas-container">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <div class="tank-scheme" style="top:132px">
+            <div id="t1tl" class="scheme-overlay" style="left:32px;top:0px;background-image:url(images/arrow-rot-left.png)" ></div>
+            <div id="t1tr" class="scheme-overlay" style="right:32px;top:0px;background-image:url(images/arrow-rot-left.png);transform:scaleX(-1)" ></div>
+            <div id="t1lf" class="scheme-overlay" style="left:16px;top:64px;background-image:url(images/arrow-top.png)" ></div>
+            <div id="t1lb" class="scheme-overlay" style="left:16px;top:128px;background-image:url(images/arrow-top.png);transform:scaleY(-1)" ></div>
+            <div id="t1rf" class="scheme-overlay" style="right:16px;top:64px;background-image:url(images/arrow-top.png)" ></div>
+            <div id="t1rb" class="scheme-overlay" style="right:16px;top:128px;background-image:url(images/arrow-top.png);transform:scaleY(-1)" ></div>
+        </div>
+
+        <div class="tank-scheme" style="top:520px">
+        </div>
+
+        <script src="js/sound.js"></script>
+        <script src="js/mainloop.min.js"></script>
+        <script src="js/geom.js"></script>
+        <script src="js/behavior.js"></script>
+        <script src="js/map.js"></script>
+        <script src="js/entity.js"></script>
+        <script src="js/keyboard.js"></script>
+        <script src="js/game.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/collider.js"></script>
+
+    </body>
+</html>
