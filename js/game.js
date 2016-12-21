@@ -24,7 +24,7 @@ var Game = {
         Game.Tank1.Inputs.TankTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'turnRight', 'turnLeft');
         Game.Tank1.Inputs.LeftTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'leftTrackForward', 'leftTrackBackward');
         Game.Tank1.Inputs.RightTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'rightTrackForward', 'rightTrackBackward');
-        Game.Tank1.Inputs.StrafeInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'strafeRight', 'strafeLeft');
+        //Game.Tank1.Inputs.StrafeInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'strafeRight', 'strafeLeft');
         Game.Tank1.Inputs.TurretTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'turretLeft', 'turretRight');
         Game.Tank1.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(function() {return Sockets.ViewModel.team1;}, 'fire'), '2', 600, true);
     },
@@ -36,7 +36,7 @@ var Game = {
         Game.Tank2.Inputs.TankTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'turnRight', 'turnLeft');
         Game.Tank2.Inputs.LeftTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'leftTrackForward', 'leftTrackBackward');
         Game.Tank2.Inputs.RightTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'rightTrackForward', 'rightTrackBackward');
-        Game.Tank2.Inputs.StrafeInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'strafeRight', 'strafeLeft');
+        //Game.Tank2.Inputs.StrafeInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'strafeRight', 'strafeLeft');
         Game.Tank2.Inputs.TurretTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'turretLeft', 'turretRight');
         Game.Tank2.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(function() {return Sockets.ViewModel.team2;}, 'fire'), '2', 600, true);
     },
@@ -46,10 +46,10 @@ var Game = {
         Game.Tank.Inputs = {};
         Game.Tank.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
         Game.Tank.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
-        //Game.Tank.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'A', 'Z');
-        //Game.Tank.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'C');
+        Game.Tank.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'Q', 'Z');
+        Game.Tank.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'C');
         //Game.Tank.Inputs.StrafeInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
-        Game.Tank.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
+        Game.Tank.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, '3', '1');
         Game.Tank.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, '2', 400, false);
     },
     spawnTank: function(x, y, angle, color) {
@@ -156,8 +156,8 @@ var Game = {
                 tank.RightTrack.torque = (throttle - turning) / 2;
             }
 
-            // tank.LeftTrack.torque = tank.Inputs.LeftTrackInput.read(timestamp);
-            // tank.RightTrack.torque = tank.Inputs.RightTrackInput.read(timestamp);
+            tank.LeftTrack.torque =+ tank.Inputs.LeftTrackInput.read(timestamp);
+            tank.RightTrack.torque =+ tank.Inputs.RightTrackInput.read(timestamp);
 
             //tank.moveYSpeed = driveSpeed * tank.Inputs.LeftTrackInput.read(timestamp);
             //tank.moveXSpeed = driveSpeed/2 * tank.Inputs.StrafeInput.read(timestamp);
