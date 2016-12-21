@@ -152,12 +152,12 @@
         buttonDownAction: function (e) {
             var action = e.target.dataset.action;
             model[action] = 1;
-            Sockets.Send(model);
+            Sockets.sendJson(model);
         },
         buttonUpAction: function (e) {
             var action = e.target.dataset.action;
             model[action] = 0;
-            Sockets.Send(model);
+            Sockets.sendJson(model);
         },
     });
 </script>
