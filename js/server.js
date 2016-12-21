@@ -92,6 +92,9 @@ var Sockets = (function() {
 
     return {
         ViewModel: {
+            teams: [
+                {}, {}, {}, {}, {}
+            ]
         },
         UpdateCallback: null
     };

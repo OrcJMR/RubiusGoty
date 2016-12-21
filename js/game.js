@@ -17,31 +17,15 @@ var Game = {
 
     },
     spawnTank1: function() {
-        this.Tank1 = this.spawnTank(80, 752 - 80, 180, "royalblue");
+        this.Tank1 = this.spawnTank(80, 752 - 80, 180, "royalblue", 0);
         this.RootEntity.addChild(this.Tank1);
-        Game.Tank1.Inputs = {};
-        Game.Tank1.Inputs.ThrottleInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'moveForward', 'moveBackward');
-        Game.Tank1.Inputs.TankTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'turnRight', 'turnLeft');
-        Game.Tank1.Inputs.LeftTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'leftTrackForward', 'leftTrackBackward');
-        Game.Tank1.Inputs.RightTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'rightTrackForward', 'rightTrackBackward');
-        //Game.Tank1.Inputs.StrafeInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'strafeRight', 'strafeLeft');
-        Game.Tank1.Inputs.TurretTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'turretLeft', 'turretRight');
-        Game.Tank1.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(function() {return Sockets.ViewModel.team1;}, 'fire'), '2', 600, true);
     },
     spawnTank2: function() {
-        this.Tank2 = this.spawnTank(1008 - 80, 752 - 80, 180, "darkorange");
+        this.Tank2 = this.spawnTank(1008 - 80, 752 - 80, 180, "darkorange", 1);
         this.RootEntity.addChild(this.Tank2);
-        Game.Tank2.Inputs = {};
-        Game.Tank2.Inputs.ThrottleInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'moveForward', 'moveBackward');
-        Game.Tank2.Inputs.TankTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'turnRight', 'turnLeft');
-        Game.Tank2.Inputs.LeftTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'leftTrackForward', 'leftTrackBackward');
-        Game.Tank2.Inputs.RightTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'rightTrackForward', 'rightTrackBackward');
-        //Game.Tank2.Inputs.StrafeInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'strafeRight', 'strafeLeft');
-        Game.Tank2.Inputs.TurretTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'turretLeft', 'turretRight');
-        Game.Tank2.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(function() {return Sockets.ViewModel.team2;}, 'fire'), '2', 600, true);
     },
     spawnTankDefault: function() {
-        this.Tank = this.spawnTank(504, 80, 0, "dimgray");
+        this.Tank = this.spawnTank(504, 80, 0, "dimgray", 30);
         this.RootEntity.addChild(this.Tank);
         Game.Tank.Inputs = {};
         Game.Tank.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
@@ -52,7 +36,7 @@ var Game = {
         Game.Tank.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, '3', '1');
         Game.Tank.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, '2', 400, false);
     },
-    spawnTank: function(x, y, angle, color) {
+    spawnTank: function(x, y, angle, color, networkTeamId) {
         var tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank], [
             new Box(-12,  0, 0,  8, 32, "saddlebrown"),
             new Box( 12,  0, 0,  8, 32, "saddlebrown"),
@@ -73,6 +57,16 @@ var Game = {
         tank.height = 32;
         tank.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
         tank.class = "tank";
+
+        var viewModelFunction = function() {return Sockets.ViewModel.teams[networkTeamId];};
+        tank.Inputs = {};
+        tank.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward');
+        tank.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft');
+        tank.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
+        tank.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
+        //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
+        tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretLeft', 'turretRight');
+        tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
         return tank;
     },
     spawnDirt: function(parent, back, move) {
