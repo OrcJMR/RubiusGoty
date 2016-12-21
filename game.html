@@ -1,6 +1,6 @@
 <html>
     <head>
-        <link href="css/main.css" rel="stylesheet" type="text/css"/>
+        <link href="css/game.css" rel="stylesheet" type="text/css"/>
         <title>Team City!</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -19,20 +19,44 @@
         </server-info>
     </div>
 
-        <div class="canvas-container">
-            <canvas id="gameCanvas"></canvas>
+        <div class="game-frame blue-frame">
+            <canvas id="gameCanvas" width="1008px" height="752px"></canvas>
         </div>
 
-        <div class="tank-scheme" style="top:132px">
-            <div id="t1tl" class="scheme-overlay" style="left:32px;top:0px;background-image:url(images/arrow-rot-left.png)" ></div>
+        <div class="tank-scheme blue-frame" style="left:8px">
+            <div id="t1hp" style="position:absolute;right:0px;bottom:0px;width:48px;height:64px" >
+                <div id="t1hp1" class="hp" style="right:0px;bottom:0px"></div>
+                <div id="t1hp2" class="hp" style="right:16px;bottom:0px"></div>
+                <div id="t1hp3" class="hp" style="right:32px;bottom:0px"></div>
+                <div id="t1hp4" class="hp" style="right:0px;bottom:16px"></div>
+                <div id="t1hp5" class="hp" style="right:16px;bottom:16px"></div>
+                <div id="t1hp6" class="hp" style="right:32px;bottom:16px"></div>
+                <div id="t1hp7" class="hp" style="right:0px;bottom:32px"></div>
+                <div id="t1hp8" class="hp" style="right:16px;bottom:32px"></div>
+                <div id="t1hp9" class="hp" style="right:32px;bottom:32px"></div>
+                <div id="t1hpleaf" class="hp" style="right:24px;bottom:48px;background-image:url(images/hp-leaf.png)"></div>
+            </div>
+            <!--div id="t1tl" class="scheme-overlay" style="left:32px;top:0px;background-image:url(images/arrow-rot-left.png)" ></div>
             <div id="t1tr" class="scheme-overlay" style="right:32px;top:0px;background-image:url(images/arrow-rot-left.png);transform:scaleX(-1)" ></div>
             <div id="t1lf" class="scheme-overlay" style="left:16px;top:64px;background-image:url(images/arrow-top.png)" ></div>
             <div id="t1lb" class="scheme-overlay" style="left:16px;top:128px;background-image:url(images/arrow-top.png);transform:scaleY(-1)" ></div>
             <div id="t1rf" class="scheme-overlay" style="right:16px;top:64px;background-image:url(images/arrow-top.png)" ></div>
-            <div id="t1rb" class="scheme-overlay" style="right:16px;top:128px;background-image:url(images/arrow-top.png);transform:scaleY(-1)" ></div>
+            <div id="t1rb" class="scheme-overlay" style="right:16px;top:128px;background-image:url(images/arrow-top.png);transform:scaleY(-1)" ></div-->
         </div>
 
-        <div class="tank-scheme" style="top:520px">
+        <div class="tank-scheme blue-frame" style="left:760px">
+            <div id="t2hp" style="position:absolute;left:0px;bottom:0px;width:48px;height:64px" >
+                <div id="t2hp1" class="hp" style="right:0px;bottom:0px"></div>
+                <div id="t2hp2" class="hp" style="right:16px;bottom:0px"></div>
+                <div id="t2hp3" class="hp" style="right:32px;bottom:0px"></div>
+                <div id="t2hp4" class="hp" style="right:0px;bottom:16px"></div>
+                <div id="t2hp5" class="hp" style="right:16px;bottom:16px"></div>
+                <div id="t2hp6" class="hp" style="right:32px;bottom:16px"></div>
+                <div id="t2hp7" class="hp" style="right:0px;bottom:32px"></div>
+                <div id="t2hp8" class="hp" style="right:16px;bottom:32px"></div>
+                <div id="t2hp9" class="hp" style="right:32px;bottom:32px"></div>
+                <div id="t2hpleaf" class="hp" style="right:24px;bottom:48px;background-image:url(images/hp-leaf.png)"></div>
+            </div>
         </div>
 
         <script src="js/sound.js"></script>

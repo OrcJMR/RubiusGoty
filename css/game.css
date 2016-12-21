@@ -3,6 +3,27 @@
     padding: 0px;
 }
 
+body{
+    background-color: #000;
+}
+
+.blue-frame{
+    border: 8px solid;
+    border-image: url("../images/border-blue.png") 8 repeat;
+}
+
+.game-frame{
+    position: absolute;
+    width: 1008px;
+    height: 752px;
+}
+
+.hp{
+    position: absolute;
+    width: 16px;
+    height: 16px;
+}
+
 #gameCanvas{
     display: block;
     image-rendering: optimizeSpeed;             /* Older versions of FF          */
@@ -17,7 +38,9 @@
     position: absolute;
     width: 240px;
     height: 240px;
-    left: 776px;
+    top: 8px;
+    background: url("../images/tank.png") no-repeat;
+    background-size: cover;
 }
 
 .scheme-overlay{
