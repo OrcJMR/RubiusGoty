@@ -48,17 +48,14 @@ var App = {
 
         Game.Setup();
 
-/*
         Game.Tank.Inputs = {};
-        Game.Tank.Inputs.ThrottleInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'moveForward', 'moveBackward');
-        Game.Tank.Inputs.TankTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'turnRight', 'turnLeft');
-        Game.Tank.Inputs.LeftTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'leftTrackForward', 'leftTrackBackward');
-        Game.Tank.Inputs.RightTrackInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'rightTrackForward', 'rightTrackBackward');
-        Game.Tank.Inputs.StrafeInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'strafeRight', 'strafeLeft');
-        Game.Tank.Inputs.TurretTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'turretLeft', 'turretRight');
-        Game.Tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(function() {return Sockets.ViewModel.team1;}, 'fire'), '2', 300, false);
-
-
+        Game.Tank.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
+        Game.Tank.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
+        //Game.Tank.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'A', 'Z');
+        //Game.Tank.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'C');
+        //Game.Tank.Inputs.StrafeInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
+        Game.Tank.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
+        Game.Tank.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, '2', 300, false);
 
         Game.Tank1.Inputs = {};
         Game.Tank1.Inputs.ThrottleInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'moveForward', 'moveBackward');
@@ -79,7 +76,7 @@ var App = {
         Game.Tank2.Inputs.TurretTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team2;}, 'turretLeft', 'turretRight');
         Game.Tank2.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(function() {return Sockets.ViewModel.team2;}, 'fire'), '2', 300, false);
 
-*/
+
         /*
         App.Inputs.ThrottleInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'moveForward', 'moveBackward');
         App.Inputs.TankTurnInput = new NetworkBiDiInput(function() {return Sockets.ViewModel.team1;}, 'turnRight', 'turnLeft');
@@ -90,6 +87,7 @@ var App = {
         App.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(function() {return Sockets.ViewModel.team1;}, 'fire'), '2', 300, false);
 */
 
+        /*
         App.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
         App.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
         // App.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'A', 'Z');
@@ -97,7 +95,7 @@ var App = {
         //App.Inputs.StrafeInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
         App.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
         App.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, '2', 300, false);
-
+*/
 
 
         //PlaySound("./sound/bl-slaughter.mp3", 90, true);
