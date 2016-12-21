@@ -91,7 +91,8 @@ var Sockets = (function() {
     }
 
     return {
-        ViewModel: {},
+        ViewModel: {
+        },
         UpdateCallback: null
     };
 })();

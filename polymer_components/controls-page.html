@@ -142,6 +142,9 @@
     var model = {
         type: 'clientState'
     };
+    var actions = ['fire', 'turretLeft', 'turretRight', 'strafeRight', 'strafeLeft', 'rightTrackForward', 'rightTrackBackward'
+    , 'moveForward', 'moveBackward', 'leftTrackForward', 'leftTrackBackward'];
+    var listener;
     Polymer({
         is: 'controls-page',
         ready: function() {
@@ -151,6 +154,15 @@
             this.name = localStorage.getItem("username");
 
             Sockets.Init(this.name, this.teamId, this.positionId);
+
+            listener = function(){
+                actions.forEach(function(action) {
+                    model[action] = 0;
+                    Sockets.sendJson(model);
+                })
+            };
+            window.addEventListener('blur', listener, false);
+
         },
         _equals: function (val1, val2) {
             if (val1 == val2)
@@ -160,6 +172,7 @@
         },
         detached: function () {
             Sockets.Close();
+            window.removeEventListener('blur', listener, false);
         },
         buttonDownAction: function (e) {
             var action = e.target.dataset.action;
