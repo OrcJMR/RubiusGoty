@@ -86,8 +86,9 @@ wss.on('connection', function connection(ws) {
             console.log('lost client (no ping)');
             actions.forEach(function (action) {
                 model.state[action] = 0;
+                model.position = "";
             });
-            ws.close();
+            //ws.close();
             SendServerModel();
         }
     }, 10000);
