@@ -145,6 +145,7 @@
     var actions = ['fire', 'turretLeft', 'turretRight', 'strafeRight', 'strafeLeft', 'rightTrackForward', 'rightTrackBackward'
     , 'moveForward', 'moveBackward', 'leftTrackForward', 'leftTrackBackward'];
     var listener;
+    var interval;
     Polymer({
         is: 'controls-page',
         ready: function() {
@@ -162,7 +163,9 @@
                 })
             };
             window.addEventListener('blur', listener, false);
-
+            interval = setInterval(function() {
+                Sockets.sendJson({type: 'ping'});
+            }, 5000)
         },
         _equals: function (val1, val2) {
             if (val1 == val2)
@@ -173,6 +176,8 @@
         detached: function () {
             Sockets.Close();
             window.removeEventListener('blur', listener, false);
+            clearInterval(interval);
+
         },
         buttonDownAction: function (e) {
             var action = e.target.dataset.action;
