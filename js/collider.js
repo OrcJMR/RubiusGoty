@@ -1,6 +1,10 @@
 
-function SoftCollider(objects){
+function SoftCollider(objects, map, tiles){
     this.objects = objects;
+    if(typeof map != 'undefined' && typeof tiles == 'string') {
+        this.map = map;
+        this.tiles = tiles;
+    }
 }
 
 SoftCollider.prototype = {
@@ -28,9 +32,44 @@ SoftCollider.prototype = {
         return sum / array.length;
     },
     Process: function(delta){
-        //check objects
         
+        //check objects
         var td = delta / 1000;
+
+        var tileRects = [];
+        if(typeof this.map != 'undefined') {
+            var tw = this.map.tileWidth;
+            var th = this.map.tileHeight;
+
+            var obj = this.objects[0];
+            var rect = new Geom.Rect(obj.x, obj.y, obj.width, obj.height, obj.angle);
+            var rectMbr = rect.GetMbr().Translate(obj.impulseX*td, obj.impulseY*td);
+
+            var tileXmin = Math.round(rectMbr.xmin / tw - 0.5);
+            var tileYmin = Math.round(rectMbr.ymin / th - 0.5);
+            var tileXmax = Math.round(rectMbr.xmax / tw - 0.5);
+            var tileYmax = Math.round(rectMbr.ymax / th - 0.5);
+
+            for (var tileX = tileXmin; tileX <= tileXmax; tileX++){
+                for(var tileY = tileYmin; tileY <= tileYmax; tileY++){
+                    if (tileX >= 0 && tileX < this.map.width && tileY >= 0 && tileY < this.map.height){
+                        var mapChar = this.map.getTerrainChar(tileX, tileY);
+                        if (this.tiles.indexOf(mapChar) > -1){
+                            // check for collision, yeah!
+                            tileRects.push(
+                                new Geom.Rect(
+                                    tileX*tw + tw/2,
+                                    tileY*th + th/2,
+                                    tw,
+                                    th,
+                                    0
+                                )
+                            );
+                        }
+                    }
+                }
+            }
+        }
 
         for(var i=0, count=this.objects.length; i<count; i++ ) {
             var obj = this.objects[i];
@@ -40,22 +79,29 @@ SoftCollider.prototype = {
             var iObj = this.objects[i];
             var iRect = new Geom.Rect(iObj.x + iObj.impulseX*td, iObj.y + iObj.impulseY*td, iObj.width, iObj.height, iObj.angle + iObj.impulseRot*td);
             iRect.mass = iObj.mass;
-            for( var j=i+1; j<count; j++) {
-                var jObj = this.objects[j];
-                var jRect = new Geom.Rect(jObj.x + jObj.impulseX*td, jObj.y + jObj.impulseY*td, jObj.width, jObj.height, jObj.angle + jObj.impulseRot*td);
-                jRect.mass = jObj.mass;
+            for( var j=i+1, count2=count+tileRects.length; j<count2; j++) {
+                var jRect;
+                if(j < count) {
+                    var jObj = this.objects[j];
+                    jRect = new Geom.Rect(jObj.x + jObj.impulseX*td, jObj.y + jObj.impulseY*td, jObj.width, jObj.height, jObj.angle + jObj.impulseRot*td);
+                    jRect.mass = jObj.mass;
+                } else {
+                    jRect = tileRects[j-count];
+                }
 
                 if(Geom.Collide(iRect, jRect)) {
                     iObj.frameColor = "red";
-                    jObj.frameColor = "red";
                     if(!iObj.impulseArrayX) iObj.impulseArrayX = [];
                     if(!iObj.impulseArrayY) iObj.impulseArrayY = [];
                     iObj.impulseArrayX.push(iRect.impulseX);
                     iObj.impulseArrayY.push(iRect.impulseY);
-                    if(!jObj.impulseArrayX) jObj.impulseArrayX = [];
-                    if(!jObj.impulseArrayY) jObj.impulseArrayY = [];
-                    jObj.impulseArrayX.push(jRect.impulseX);
-                    jObj.impulseArrayY.push(jRect.impulseY);
+                    if(jObj){
+                        jObj.frameColor = "red";
+                        if(!jObj.impulseArrayX) jObj.impulseArrayX = [];
+                        if(!jObj.impulseArrayY) jObj.impulseArrayY = [];
+                        jObj.impulseArrayX.push(jRect.impulseX);
+                        jObj.impulseArrayY.push(jRect.impulseY);
+                    }
                 }
             }
         }

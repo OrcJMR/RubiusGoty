@@ -33,6 +33,10 @@ Geom.Mbr.prototype.addPoint = function(p) {
     if (p.y < this.ymin) this.ymin = p.y;
 }
 
+Geom.Mbr.prototype.Translate = function(x, y){
+    return new Geom.Mbr(this.xmin + x, this.xmax + x, this.ymin + y, this.ymax +y);
+}
+
 Geom.Rect = function(x, y, width, height, angle){
     this.x = x;
     this.y = y;
@@ -98,25 +102,12 @@ Geom.Intersect = function(rect1, rect2){
     return true;
 }
 
-Geom.CollideAABB = function (r1, r2){
-    var rotrect = r2.Translate(-r1.x, -r1.y).Rotate(-r1.angle); //in this coords r1 is in the origin and along axis
-    var mbr = rotrect.GetMbr();
-
-    var xmin = -r1.width/2;
-    var xmax = r1.width/2;
-    var ymin = -r1.height/2;
-    var ymax = r1.height/2;
-
-
-    return Math.max(mbr.xmax - xmin, xmax - mbr.xmin, mbr.ymax - ymin, ymax - mbr.ymin, 0); //if r2 projection on r1 edges overlaps the edges
-}
-
 Geom.Collide = function(r1, r2){
 
     if (!Geom.IntersectAABB(r1, r2)) return false;
     if (!Geom.IntersectAABB(r2, r1)) return false;
 
-    if (r1.mass && r2.mass){
+    if (true){//r1.mass && r2.mass){
         var xdist = r2.x - r1.x;
         var ydist = r2.y - r1.y;
         var collisionAngle = Math.atan2(xdist, ydist);
@@ -171,11 +162,22 @@ Geom.Collide = function(r1, r2){
         var penetrationDist = Math.min(penetrationDistA, penetrationDistB);
         var penetrationX = penetrationDist * Math.sin(collisionAngle);
         var penetrationY = penetrationDist * Math.cos(collisionAngle);
-        var massSum = r1.mass + r2.mass;
-        r1.impulseX = penetrationX * r2.mass / massSum;
-        r2.impulseX = -penetrationX * r1.mass / massSum;
-        r1.impulseY = penetrationY * r2.mass / massSum;
-        r2.impulseY = -penetrationY * r1.mass / massSum;
+        if(r1.mass && r2.mass) {
+            var massSum = r1.mass + r2.mass;
+            r1.impulseX = penetrationX * r2.mass / massSum;
+            r2.impulseX = -penetrationX * r1.mass / massSum;
+            r1.impulseY = penetrationY * r2.mass / massSum;
+            r2.impulseY = -penetrationY * r1.mass / massSum;
+        } else {
+            if(r1.mass) {
+                r1.impulseX = penetrationX;
+                r1.impulseY = penetrationY;
+            }
+            if(r2.mass) {
+                r2.impulseX = -penetrationX;
+                r2.impulseY = -penetrationY;
+            }
+        }
         l("logTxt").innerHTML = 
             "colAng local: " + (collisionAngle + r1.angle).toPrecision(5) + 
             "<br/>colAng: " + collisionAngle.toPrecision(5) + 
@@ -193,8 +195,9 @@ Geom.Collide = function(r1, r2){
             "<br/>penetrB: " + penetrationDistB.toPrecision(5) +
             "<br/>penetrX: " + penetrationX.toPrecision(5) +
             "<br/>penetrY: " + penetrationY.toPrecision(5) +
-            "<br/>r1imp: " + r1.impulseX.toPrecision(5) + ";" + r1.impulseY.toPrecision(5) +
-            "<br/>r2imp: " + r2.impulseX.toPrecision(5) + ";" + r2.impulseY.toPrecision(5);
+            "<br/>r1imp: " + r1.impulseX.toPrecision(5) + ";" + r1.impulseY.toPrecision(5);
+        if(typeof r2.mass != 'undefined')
+            l("logTxt").innerHTML += "<br/>r2imp: " + r2.impulseX.toPrecision(5) + ";" + r2.impulseY.toPrecision(5);
         Game.debugCollider = {
             p1pts: p1pts,
             p2pts: p2pts,

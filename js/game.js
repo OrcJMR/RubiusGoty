@@ -42,6 +42,7 @@ var Game = {
         this.RootEntity.addChild(tankBot);
 
         this.Colliders.push(new SoftCollider([this.Tank, tankBot, dummy]));
+        this.Colliders.push(new SoftCollider([this.Tank], this.Map, "B"));
     },
     spawnDirt: function(parent, back, move) {
         var sign = back ? -1 : 1;
