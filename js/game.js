@@ -91,10 +91,15 @@ var Game = {
         this.RootEntity.addChild(dirt, 0);
     },
     spawnBullet: function(tank) {
-        var bullet = new Box(0, 20, 0, 3, 5, "orange", [
+        var bullet = new ObjectGroup(0, 20, 0, [
             new Behavior.Move(0, 0.3),
             new Behavior.LifeInBounds(0, 0, 1000, 1000)
+            ],[
+            new Box(0, 0, 0, 5, 7, "black"),
+            new Box(0, 0, 0, 3, 5, "orange")            
         ]);
+        bullet.width = 3;
+        bullet.height = 5;
         bullet.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
         bullet.OnMapCollision = function (x, y) {
             Game.Map.degradeTile(x, y);
@@ -156,8 +161,8 @@ var Game = {
                 tank.RightTrack.torque = (throttle - turning) / 2;
             }
 
-            tank.LeftTrack.torque =+ tank.Inputs.LeftTrackInput.read(timestamp);
-            tank.RightTrack.torque =+ tank.Inputs.RightTrackInput.read(timestamp);
+            tank.LeftTrack.torque += tank.Inputs.LeftTrackInput.read(timestamp);
+            tank.RightTrack.torque += tank.Inputs.RightTrackInput.read(timestamp);
 
             //tank.moveYSpeed = driveSpeed * tank.Inputs.LeftTrackInput.read(timestamp);
             //tank.moveXSpeed = driveSpeed/2 * tank.Inputs.StrafeInput.read(timestamp);
