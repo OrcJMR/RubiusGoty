@@ -27,17 +27,27 @@ SoftCollider.prototype = {
         if(allPositive) return max;
         return sum / array.length;
     },
-    Process: function(){
+    Process: function(delta){
         //check objects
+        
+        var td = delta / 1000;
 
         for(var i=0, count=this.objects.length; i<count; i++ ) {
+            var obj = this.objects[i];
+            obj.frameColor = "green";
+        }
+        for(var i=0, count=this.objects.length; i<count; i++ ) {
             var iObj = this.objects[i];
-            var iRect = new Geom.Rect(iObj.x + iObj.impulseX, iObj.y + iObj.impulseY, iObj.width, iObj.height, iObj.angle + iObj.impulseRot)
+            var iRect = new Geom.Rect(iObj.x + iObj.impulseX*td, iObj.y + iObj.impulseY*td, iObj.width, iObj.height, iObj.angle + iObj.impulseRot*td);
+            iRect.mass = iObj.mass;
             for( var j=i+1; j<count; j++) {
                 var jObj = this.objects[j];
-                var jRect = new Geom.Rect(jObj.x + jObj.impulseX, jObj.y + jObj.impulseY, jObj.width, jObj.height, jObj.angle + jObj.impulseRot)
+                var jRect = new Geom.Rect(jObj.x + jObj.impulseX*td, jObj.y + jObj.impulseY*td, jObj.width, jObj.height, jObj.angle + jObj.impulseRot*td);
+                jRect.mass = jObj.mass;
 
                 if(Geom.Collide(iRect, jRect)) {
+                    iObj.frameColor = "red";
+                    jObj.frameColor = "red";
                     if(!iObj.impulseArrayX) iObj.impulseArrayX = [];
                     if(!iObj.impulseArrayY) iObj.impulseArrayY = [];
                     iObj.impulseArrayX.push(iRect.impulseX);
@@ -51,10 +61,20 @@ SoftCollider.prototype = {
         }
         for(var i=0, count=this.objects.length; i<count; i++ ) {
             var obj = this.objects[i];
-            if(obj.impulseArrayX) 
-                obj.impulseX -= this.CombineImpulses(obj.impulseArrayX);
-            if(obj.impulseArrayY) 
-                obj.impulseY -= this.CombineImpulses(obj.impulseArrayY);
+            var xmod, ymod;
+            if(obj.impulseArrayX) {
+                obj.impulseX += this.CombineImpulses(obj.impulseArrayX);
+                xmod = this.CombineImpulses(obj.impulseArrayX);
+            }
+            if(obj.impulseArrayY) {
+                obj.impulseY += this.CombineImpulses(obj.impulseArrayY);
+                ymod = this.CombineImpulses(obj.impulseArrayY);
+            }
+            if(obj.mass == 5)
+                l("logTxt2").innerHTML += 
+                    "<br/>---collider--- " + 
+                    "<br/>modX: " + (xmod ? xmod : 0).toFixed(5) + 
+                    "<br/>modY: " + (ymod ? ymod : 0).toFixed(5);
             delete obj.impulseArrayX;
             delete obj.impulseArrayY;
         }

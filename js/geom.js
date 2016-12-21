@@ -116,9 +116,6 @@ Geom.Collide = function(r1, r2){
     if (!Geom.IntersectAABB(r1, r2)) return false;
     if (!Geom.IntersectAABB(r2, r1)) return false;
 
-    r1.mass = 1;
-    r2.mass = 2;
-
     if (r1.mass && r2.mass){
         var xdist = r2.x - r1.x;
         var ydist = r2.y - r1.y;
@@ -130,8 +127,8 @@ Geom.Collide = function(r1, r2){
         var p1pts = [
             new Geom.Point(w1/2, h1/2).Rotate(r1rot.angle),
             new Geom.Point(-w1/2, h1/2).Rotate(r1rot.angle),
-            new Geom.Point(w1/2, -h1/2).Rotate(r1rot.angle),
             new Geom.Point(-w1/2, -h1/2).Rotate(r1rot.angle),
+            new Geom.Point(w1/2, -h1/2).Rotate(r1rot.angle),
         ];
         // coordinates of two points with max y towards collision
         var r1ymax = Number.MIN_SAFE_INTEGER, r1xmax;
@@ -152,8 +149,8 @@ Geom.Collide = function(r1, r2){
         var p2pts = [
             new Geom.Point(w2/2, h2/2).Rotate(r2rot.angle).Translate(r2rot.x, r2rot.y),
             new Geom.Point(-w2/2, h2/2).Rotate(r2rot.angle).Translate(r2rot.x, r2rot.y),
-            new Geom.Point(w2/2, -h2/2).Rotate(r2rot.angle).Translate(r2rot.x, r2rot.y),
             new Geom.Point(-w2/2, -h2/2).Rotate(r2rot.angle).Translate(r2rot.x, r2rot.y),
+            new Geom.Point(w2/2, -h2/2).Rotate(r2rot.angle).Translate(r2rot.x, r2rot.y),
         ];
         // coordinates of point with min y towards collision
         var r2ymin = Number.MAX_SAFE_INTEGER, r2xmin;
@@ -167,31 +164,44 @@ Geom.Collide = function(r1, r2){
         var penetrationX = penetrationDist * Math.sin(collisionAngle);
         var penetrationY = penetrationDist * Math.cos(collisionAngle);
         var massSum = r1.mass + r2.mass;
-        r1.impulseX = -penetrationX * r1.mass / massSum;
-        r2.impulseX = penetrationX * r2.mass / massSum;
-        r1.impulseY = -penetrationY * r1.mass / massSum;
-        r2.impulseY = penetrationY * r2.mass / massSum;
+        r1.impulseX = penetrationX * r1.mass / massSum;
+        r2.impulseX = -penetrationX * r2.mass / massSum;
+        r1.impulseY = penetrationY * r1.mass / massSum;
+        r2.impulseY = -penetrationY * r2.mass / massSum;
         l("logTxt").innerHTML = 
-            "colAng local: " + (collisionAngle + r1.angle) + 
-            "<br/>colAng: " + collisionAngle + 
-            "<br/>r1rot: " + r1rot.angle + 
-            "<br/>r2rot: " + r2rot.angle + 
-            // "<br/>r1xmax: " + r1xmax + 
-            // "<br/>r1ymax: " + r1ymax +
-            // "<br/>r1xmax2: " + r1xmax2 + 
-            // "<br/>r1ymax2: " + r1ymax2 +
-            // "<br/>r2xmin: " + r2xmin + 
-            // "<br/>r2ymin: " + r2ymin +
-            "<br/>penetr: " + penetrationDist +
-            "<br/>penetrX: " + penetrationX +
-            "<br/>penetrY: " + penetrationY +
-            "<br/>r1imp: " + r1.impulseX + ";" + r1.impulseY +
-            "<br/>r2imp: " + r2.impulseX + ";" + r2.impulseY;
+            "colAng local: " + (collisionAngle + r1.angle).toPrecision(5) + 
+            "<br/>colAng: " + collisionAngle.toPrecision(5) + 
+            "<br/>r1rot: " + r1rot.angle.toPrecision(5) + 
+            "<br/>r2rot: " + r2rot.angle.toPrecision(5) + 
+            "<br/>r1xmax: " + r1xmax.toPrecision(5) + 
+            "<br/>r1ymax: " + r1ymax.toPrecision(5) +
+            "<br/>r1xmax2: " + r1xmax2.toPrecision(5) + 
+            "<br/>r1ymax2: " + r1ymax2.toPrecision(5) +
+            "<br/>r2xmin: " + r2xmin.toPrecision(5) + 
+            "<br/>r2ymin: " + r2ymin.toPrecision(5) +
+            "<br/>penetr: " + penetrationDist.toPrecision(5) +
+            "<br/>penetrX: " + penetrationX.toPrecision(5) +
+            "<br/>penetrY: " + penetrationY.toPrecision(5) +
+            "<br/>r1imp: " + r1.impulseX.toPrecision(5) + ";" + r1.impulseY.toPrecision(5) +
+            "<br/>r2imp: " + r2.impulseX.toPrecision(5) + ";" + r2.impulseY.toPrecision(5);
+        Game.debugCollider = {
+            p1pts: p1pts,
+            p2pts: p2pts,
+            colAngle: collisionAngle,
+            r1xmax: r1xmax,
+            r1xmax2: r1xmax2,
+            r1ymax: r1ymax,
+            r1ymax2: r1ymax2,
+            r2xmin: r2xmin,
+            r2ymin: r2ymin,
+            penetrationDist: penetrationDist,
+            penetrationX: penetrationX,
+            penetrationY: penetrationY,
+        };
         return true;
-    } else if( r1.mass || r2.mass ) {}
-    var r1r2penetration = Geom.CollideAABB(r1, r2);
-    var r2r1penetration = Geom.CollideAABB(r2, r1);
-    if (!r1r2penetration || !r2r1penetration) return false;
+    } else if( r1.mass || r2.mass ) {
+
+    }
 
     return true;
 }

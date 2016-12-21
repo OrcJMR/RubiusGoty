@@ -26,14 +26,22 @@ var Game = {
         this.Tank.height = 40;
         this.Tank.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
         this.Tank.class = "tank"
+        this.Tank.mass = 5;
 
+        var dummy = new Sprite(400, 100, 0, 20, 20, "./images/deadtank.png", [new Behavior.SimpleMove]);
+        dummy.impulseX = 0;
+        dummy.impulseY = 0;
+        dummy.impulseRot = 0;
+        dummy.mass = 1000;
+        this.RootEntity.addChild(dummy);
 
         // it atually goes backwards, because object direction is down, an sprite is rendered up
         var tankBot = new Sprite(300, 200, 45, 32, 32, "./images/tank.png", [new Behavior.SimpleMove(-15, 0, -10)]);
         tankBot.class = "tankbot";
+        tankBot.mass = 2;
         this.RootEntity.addChild(tankBot);
 
-        this.Colliders.push(new SoftCollider([this.Tank, tankBot]));
+        this.Colliders.push(new SoftCollider([this.Tank, tankBot, dummy]));
     },
     spawnDirt: function(parent, back, move) {
         var sign = back ? -1 : 1;
@@ -84,7 +92,7 @@ var Game = {
 
         Game.RootEntity.behave(delta);
         for(var i=0, count=Game.Colliders.length; i<count; i++)
-            Game.Colliders[i].Process();
+            Game.Colliders[i].Process(delta);
         Game.RootEntity.postBehave(delta);
         
         if( Math.abs(Game.Tank.LeftTrack.torque) > 1E-02) {

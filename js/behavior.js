@@ -17,6 +17,13 @@ Behavior.BaseMove = {
         obj.y += obj.impulseY / 1000 * delta;
         obj.angle += obj.impulseRot / 1000 * delta;
 
+        if(obj.mass == 5)
+            l("logTxt2").innerHTML += 
+                "<br/>---baseMove---" + 
+                "<br/>impX: " + obj.impulseX.toFixed(5) + 
+                "<br/>impY: " + obj.impulseY.toFixed(5) + 
+                "<br/>impRot: " + obj.impulseRot.toFixed(5);
+
         if( obj.angle < 0)
             obj.angle += Math.PI * 2;
         if( obj.angle > Math.PI * 2)
@@ -160,10 +167,11 @@ Behavior.SteerTank.prototype = {
             obj.impulseX -= Math.sin(obj.angle) * accel;
             obj.impulseY += Math.cos(obj.angle) * accel;
         }
-        l("logTxt").innerHTML = 
-            "impX: " + obj.impulseX + 
-            "<br/>impY: " + obj.impulseY + 
-            "<br/>impRot: " + obj.impulseRot;
+        l("logTxt2").innerHTML = 
+            "---steering---" + 
+            "<br/>impX: " + obj.impulseX.toFixed(5) + 
+            "<br/>impY: " + obj.impulseY.toFixed(5) + 
+            "<br/>impRot: " + obj.impulseRot.toFixed(5);
     },
     applyForcePoint: function(obj, xoffset, yoffset, torque, movementAngle, movementSpeed) {
         var globalx = obj.x - Math.cos(obj.angle) * xoffset - Math.sin(obj.angle) * yoffset;

@@ -25,8 +25,6 @@ var EntityBase = {
         }
         else if(typeof this.image != 'undefined') {
             ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
-            ctx.strokeStyle = "#f00";
-            ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
         }
         else if(typeof this.color != 'undefined') {
             ctx.save();
@@ -36,6 +34,10 @@ var EntityBase = {
         }
         else
             console.debug("Underconfigured object, unable to draw");
+        if(typeof this.frameColor != 'undefined') {
+            ctx.strokeStyle = this.frameColor;
+            ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+        }
     },
 
     behave: function(delta) {

@@ -19,6 +19,91 @@ var App = {
         ctx.strokeRect(8, 8, 752, 752);
         ctx.drawImage(App.tankPH, 776, 136, 240, 240);
         ctx.drawImage(App.tankPH, 776, 520, 240, 240);
+        if(Game.debugCollider) {
+            var z = Game.debugCollider;
+            ctx.save();
+            ctx.translate(350, 400);
+            ctx.scale(2, 2);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = "#00f";
+
+            ctx.beginPath();
+            ctx.moveTo(z.p1pts[0].x, z.p1pts[0].y);
+            ctx.lineTo(z.p1pts[1].x, z.p1pts[1].y);
+            ctx.lineTo(z.p1pts[2].x, z.p1pts[2].y);
+            ctx.lineTo(z.p1pts[3].x, z.p1pts[3].y);
+            ctx.lineTo(z.p1pts[0].x, z.p1pts[0].y);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(z.p2pts[0].x, z.p2pts[0].y);
+            ctx.lineTo(z.p2pts[1].x, z.p2pts[1].y);
+            ctx.lineTo(z.p2pts[2].x, z.p2pts[2].y);
+            ctx.lineTo(z.p2pts[3].x, z.p2pts[3].y);
+            ctx.lineTo(z.p2pts[0].x, z.p2pts[0].y);
+            ctx.stroke();
+
+            ctx.strokeStyle = "#000";
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            //ctx.lineTo(100*Math.sin(z.colAngle), 100*Math.cos(z.colAngle));
+            ctx.lineTo(0, 100);
+            ctx.stroke();
+
+            var cross = 5;
+            ctx.strokeStyle = "#0f0";
+            ctx.beginPath();
+            ctx.moveTo(z.r1xmax - cross, z.r1ymax);
+            ctx.lineTo(z.r1xmax + cross, z.r1ymax);
+            ctx.moveTo(z.r1xmax, z.r1ymax - cross);
+            ctx.lineTo(z.r1xmax, z.r1ymax + cross);
+            ctx.stroke();
+
+            ctx.strokeStyle = "#af0";
+            ctx.beginPath();
+            ctx.moveTo(z.r1xmax2 - cross, z.r1ymax2);
+            ctx.lineTo(z.r1xmax2 + cross, z.r1ymax2);
+            ctx.moveTo(z.r1xmax2, z.r1ymax2 - cross);
+            ctx.lineTo(z.r1xmax2, z.r1ymax2 + cross);
+            ctx.stroke();
+
+            ctx.strokeStyle = "#f40";
+            ctx.beginPath();
+            ctx.moveTo(z.r2xmin - cross, z.r2ymin);
+            ctx.lineTo(z.r2xmin + cross, z.r2ymin);
+            ctx.moveTo(z.r2xmin, z.r2ymin - cross);
+            ctx.lineTo(z.r2xmin, z.r2ymin + cross);
+            ctx.stroke();
+
+            ctx.strokeStyle = "#f00";
+            ctx.beginPath();
+            ctx.moveTo(z.r2xmin, z.r2ymin);
+            ctx.lineTo(z.r2xmin, z.r2ymin + z.penetrationDist);
+            ctx.stroke();
+
+            ctx.strokeStyle = "#0f0";
+            ctx.beginPath();
+            ctx.moveTo(z.r1xmax, z.r1ymax);
+            ctx.lineTo(z.r1xmax, z.r1ymax - z.penetrationDist);
+            ctx.stroke();
+
+            ctx.restore();
+        // Game.debugCollider = {
+        //     p1pts = p1pts,
+        //     p2pts = p2pts,
+        //     colAngle = collisionAngle,
+        //     r1xmax = r1xmax,
+        //     r1xmax2 = r1xmax2,
+        //     r1ymax = r1ymax,
+        //     r1ymax2 = r1ymax2,
+        //     r2xmax = r2xmax,
+        //     r2ymax = r2ymax,
+        //     penetrationDist = penetrationDist,
+        //     penetrationX = penetrationX,
+        //     penetrationY = penetrationY,
+        // };
+
+        }
     },
     EndFrame: function(fps, panic) {
             if (panic) {
