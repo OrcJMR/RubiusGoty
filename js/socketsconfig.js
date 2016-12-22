@@ -22,8 +22,8 @@ var _positions = [
 
         id: 'turret',
         actions: [
-            {action:'turnLeft', text: 'Принять', icon: 'button-turret.png'},
-            {action:'turnRight', text: 'Отклонить', icon: 'button-turret.png'}
+            {action:'turretLeft', text: 'Принять', icon: 'button-turret.png'},
+            {action:'turretRight', text: 'Отклонить', icon: 'button-turret.png'}
         ]
     },
     {
