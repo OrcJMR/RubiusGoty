@@ -100,7 +100,7 @@ var Sockets = (function() {
     return {
         ViewModel: {
             teams: [
-                {}, {}
+
             ],
         },
         /*SendState: function() {

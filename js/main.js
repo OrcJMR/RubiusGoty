@@ -55,7 +55,9 @@ var App = {
     DrawInputs: function(ctx, tank) {
         if(typeof tank.teamId == 'undefined')
             return;
+        if(!Sockets.ViewModel.teams) return;
         var team = Sockets.ViewModel.teams[tank.teamId];
+        if(!team) return;
         var positions = { // recreated each time to reset .taken
             turn1:   {x: 0, y:42, icon: App.Resources.arrowTop, rot:-Math.PI/2},
             turn2:   {x:42, y:42, icon: App.Resources.arrowTop, rot:Math.PI/2},

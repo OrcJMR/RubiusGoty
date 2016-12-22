@@ -77,37 +77,75 @@ var Game = {
         tank.height = tank.width;
         tank.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
         tank.class = "tank";
+        if(networkTeamId >= 0) {
+        var viewModelFunction = function() {
+            if (!Sockets.ViewModel.teams)
+                return null;
 
-        if(networkTeamId >= 0){
-            var viewModelFunction = function() {return Sockets.ViewModel.teams[networkTeamId];};
-            tank.Inputs = {};
-            tank.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward');
-            tank.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft');
-            tank.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
-            tank.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
-            //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
-            tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretLeft', 'turretRight');
-            tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
-            tank.teamId = networkTeamId;
-        }
+            if (Sockets.ViewModel.teams.length <= networkTeamId)
+                return null;
+
+            return Sockets.ViewModel.teams[networkTeamId];
+        };
+
+        var managerGoodInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood'), '2', 10000, true);
+        var managerBadInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerBad'), '2', 10000, true);
+        setInterval(function() {
+            var replics = null;
+            if (managerGoodInput.read(new Date().getTime())== 1) {
+                replics = _managerGoodReplics;
+            } else if (managerBadInput.read(new Date().getTime())== 1) {
+                replics = _managerBadReplics;
+            }
+            if (replics) {
+                var replicId =  Math.floor(Math.random() * replics.length);
+                var replic = replics[replicId];
+                var div = $('<div style="position: absolute;" class="blue-frame">'+replic+'</div>');
+                div.appendTo($('body'));
+                div.offset({ top: tank.y + 10, left: tank.x + 10 });
+
+                var width = Game.Map.width * Game.Map.tileWidth;
+                var height = Game.Map.height * Game.Map.tileHeight;
+                var divRight = div.width() + div.position().left;
+                var divBottom = div.height() + div.position().top;
+                var diffX = 0;
+                if (divRight > width)
+                    diffX = divRight - width;
+                var diffY = 0;
+                if (divBottom > height)
+                    diffY = divBottom - height;
+                div.offset({ top: div.position().top - diffY, left: div.position().left - diffX });
+
+                setTimeout(function () {
+                    div.remove();
+                },5000);
+            }
+        }, 200);
+        tank.Inputs = {};
+        tank.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward');
+        tank.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft');
+        tank.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
+        tank.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
+        //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
+        tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretLeft', 'turretRight');
+        tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
+        tank.teamId = networkTeamId;
+    }
+
 
         //todo fix loop sound gap problem
-        //tank.throttleSound = PlaySound('./sound/engine working.mp3', 100, 1, type);
+        tank.throttleSound = PlaySound('./sound/engine working long.mp3', 0.05, 1, type);
         //tank.idleSound = PlaySound('./sound/engine working2.mp3', 0, 1, type);
-        
+
         tank.setMovementSound = function(throttle){
-            // if (throttle == 0){
-            //     this.throttleSound.volume = 0;
-            //     this.idleSound.volume = 0.8;
-            // } else{
-            //     this.throttleSound.volume = 0.8;
-            //     this.idleSound.volume = 0;
-            // }
+            var v = Math.max(
+                0.05 + Math.abs(this.speed*0.6/this.maxSpeed),
+                0.05 + Math.abs(this.rotationSpeed*0.6/this.maxRotationSpeed)
+            );
+
+            if (v > 1) v = 1;
+            this.throttleSound.volume = v;                       
         }
-
-
-              
-
 
         return tank;
     },
@@ -142,7 +180,7 @@ var Game = {
             Game.spawnExplosion(this.x, this.y);
             Game.Map.degradeTile(x, y);
             this.dead = true;
-            PlaySound("./sound/splat.wav", 100);
+            //PlaySound("./sound/splat.wav", 100);
         };
         bullet.OnObjectCollision = function(obj){
             Game.spawnExplosion(this.x, this.y);
@@ -175,7 +213,7 @@ var Game = {
                 obj.addBehavior(new Behavior.TimedLife(3000));
             }
             this.dead = true;
-            PlaySound("./sound/splat.wav", 100);
+            //PlaySound("./sound/splat.wav", 100);
         }
 
         this.RootEntity.changeCoordinatesFromDescendant(bullet, tank.Barrel);
@@ -192,7 +230,14 @@ var Game = {
             size = 24
         var blast = new Sprite(x, y, Math.random()*90, size, size, "./images/explosion.png", [new Behavior.Animate(18, 8, 50), new Behavior.TimedLife(399)]);
         Game.RootEntity.addChild(blast);
-        PlaySound("./sound/tank-fire.wav", 100);
+
+        if (Math.random() < 0.5)
+        {
+            PlaySound("./sound/blast1.mp3", 70);
+        }
+        else{
+            PlaySound("./sound/blast2.mp3", 70);
+        }            
     },
     ConsumeInputs: function(timestamp) {
         var driveSpeed = 60/1000; //px/msec

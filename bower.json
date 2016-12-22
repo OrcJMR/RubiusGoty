@@ -17,7 +17,8 @@
   ],
   "dependencies": {
     "polymer": "^1.7.1",
-    "app-router": "^2.7.2"
+    "app-router": "^2.7.2",
+    "jquery": "^3.1.1"
   },
   "resolutions": {
     "webcomponentsjs": "v1"
