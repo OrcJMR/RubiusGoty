@@ -45,14 +45,14 @@ var _positions = [
         title: 'Делать как СЮ',
         id: 'turn1',
         actions: [
-            {action:'turnLeft', text: 'iPhone', icon: 'button-left.png'}
+            {action:'turnLeft', text: 'Делать как СЮ', icon: 'button-left.png'}
         ]
     },
     {
         title: 'Делать как СЕ',
         id: 'turn2',
         actions: [
-            {action:'turnRight', text: 'Android', icon: 'button-right.png'}
+            {action:'turnRight', text: 'Делать как СЕ', icon: 'button-right.png'}
         ]
     }
 
