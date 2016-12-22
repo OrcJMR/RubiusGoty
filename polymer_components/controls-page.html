@@ -2,7 +2,7 @@
 <dom-module id="controls-page">
     <template>
         <style>
-            button  {
+            button {
                 height: 150px;
             }
         </style>
@@ -10,127 +10,24 @@
         <main>
 
             <center>
-                Hi, {{name}}! You are in Team {{teamId}}
-                Your position: {{positionId}}
+                Привет, <b>{{name}}</b>! You are in <b>{{team.title}}</b>.<br/>
+                Your role: <b>{{position.title}}</b><br/>
 
-                <template is="dom-if" if="{{_equals(positionId, 'move1')}}">
-                    <div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect purple' data-action="moveForward"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">Forward
-                            </button>
-                        </div>
+                <template is="dom-repeat" items="{{actions}}" as="action">
+                    <div class='row'>
+                        <button class$='col s12 btn btn-large waves-effect {{action.color}}'
+                                data-action$="{{action.action}}"
+                                on-down="buttonDownAction" on-up="buttonUpAction">
 
+                            <template is="dom-if" if="{{gameStarted}}">
+                                <img src$="/images/{{action.icon}}" style="vertical-align:middle"/>
+                            </template>
+                            {{action.text}}
+
+                        </button>
                     </div>
                 </template>
 
-                <template is="dom-if" if="{{_equals(positionId, 'move2')}}">
-                    <div>
-
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect green' data-action="moveBackward"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">Backward
-                            </button>
-                        </div>
-                    </div>
-                </template>
-
-
-                <template is="dom-if" if="{{_equals(positionId, 'turn1')}}">
-                    <div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect purple' data-action="turnLeft"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">Left
-                            </button>
-                        </div>
-                    </div>
-                </template>
-
-                <template is="dom-if" if="{{_equals(positionId, 'turn2')}}">
-                    <div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect green' data-action="turnRight"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">Right
-                            </button>
-                        </div>
-                    </div>
-                </template>
-
-
-                <template is="dom-if" if="{{_equals(positionId, 'leftTrack')}}">
-                    <div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect purple' data-action="leftTrackForward"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">left Track Forward
-                            </button>
-                        </div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect green' data-action="leftTrackBackward"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">left Track Backward
-                            </button>
-                        </div>
-                    </div>
-                </template>
-
-
-                <template is="dom-if" if="{{_equals(positionId, 'rightTrack')}}">
-                    <div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect purple' data-action="rightTrackForward"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">Right Track Forward
-                            </button>
-                        </div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect green' data-action="rightTrackBackward"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">Right Track Backward
-                            </button>
-                        </div>
-                    </div>
-                </template>
-
-
-                <template is="dom-if" if="{{_equals(positionId, 'strafe')}}">
-                    <div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect purple' data-action="strafeRight"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">Strafe Right
-                            </button>
-                        </div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect green' data-action="strafeLeft"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">Strafe Left
-                            </button>
-                        </div>
-                    </div>
-                </template>
-
-
-                <template is="dom-if" if="{{_equals(positionId, 'turret')}}">
-                    <div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect purple' data-action="turretRight"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">Turret Right
-                            </button>
-                        </div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect green' data-action="turretLeft"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">Turret Left
-                            </button>
-                        </div>
-                    </div>
-                </template>
-
-
-                <template is="dom-if" if="{{_equals(positionId, 'fire')}}">
-                    <div>
-                        <div class='row'>
-                            <button class='col s12 btn btn-large waves-effect purple' data-action="fire"
-                                    on-down="buttonDownAction" on-up="buttonUpAction">Fire
-                            </button>
-                        </div>
-
-                    </div>
-                </template>
             </center>
 
         </main>
@@ -143,29 +40,39 @@
         type: 'clientState'
     };
     var actions = ['fire', 'turretLeft', 'turretRight', 'strafeRight', 'strafeLeft', 'rightTrackForward', 'rightTrackBackward'
-    , 'moveForward', 'moveBackward', 'leftTrackForward', 'leftTrackBackward'];
+        , 'moveForward', 'moveBackward', 'leftTrackForward', 'leftTrackBackward'];
     var listener;
     var interval;
     Polymer({
         is: 'controls-page',
-        ready: function() {
+        ready: function () {
             CheckClientNavigationShouldExit();
         },
         attached: function () {
             this.name = localStorage.getItem("username");
+            var that = this;
+            this.position = _positions.find(function (item) {
+                return item.id == that.positionId;
+            })
+            this.actions = this.position.actions;
 
             Sockets.Init(this.name, this.teamId, this.positionId);
+            Sockets.UpdateCallback = function () {
+                that.team = Sockets.ViewModel.gameState.teams[that.teamId - 1];
+                that.set('gameStarted', Sockets.ViewModel.gameState.state);
+            };
+            Sockets.UpdateCallback();
 
-            listener = function(){
-                actions.forEach(function(action) {
+            listener = function () {
+                actions.forEach(function (action) {
                     model[action] = 0;
                     Sockets.sendJson(model);
                 })
             };
             window.addEventListener('blur', listener, false);
-            interval = setInterval(function() {
+            interval = setInterval(function () {
                 Sockets.sendJson({type: 'ping'});
-            }, 5000)
+            }, 5000);
         },
         _equals: function (val1, val2) {
             if (val1 == val2)

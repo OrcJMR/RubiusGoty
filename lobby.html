@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link type="text/css" rel="stylesheet" href="bower_components/materialize/dist/css/materialize.min.css"  media="screen,projection"/>
+    <title>Lobby</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="bower_components/polymer/polymer.html">
+    <link rel="import" href="polymer_components/lobby-team-info.html">
+
+    <script type="text/javascript" src="bower_components/reconnectingWebsocket/reconnecting-websocket.min.js"></script>
+    <script src="js/socketsconfig.js"></script>
+    <script src="js/server.js"></script>
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/materialize/dist/js/materialize.min.js"></script>    
+</head>
+<script>
+    $(window).keypress(function (e) {
+        if (e.keyCode === 0 || e.keyCode === 32) {
+        e.preventDefault()
+        window.location.href = '/game.html';
+    }
+})
+</script>
+<body>
+
+    <lobby-team-info />
+
+</body>
+</html>

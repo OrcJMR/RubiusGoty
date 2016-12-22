@@ -3,7 +3,7 @@
     <template>
         <template is="dom-repeat" items="{{model.teams}}" as="team" >
         <div>
-            Team {{_inc(index)}}:
+            {{team.title}}:
             <template is="dom-repeat" items="{{team.members}}">
                 <div>Name: <span>{{item.name}}</span> <b>{{item.position}}</b></div>
             </template>
@@ -11,6 +11,7 @@
         </template>
 
         <button on-tap="kickAll">Kick all</button>
+        <button on-tap="startGame">Start game</button>
     </template>
 </dom-module>
 
@@ -32,8 +33,13 @@
         },
         kickAll: function() {
             _socket.sendJson({type: 'kickAll'});
-        }
-
+        },
+        startGame: function() {
+            _socket.sendJson({
+                type: 'gameState',
+                state: 1,
+            });
+        },
 
     });
 </script>
