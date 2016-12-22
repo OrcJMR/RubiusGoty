@@ -108,6 +108,7 @@ var Game = {
             new Box(0, 0, 0, 5, 7, "black"),
             new Box(0, 0, 0, 3, 5, "orange")            
         ]);
+        bullet.owner = tank;
         bullet.width = 3;
         bullet.height = 5;
         bullet.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
@@ -132,7 +133,7 @@ var Game = {
                 }
                 obj.moveXSpeed /= 0;
                 obj.moveYSpeed /= 0;
-                obj.moveAngSpeed /= 0;                
+                obj.moveAngSpeed /= 0;
             }
             if (obj.class == "tankbot"){
                 obj.moveXSpeed /= 3;
