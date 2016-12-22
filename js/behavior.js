@@ -243,3 +243,29 @@ Behavior.Animate.prototype = {
         }
     }
 }
+
+Behavior.SpawnExplosions = function(delay, count) {
+    this.init = function(obj) {
+        obj.explosionCurrentTime = 0;
+        obj.explosionsLeft = count || 1;
+        obj.explosionDelay = delay || 0;
+    };
+};
+
+Behavior.SpawnExplosions.prototype = {
+    name: "spawnexplosions",
+    exec: function(obj, delta) {
+        if(obj.explosionsLeft == 0)
+            return;
+        obj.explosionCurrentTime += delta;
+        var pendingExplosions = Math.min(Math.floor(obj.explosionCurrentTime / obj.explosionDelay), obj.explosionsLeft);
+        while(pendingExplosions > 0){
+            var pt = new Geom.Point(-obj.width/2 + Math.random() * obj.width, -obj.height/2 + Math.random() * obj.height);
+            pt = pt.Rotate(obj.angle).Translate(obj.x, obj.y);
+            Game.spawnExplosion(pt.x, pt.y, 24 + Math.random()*16);
+            pendingExplosions--;
+            obj.explosionsLeft--;
+        }
+        obj.explosionCurrentTime %= obj.explosionDelay;
+    }
+}

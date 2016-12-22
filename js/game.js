@@ -25,6 +25,7 @@ var Game = {
         this.RootEntity.addChild(this.Tank2);
     },
     spawnTankDefault: function() {
+        //this.Tank = this.spawnTank(80, 600, 0, "dimgray", 30); // right before enemy
         this.Tank = this.spawnTank(504, 80, 0, "dimgray", 30);
         this.RootEntity.addChild(this.Tank);
         Game.Tank.Inputs = {};
@@ -109,15 +110,18 @@ var Game = {
         bullet.height = 5;
         bullet.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
         bullet.OnMapCollision = function (x, y) {
+            Game.spawnExplosion(this.x, this.y);
             Game.Map.degradeTile(x, y);
             this.dead = true;
             PlaySound("./sound/splat.wav", 100);
         };
         bullet.OnObjectCollision = function(obj){
+            Game.spawnExplosion(this.x, this.y);
             if (obj.class == "tank"){
                 obj.hp -= 1;
                 if(obj.hp == 0) {
                     obj.addBehavior(new Behavior.TimedLife(3000));
+                    obj.addBehavior(new Behavior.SpawnExplosions(200, 10));
                     obj.items[2].color = "black";
                     if(obj == Game.Tank1)
                         Game.spawnTank1();
@@ -152,6 +156,13 @@ var Game = {
         var blast = new Sprite(0, 22, 180, 34, 62, "./images/tank-fire.png", [new Behavior.Animate(17, 6, 50), new Behavior.TimedLife(299)]);
         tank.changeCoordinatesFromDescendant(blast, tank.Barrel);
         tank.addChild(blast);
+    },
+    spawnExplosion: function(x, y, size) {
+        if(!size)
+            size = 24
+        var blast = new Sprite(x, y, Math.random()*90, size, size, "./images/explosion.png", [new Behavior.Animate(18, 8, 50), new Behavior.TimedLife(399)]);
+        Game.RootEntity.addChild(blast);
+        PlaySound("./sound/tank-fire.wav", 100);
     },
     ConsumeInputs: function(timestamp) {
         var driveSpeed = 60/1000; //px/msec
