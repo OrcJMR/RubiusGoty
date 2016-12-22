@@ -4,7 +4,7 @@
         <div class="columns">
             <template is="dom-repeat" items="{{model.teams}}" as="team" >
                 <div>
-                    Team {{inc(index)}}:
+                    Team {{team.title}}:
                     <template is="dom-repeat" items="{{team.members}}">
                         <div>
                             Name: <span>{{item.name}}</span> 
