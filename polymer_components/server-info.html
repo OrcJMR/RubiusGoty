@@ -11,6 +11,7 @@
         </template>
 
         <button on-tap="kickAll">Kick all</button>
+        <button on-tap="startGame">Start game</button>
     </template>
 </dom-module>
 
@@ -32,8 +33,13 @@
         },
         kickAll: function() {
             _socket.sendJson({type: 'kickAll'});
-        }
-
+        },
+        startGame: function() {
+            _socket.sendJson({
+                type: 'gameState',
+                state: 1,
+            });
+        },
 
     });
 </script>

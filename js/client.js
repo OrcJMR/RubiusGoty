@@ -2,7 +2,6 @@ var ClientViewModel = {
     type: 'join'
 };
 
-
 function GoTo(url) {
     setTimeout(function() {
         document.querySelector('app-router').go(url);
@@ -68,6 +67,13 @@ var Sockets = (function() {
             _socket.sendJson({
                 type: 'close',
             })
+        },
+        ViewModel: {
+            gameState: {
+                state: 0,
+                teams: []
+            },
+            positionsTaken: {}
         },
         UpdateCallback: null,
     }

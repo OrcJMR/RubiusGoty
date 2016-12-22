@@ -9,12 +9,11 @@
             <center>
 Hi, {{name}}!
                 Choose your team:
-                <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect indigo' on-tap="join1">Team 1</button>
-                </div>
-                <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect yellow' on-tap="join2">Team 2</button>
-                </div>
+                <template is="dom-repeat" items="{{teams}}" as="team">
+                    <div class='row'>
+                        <button type='submit' name='btn_login' class$='col s12 btn btn-large waves-effect {{team.color}}' data-team$="{{team.id}}" on-tap="join">{{team.title}}</button>
+                    </div>
+                </template>
 
             </center>
 
@@ -24,22 +23,28 @@ Hi, {{name}}!
             <div class="section"></div>
         </main>
 
-        <change-name></change-name>
+        <change-name reset-name="true"></change-name>
     </template>
 </dom-module>
 
 <script>
     Polymer({
         is: 'choose-team-page',
+
         ready: function() {
             CheckClientNavigationShouldExit('choose-team');
             this.name = localStorage.getItem("username");
         },
-        join1: function() {
-            GoTo('/team/1');
+        attached: function() {
+            this.teams = Sockets.ViewModel.gameState.teams;
+            var that = this;
+            Sockets.UpdateCallback = function () {
+                that.set('teams', Sockets.ViewModel.gameState.teams);
+            };
         },
-        join2: function() {
-            GoTo('/team/2');
-        }
+        join: function(e) {
+            var id = e.target.dataset.team;
+            GoTo('/team/'+id);
+        },
     });
 </script>
