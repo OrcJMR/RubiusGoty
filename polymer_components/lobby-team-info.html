@@ -1,0 +1,35 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="lobby-team-info">
+    <template>
+        <div class="columns">
+            <template is="dom-repeat" items="{{model.teams}}" as="team" >
+                <div>
+                    Team {{_inc(index)}}:
+                    <template is="dom-repeat" items="{{team.members}}">
+                        <div>
+                            Name: <span>{{item.name}}</span> 
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'lobby-team-info',
+        ready: function () {
+            this.model = Sockets.ViewModel;
+
+            var that = this;
+            Sockets.UpdateCallback = function () {
+                that.set('model', Sockets.ViewModel);
+            }
+            Sockets.UpdateCallback();
+        },
+        inc: function(i){
+            return i + 1;
+        },
+    });
+</script>
