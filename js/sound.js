@@ -5,16 +5,36 @@ var PlaySound=function(url,vol,loops)
 	var volume=1;
 	if (vol!==undefined) volume=vol;
 	if (/*!Game.volume ||*/ volume==0) return 0;
-	if (!Sounds[url]) {
-        Sounds[url]=new Audio(url);
-        Sounds[url].onloadeddata=function(e){
+
+    var newSound = function(){ 
+        var s = new Audio(url);        
+        s.onloadeddata=function(e){
             e.target.volume=Math.pow(volume/*Game.volume*//100,2);
-            e.target.loop = !!loops;
+            e.target.loop = !!loops;            
         }
+        return s;
     }
-	else if (Sounds[url].readyState>=2) {
-        Sounds[url].currentTime=0;
-        Sounds[url].volume=Math.pow(volume/*Game.volume*//100,2);
+
+    var soundList = Sounds[url];
+
+	if (!soundList) {
+        soundList = [];
+        Sounds[url]=soundList;
     }
-	Sounds[url].play();
+	else{
+        for (var i = 0; i < soundList.length; i++){
+            var sound = soundList[i];
+            if (sound.ended){
+                sound.currentTime = 0;
+                sound.volume=Math.pow(volume/*Game.volume*//100,2);
+                sound.loop = loops;
+                sound.play();
+                return;
+            }
+        }
+        // all busy        
+    } 
+    var sound = newSound();
+    soundList.push(sound);
+    sound.play();
 }
