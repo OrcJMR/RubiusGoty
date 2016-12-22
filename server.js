@@ -20,16 +20,26 @@ app.get("/", function (request, response) {
 
 var admin = [];
 var teams = []; //array of Team
-function Team() {
+function Team(id, title, color) {
     this.members = []; //array of client (structure see below var client = {)
     this.positionsTaken = {};
+    this.title = title;
+    this.color = color;
+    this.id = id;
 };
-teams.push(new Team());
-teams.push(new Team());
+teams.push(new Team(1, "Team Indigo", "indigo"));
+teams.push(new Team(2, "Team Yellow", "yellow"));
+teams.push(new Team(3, "Team Green", "green"));
+
 var actions = ['fire', 'turretLeft', 'turretRight', 'strafeRight', 'strafeLeft', 'rightTrackForward', 'rightTrackBackward'
     , 'moveForward', 'moveBackward', 'leftTrackForward', 'leftTrackBackward'];
 var serverModel = {
     teams: teams
+};
+
+var _gameState = {
+    state: 0,
+    teams: teams.map(function (team) { return {title: team.title, color: team.color, id: team.id};})
 };
 
 function SendServerModel() {
@@ -40,7 +50,10 @@ function SendServerModel() {
     };
     teams.forEach(function (team) {
         model.teams.push({
-            members: team.members.map(function (i){return i.model;})
+            members: team.members.map(function (i){return i.model;}),
+            title: team.title,
+            id: team.id,
+            color: team.color,
         });
     });
 
@@ -50,6 +63,14 @@ function SendServerModel() {
             elem.send(JSON.stringify(model));
         }catch (Exception) {
         }
+    })
+}
+
+function SendClientViewModelToAllClients() {
+    teams.forEach(function (team) {
+        team.members.forEach(function (member) {
+            member.SendClientModel();
+        })
     })
 }
 
@@ -97,6 +118,8 @@ wss.on('connection', function connection(ws) {
     var model = {
         type: 'ViewModel',
         ping: new Date(),
+        gameState: _gameState,
+        positionsTaken: {},
         state: {},
     };
     var client = {
@@ -125,9 +148,14 @@ wss.on('connection', function connection(ws) {
             UpdateTeamPositions(model.team);
         }
     }
+    client.SendClientModel();
 
     ws.on('close', function close() {
-        RemoveFromArray(admin, client);
+        if (ws.gameState) {
+            _gameState.state = 0;
+            SendClientViewModelToAllClients
+        }
+        RemoveFromArray(admin, ws);
         serverModel.teams.forEach(function (team) {
             RemoveFromArray(team.members, client);
         });
@@ -146,7 +174,6 @@ wss.on('connection', function connection(ws) {
             admin.push(ws);
             SendServerModel();
         }
-        console.log('message ' + message);
 
         if (data.type == 'join') {
             model.name = data.name;
@@ -158,6 +185,7 @@ wss.on('connection', function connection(ws) {
         } else if (data.type == 'ping') {
             model.ping = new Date();
             UpdateTeamPositions(model.team);
+            client.SendClientModel();
         } else if (data.type == 'close') {
             model.position = "";
             UpdateTeamPositions(model.team);
@@ -179,6 +207,10 @@ wss.on('connection', function connection(ws) {
                 });
 
                 SendServerModel();
+            } else if (data.type == 'gameState') {
+                ws.gameState = data.state;
+                _gameState.state = ws.gameState;
+                SendClientViewModelToAllClients();
             }
         }
     });
