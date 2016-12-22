@@ -190,7 +190,7 @@ var Game = {
             Game.spawnExplosion(this.x, this.y);
             Game.Map.degradeTile(x, y);
             this.dead = true;
-            PlaySound("./sound/splat.wav", 100);
+            //PlaySound("./sound/splat.wav", 100);
         };
         bullet.OnObjectCollision = function(obj){
             Game.spawnExplosion(this.x, this.y);
@@ -223,7 +223,7 @@ var Game = {
                 obj.addBehavior(new Behavior.TimedLife(3000));
             }
             this.dead = true;
-            PlaySound("./sound/splat.wav", 100);
+            //PlaySound("./sound/splat.wav", 100);
         }
 
         this.RootEntity.changeCoordinatesFromDescendant(bullet, tank.Barrel);
@@ -240,7 +240,14 @@ var Game = {
             size = 24
         var blast = new Sprite(x, y, Math.random()*90, size, size, "./images/explosion.png", [new Behavior.Animate(18, 8, 50), new Behavior.TimedLife(399)]);
         Game.RootEntity.addChild(blast);
-        PlaySound("./sound/tank-fire.wav", 100);
+
+        if (Math.random() < 0.5)
+        {
+            PlaySound("./sound/blast1.mp3", 70);
+        }
+        else{
+            PlaySound("./sound/blast2.mp3", 70);
+        }            
     },
     ConsumeInputs: function(timestamp) {
         var driveSpeed = 60/1000; //px/msec
