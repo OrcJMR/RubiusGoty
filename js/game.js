@@ -77,23 +77,65 @@ var Game = {
         tank.height = tank.width;
         tank.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
         tank.class = "tank";
+        if(networkTeamId >= 0) {
+        var viewModelFunction = function() {
+            if (!Sockets.ViewModel.teams)
+                return null;
 
-        if(networkTeamId >= 0){
-            var viewModelFunction = function() {return Sockets.ViewModel.teams[networkTeamId];};
-            tank.Inputs = {};
-            tank.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward');
-            tank.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft');
-            tank.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
-            tank.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
-            //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
-            tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretLeft', 'turretRight');
-            tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
+            if (Sockets.ViewModel.teams.length <= networkTeamId)
+                return null;
+
+            return Sockets.ViewModel.teams[networkTeamId];
+        };
+
+        var managerGoodInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood'), '2', 10000, true);
+        var managerBadInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerBad'), '2', 10000, true);
+        setInterval(function() {
+            var replics = null;
+            if (managerGoodInput.read(new Date().getTime())== 1) {
+                replics = _managerGoodReplics;
+            } else if (managerBadInput.read(new Date().getTime())== 1) {
+                replics = _managerBadReplics;
+            }
+            if (replics) {
+                var replicId =  Math.floor(Math.random() * replics.length);
+                var replic = replics[replicId];
+                var div = $('<div style="position: absolute;" class="blue-frame">'+replic+'</div>');
+                div.appendTo($('body'));
+                div.offset({ top: tank.y + 10, left: tank.x + 10 });
+
+                var width = Game.Map.width * Game.Map.tileWidth;
+                var height = Game.Map.height * Game.Map.tileHeight;
+                var divRight = div.width() + div.position().left;
+                var divBottom = div.height() + div.position().top;
+                var diffX = 0;
+                if (divRight > width)
+                    diffX = divRight - width;
+                var diffY = 0;
+                if (divBottom > height)
+                    diffY = divBottom - height;
+                div.offset({ top: div.position().top - diffY, left: div.position().left - diffX });
+
+                setTimeout(function () {
+                    div.remove();
+                },5000);
+            }
+        }, 200);
+        tank.Inputs = {};
+        tank.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward');
+        tank.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft');
+        tank.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
+        tank.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
+        //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
+        tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretLeft', 'turretRight');
+        tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
         }
+
 
         //todo fix loop sound gap problem
         //tank.throttleSound = PlaySound('./sound/engine working.mp3', 100, 1, type);
         //tank.idleSound = PlaySound('./sound/engine working2.mp3', 0, 1, type);
-        
+
         tank.setMovementSound = function(throttle){
             // if (throttle == 0){
             //     this.throttleSound.volume = 0;
@@ -103,10 +145,6 @@ var Game = {
             //     this.idleSound.volume = 0;
             // }
         }
-
-
-              
-
 
         return tank;
     },
@@ -259,7 +297,7 @@ var Game = {
                 tank.Head.angle = tank.Barrel.angle / 4 - Math.PI / 2;
                 if(tank.Head.angle < -Math.PI / 4) tank.Head.angle += Math.PI / 2;
             }
-            
+
             if(tank == Game.Tank1)
                 this.updateTankGui(tank, "t1");
             if(tank == Game.Tank2)
