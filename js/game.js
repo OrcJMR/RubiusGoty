@@ -89,6 +89,25 @@ var Game = {
             tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretLeft', 'turretRight');
             tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
         }
+
+        //todo fix loop sound gap problem
+        //tank.throttleSound = PlaySound('./sound/engine working.mp3', 100, 1, type);
+        //tank.idleSound = PlaySound('./sound/engine working2.mp3', 0, 1, type);
+        
+        tank.setMovementSound = function(throttle){
+            // if (throttle == 0){
+            //     this.throttleSound.volume = 0;
+            //     this.idleSound.volume = 0.8;
+            // } else{
+            //     this.throttleSound.volume = 0.8;
+            //     this.idleSound.volume = 0;
+            // }
+        }
+
+
+              
+
+
         return tank;
     },
     spawnDirt: function(parent, back, move) {
@@ -182,6 +201,8 @@ var Game = {
 
             var throttle = tank.Inputs.ThrottleInput.read(timestamp);
             var turning = tank.Inputs.TankTurnInput.read(timestamp);
+
+            tank.setMovementSound(throttle);
 
             if(Math.abs(turning) < 1E-2) {
                 tank.LeftTrack.torque = throttle;
