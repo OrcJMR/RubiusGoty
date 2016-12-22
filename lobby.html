@@ -1,28 +1,17 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <!--<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
-    <link type="text/css" rel="stylesheet" href="bower_components/materialize/dist/css/materialize.min.css"  media="screen,projection"/>
+    <link href="css/game.css" rel="stylesheet" type="text/css"/>
+    <title>Lobby</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-
-    <link rel="stylesheet" href="css/client.css">
-
-    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="import" href="bower_components/polymer/polymer.html">
-    <link rel="import" href="bower_components/app-router/app-router.html">
-    <link rel="import" href="polymer_components/change-name.html">
-
-    <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="bower_components/materialize/dist/js/materialize.min.js"></script>
+    <link rel="import" href="polymer_components/lobby-team-info.html">
 
     <script type="text/javascript" src="bower_components/reconnectingWebsocket/reconnecting-websocket.min.js"></script>
-    <script type="text/javascript" src="js/socketsconfig.js"></script>
-    <script type="text/javascript" src="js/client.js"></script>
+    <script src="js/socketsconfig.js"></script>
+    <script src="js/server.js"></script>
 </head>
 
 <body>
