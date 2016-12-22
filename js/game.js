@@ -127,9 +127,9 @@ var Game = {
                         Game.spawnTankDefault();
                     Game.Tanks = [Game.Tank1, Game.Tank2, Game.Tank];
                 }
-                obj.moveXSpeed /= 0;
-                obj.moveYSpeed /= 0;
-                obj.moveAngSpeed /= 0;
+                obj.moveXSpeed = 0;
+                obj.moveYSpeed = 0;
+                obj.moveAngSpeed = 0;
             }
             if (obj.class == "tankbot"){
                 obj.moveXSpeed /= 3;
@@ -147,6 +147,11 @@ var Game = {
 
         this.RootEntity.changeCoordinatesFromDescendant(bullet, tank.Barrel);
         this.RootEntity.addChild(bullet);
+    },
+    spawnMuzzleBlast: function(tank) {
+        var blast = new Sprite(0, 22, 180, 34, 62, "./images/tank-fire.png", [new Behavior.Animate(17, 6, 50), new Behavior.TimedLife(299)]);
+        tank.changeCoordinatesFromDescendant(blast, tank.Barrel);
+        tank.addChild(blast);
     },
     ConsumeInputs: function(timestamp) {
         var driveSpeed = 60/1000; //px/msec
@@ -201,6 +206,7 @@ var Game = {
 
             if (tank.Barrel.firing) {
                 this.spawnBullet(tank);
+                this.spawnMuzzleBlast(tank);
                 tank.Barrel.firing = false;
                 PlaySound("./sound/tank-fire.wav", 80);
             }
