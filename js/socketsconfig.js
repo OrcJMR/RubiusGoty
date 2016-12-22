@@ -5,8 +5,8 @@ var _positions = [
         title: 'Руководить',
         id: 'manager',
         actions: [
-            {action:'managerGood', text: 'Хвалить', icon: 'button-right.png'},
-            {action:'managerBad', text: 'Ругать', icon: 'button-right.png'}
+            {action:'managerGood', text: 'Хвалить', icon: 'button-good.png'},
+            {action:'managerBad', text: 'Ругать', icon: 'button-bad.png'}
         ]
     },
     {
@@ -22,8 +22,8 @@ var _positions = [
 
         id: 'turret',
         actions: [
-            {action:'turretLeft', text: 'Принять', icon: 'button-turret.png'},
-            {action:'turretRight', text: 'Отклонить', icon: 'button-turret.png'}
+            {action:'turretLeft', text: 'Принять', icon: 'button-turret-left.png'},
+            {action:'turretRight', text: 'Отклонить', icon: 'button-turret-right.png'}
         ]
     },
     {
