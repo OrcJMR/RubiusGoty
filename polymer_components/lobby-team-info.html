@@ -1,15 +1,17 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <dom-module id="lobby-team-info">
     <template>
-        <div id="columns">
+        <div class="container row">
             <template is="dom-repeat" items="{{model.teams}}" as="team" >
-                <div>
-                    Team {{team.title}}:
-                    <template is="dom-repeat" items="{{team.members}}">
-                        <div>
-                            Name: <span>{{item.name}}</span> 
+                <div class="col s4 section">
+                    <h5>Team {{team.title}}</h5>
+                    <div class="collection">
+                        <template is="dom-repeat" items="{{team.members}}">
+                        <div class="collection-item">
+                            {{item.name}}
                         </div>
                     </template>
+                    </div>
                 </div>
             </template>
         </div>
