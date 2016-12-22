@@ -220,21 +220,13 @@ Behavior.Custom.prototype = {
     }
 };
 
-Behavior.Animate = function(images, msecPerFrame, startFrame) {
+Behavior.Animate = function(spriteWidth, spriteCount, msecPerFrame, startFrame) {
     this.init = function(obj) {
-        obj.animFrames = [];
-        for(var i=0, count=images.length; i<count; i++) {
-            if(typeof images[i] == 'string') {
-                var img = new Image();
-                img.src = images[i];
-                images[i] = img;
-            }
-            obj.animFrames.push(images[i]);
-        }
+        obj.spriteWidth = spriteWidth;
+        obj.spriteIndex = startFrame || 0;
+        obj.spriteCount = spriteCount || 1;
         obj.animDelay = msecPerFrame || 0;
-        obj.animFrame = startFrame || 0;
         obj.animCurrentTime = 0;
-        obj.setImage(obj.animFrames[obj.animFrame]);
     };
 };
 
@@ -246,11 +238,7 @@ Behavior.Animate.prototype = {
         obj.animCurrentTime += delta;
         var frameInc = Math.floor(obj.animCurrentTime / obj.animDelay);
         if(frameInc > 0) {
-            var newFrame = (obj.animFrame + frameInc) % obj.animFrames.length;
-            if(newFrame != obj.animFrame) {
-                obj.animFrame = newFrame;
-                obj.setImage(obj.animFrames[obj.animFrame]);
-            }
+            obj.spriteIndex = (obj.spriteIndex + frameInc) % obj.spriteCount;
             obj.animCurrentTime = obj.animCurrentTime % obj.animDelay;
         }
     }

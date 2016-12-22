@@ -40,10 +40,8 @@ var Game = {
         var tank;
         if(color!="dimgray")
             tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank], [
-            new Sprite(-12, -1, 0,  8, 29, null, [new Behavior.Animate(
-                ["./images/tank-track-1.png", "./images/tank-track-2.png"], 0)]),
-            new Sprite( 12, -1, 0,  8, 29, null, [new Behavior.Animate(
-                ["./images/tank-track-1.png", "./images/tank-track-2.png"], 0)]),
+            new Sprite(-12, -1, 0,  8, 29, "./images/tank-track.png", [new Behavior.Animate(8, 2)]),
+            new Sprite( 12, -1, 0,  8, 29, "./images/tank-track.png", [new Behavior.Animate(8, 2)]),
             new Sprite(  0,  1, 180, 28, 34, "./images/tank-body.png"),
             //new Box(  0,-12, 0, 12, 8, "darkgreen"),
             new ObjectGroup(0, 0, 0, [new Behavior.Move], [
@@ -52,14 +50,12 @@ var Game = {
         ]);
         else
             tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank], [
-            new Sprite(-11, -1, 0,  10, 30, null, [new Behavior.Animate(
-                ["./images/tank-track-1-small.png", "./images/tank-track-2-small.png"], 0)]),
-            new Sprite( 11, -1, 0,  10, 30, null, [new Behavior.Animate(
-                ["./images/tank-track-1-small.png", "./images/tank-track-2-small.png"], 0)]),
+            new Sprite(-11, -1, 0,  10, 30, "./images/tank-track-small.png", [new Behavior.Animate(5, 2)]),
+            new Sprite( 11, -1, 0,  10, 30, "./images/tank-track-small.png", [new Behavior.Animate(5, 2)]),
             new Sprite(  0,  1, 180, 24, 34, "./images/tank-body-small.png"),
             //new Box(  0,-12, 0, 12, 8, "darkgreen"),
             new ObjectGroup(0, -2, 0, [new Behavior.Move], [
-                new Sprite( 0, 6, 180,  18, 38, "./images/tank-turret-small.png")
+                new Sprite( 0, 7, 180,  18, 38, "./images/tank-turret-small.png")
             ])
         ]);
         tank.hp = 9;
@@ -208,7 +204,7 @@ var Game = {
                 tank.Barrel.firing = false;
                 PlaySound("./sound/tank-fire.wav", 80);
             }
-            tank.Barrel.items[0].y = 6 + tank.Barrel.recoil * 6;
+            tank.Barrel.items[0].y = 7 + tank.Barrel.recoil * 6;
             
             if(tank == Game.Tank1)
                 this.updateTankGui(tank, "t1");

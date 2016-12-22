@@ -18,10 +18,14 @@ var EntityBase = {
                 item.draw(ctx);
                 ctx.restore();
             });
-        
-        if(typeof this.image != 'undefined')
-            ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
-        else if(typeof this.color != 'undefined') {
+        else // don't try to draw groups. if enabling, make sure "undercofigured object" is not raised
+        if(typeof this.image != 'undefined') {
+            if(!this.spriteWidth)
+                ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
+            else
+                ctx.drawImage(this.image, this.spriteIndex * this.spriteWidth, 0, this.spriteWidth, this.image.height,
+                                          -this.width / 2, -this.height / 2, this.width, this.height);
+        } else if(typeof this.color != 'undefined') {
             ctx.save();
             ctx.fillStyle = this.color;
             ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
@@ -30,7 +34,7 @@ var EntityBase = {
         //else if (typeof this.speed != 'undefined'){
         //    ctx.fillText(this.speed, 0, 0);
         //}
-        else        
+        else
             console.debug("Underconfigured object, unable to draw");
     },
 
