@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <link href="css/game.css" rel="stylesheet" type="text/css"/>
     <title>Lobby</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -12,6 +11,21 @@
     <script type="text/javascript" src="bower_components/reconnectingWebsocket/reconnecting-websocket.min.js"></script>
     <script src="js/socketsconfig.js"></script>
     <script src="js/server.js"></script>
+
+    <style type="text/css">
+        #columns > div
+        {
+            display: inline-block;
+            border: solid 1px #000;
+        }
+        #columns
+        {
+            border: solid 1px #ff0000;
+            text-align: center;
+            margin: 0px auto;
+            width: 30%;
+        }        
+    </style>
 </head>
 
 <body>
