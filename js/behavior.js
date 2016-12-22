@@ -48,10 +48,13 @@ Behavior.Move.prototype = {
                     if (obj.OnMapCollision){
                         obj.OnMapCollision( colliderRetVal.tileX, colliderRetVal.tileY );
                     }
-                } else{
-                    if (obj.OnObjectCollision){
-                        obj.OnObjectCollision(colliderRetVal);
+                } else {
+                    if (obj.owner && obj.owner == colliderRetVal){
+                        apply = true;
                     }
+                    else if (obj.OnObjectCollision){
+                            obj.OnObjectCollision(colliderRetVal);
+                        }
                 }
             }
         }
@@ -69,7 +72,7 @@ Behavior.MoveTank = function(leftTrackSpeed, rightTrackSpeed) {
         obj.speed = 0;
         obj.maxSpeed = 120/1000; //px/msec
         obj.rotationSpeed = 0;
-        obj.maxRotationSpeed = 180/1000; //deg/msec
+        obj.maxRotationSpeed = 100/1000; //deg/msec
     };
 };
 Behavior.MoveTank.prototype = {
@@ -89,15 +92,17 @@ Behavior.MoveTank.prototype = {
         var rtile = Game.Map.getTileAt(rtx, rty);
         var rtraction = rtile ? rtile.tractionFactor : 1;
 
+        var traction = (ltraction + rtraction) / 2;
+
         if( Math.random() < 0.01 )
             Game.Map.degradeTileAt(ltx, lty);
         if( Math.random() < 0.01 )
             Game.Map.degradeTileAt(rtx, rty);
 
-        obj.rotationSpeed = obj.rotationSpeed + (obj.LeftTrack.torque * ltraction - obj.RightTrack.torque * rtraction) * delta * obj.maxRotationSpeed / 1000;
+        obj.rotationSpeed = obj.rotationSpeed + (obj.LeftTrack.torque - obj.RightTrack.torque) * traction * delta * obj.maxRotationSpeed / 1000;
         if (Math.abs(obj.rotationSpeed) > obj.maxRotationSpeed) obj.rotationSpeed = Math.sign(obj.rotationSpeed) * obj.maxRotationSpeed;
         
-        obj.speed = obj.speed + (obj.LeftTrack.torque * ltraction + obj.RightTrack.torque * rtraction) / 2 * delta * obj.maxSpeed / 1000;
+        obj.speed = obj.speed + (obj.LeftTrack.torque + obj.RightTrack.torque) / 2 * traction * delta * obj.maxSpeed / 1000;
         if (Math.abs(obj.speed) > obj.maxSpeed) obj.speed = Math.sign(obj.speed) * obj.maxSpeed;
         
         if(obj.speed != 0) {
@@ -113,8 +118,16 @@ Behavior.MoveTank.prototype = {
                 newAngle -= Math.PI * 2;
         }
 
-        obj.speed *= 0.95; // get coef from terrain
-        obj.rotationSpeed *= 0.95; // get coef from terrain
+        if (obj.LeftTrack.torque + obj.RightTrack.torque == 0)
+        {
+            obj.speed *= 1 - (0.10 * traction);
+        }
+
+        if (obj.LeftTrack.torque - obj.RightTrack.torque != 0) {
+            obj.speed *= 1 - (0.02 * traction);
+        } else {
+            obj.rotationSpeed *= 0.9;
+        }
 
         var apply = true;
 
@@ -129,8 +142,8 @@ Behavior.MoveTank.prototype = {
                     }
                 } else{
                     if (obj.OnObjectCollision){
-                        obj.OnObjectCollision(colliderRetVal);
-                    }
+                            obj.OnObjectCollision(colliderRetVal);
+                        }
                 }
             }
         }

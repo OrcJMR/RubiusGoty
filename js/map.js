@@ -89,17 +89,17 @@ function Map(){
     this.buildingArray = (buildings) ? Array.from(buildings) : Array.from(Array(this.terrainArray.length + 1).join(' ')); // looks stupid, but wtf
 
     this.tileDictionary = {};
-    this.tileDictionary['.'] = {tileX: 0, tileY: 0, variants: 8, traction: 1};
-    this.tileDictionary[','] = {tileX: 0, tileY: 1, variants: 8, traction: 0.9};
-    this.tileDictionary[':'] = {tileX: 0, tileY: 2, variants: 8, traction: 0.8};
-    this.tileDictionary[';'] = {tileX: 0, tileY: 3, variants: 8, traction: 0.7};
-    this.tileDictionary['&'] = {tileX: 0, tileY: 4, variants: 8, traction: 0.5};
-    this.tileDictionary['|'] = {tileX: 0, tileY: 5, variants: 4, traction: 1.5};
+    this.tileDictionary['.'] = {tileX: 0, tileY: 0, variants: 8, traction: 0.5};
+    this.tileDictionary[','] = {tileX: 0, tileY: 1, variants: 8, traction: 0.45};
+    this.tileDictionary[':'] = {tileX: 0, tileY: 2, variants: 8, traction: 0.4};
+    this.tileDictionary[';'] = {tileX: 0, tileY: 3, variants: 8, traction: 0.35};
+    this.tileDictionary['&'] = {tileX: 0, tileY: 4, variants: 8, traction: 0.25};
+    this.tileDictionary['|'] = {tileX: 0, tileY: 5, variants: 4, traction: 0.75};
     this.tileDictionary['B'] = {tileX: 0, tileY: 9, variants: 2, traction: 0};
     this.tileDictionary['S'] = {tileX: 2, tileY: 6, traction: 0};
-    this.tileDictionary['b'] = {tileX: 2, tileY: 9, variants: 2, traction: 0.3};
-    this.tileDictionary['a'] = {tileX: 0, tileY: 7, variants: 8, traction: 2};
-    this.tileDictionary['c'] = {tileX: 0, tileY: 8, variants: 8, traction: 2};
+    this.tileDictionary['b'] = {tileX: 2, tileY: 9, variants: 2, traction: 0.15};
+    this.tileDictionary['a'] = {tileX: 0, tileY: 7, variants: 8, traction: 0.95};
+    this.tileDictionary['c'] = {tileX: 0, tileY: 8, variants: 8, traction: 0.95};
 
     this.tileDictionary['╶'] = {tileX:  8, tileY: 0};
     this.tileDictionary['╴'] = {tileX:  9, tileY: 0};
