@@ -139,8 +139,8 @@ var Game = {
         tank.setMovementSound = function(throttle){
             var v = Math.max(
                 0.1 + Math.abs(this.speed*0.6/this.maxSpeed),
-                0.1 + Math.abs(this.rotationSpeed*0.6/this.maxRotationSpeed),
-            )
+                0.1 + Math.abs(this.rotationSpeed*0.6/this.maxRotationSpeed)
+            );
 
             if (v > 1) v = 1;
 
