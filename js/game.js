@@ -37,15 +37,29 @@ var Game = {
         Game.Tank.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, '2', 400, false);
     },
     spawnTank: function(x, y, angle, color, networkTeamId) {
-        var tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank], [
-            new Sprite(-12, -0.5, 0,  8, 29, null, [new Behavior.Animate(
+        var tank;
+        if(color!="dimgray")
+            tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank], [
+            new Sprite(-12, -1, 0,  8, 29, null, [new Behavior.Animate(
                 ["./images/tank-track-1.png", "./images/tank-track-2.png"], 0)]),
-            new Sprite( 12, -0.5, 0,  8, 29, null, [new Behavior.Animate(
+            new Sprite( 12, -1, 0,  8, 29, null, [new Behavior.Animate(
                 ["./images/tank-track-1.png", "./images/tank-track-2.png"], 0)]),
-            new Sprite(  0,  2, 180, 28, 34, "./images/tank-body.png"),
+            new Sprite(  0,  1, 180, 28, 34, "./images/tank-body.png"),
             //new Box(  0,-12, 0, 12, 8, "darkgreen"),
-            new ObjectGroup(0, -3, 0, [new Behavior.Move], [
+            new ObjectGroup(0, 0, 0, [new Behavior.Move], [
                 new Sprite( 0, 6, 180,  22, 36, "./images/tank-turret.png")
+            ])
+        ]);
+        else
+            tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank], [
+            new Sprite(-11, -1, 0,  10, 30, null, [new Behavior.Animate(
+                ["./images/tank-track-1-small.png", "./images/tank-track-2-small.png"], 0)]),
+            new Sprite( 11, -1, 0,  10, 30, null, [new Behavior.Animate(
+                ["./images/tank-track-1-small.png", "./images/tank-track-2-small.png"], 0)]),
+            new Sprite(  0,  1, 180, 24, 34, "./images/tank-body-small.png"),
+            //new Box(  0,-12, 0, 12, 8, "darkgreen"),
+            new ObjectGroup(0, -2, 0, [new Behavior.Move], [
+                new Sprite( 0, 6, 180,  18, 38, "./images/tank-turret-small.png")
             ])
         ]);
         tank.hp = 9;
