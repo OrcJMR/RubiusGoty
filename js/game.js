@@ -38,12 +38,14 @@ var Game = {
     },
     spawnTank: function(x, y, angle, color, networkTeamId) {
         var tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank], [
-            new Box(-12,  0, 0,  8, 32, "saddlebrown"),
-            new Box( 12,  0, 0,  8, 32, "saddlebrown"),
-            new Box(  0,  0, 0, 24, 24, color),
-            new Box(  0,-12, 0, 12, 8, "darkgreen"),
-            new ObjectGroup(0, 0, 0, [new Behavior.Move], [
-                new Box(  0, 12, 0,  4, 24, "black")
+            new Sprite(-12, -0.5, 0,  8, 29, null, [new Behavior.Animate(
+                ["./images/tank-track-1.png", "./images/tank-track-2.png"], 0)]),
+            new Sprite( 12, -0.5, 0,  8, 29, null, [new Behavior.Animate(
+                ["./images/tank-track-1.png", "./images/tank-track-2.png"], 0)]),
+            new Sprite(  0,  2, 180, 28, 34, "./images/tank-body.png"),
+            //new Box(  0,-12, 0, 12, 8, "darkgreen"),
+            new ObjectGroup(0, -3, 0, [new Behavior.Move], [
+                new Sprite( 0, 6, 180,  22, 36, "./images/tank-turret.png")
             ])
         ]);
         tank.hp = 9;
@@ -51,7 +53,7 @@ var Game = {
         tank.LeftTrack.torque = 0;
         tank.RightTrack = tank.items[1];
         tank.RightTrack.torque = 0;
-        tank.Barrel = tank.items[4];
+        tank.Barrel = tank.items[3];
         tank.Barrel.recoil = 0;
         tank.width = 32; //this is for collision detection
         tank.height = 32;
@@ -158,6 +160,10 @@ var Game = {
             tank.LeftTrack.torque += tank.Inputs.LeftTrackInput.read(timestamp);
             tank.RightTrack.torque += tank.Inputs.RightTrackInput.read(timestamp);
 
+            // torques are stored in wrong tracks
+            tank.LeftTrack.animDelay = tank.RightTrack.torque == 0 ? 0 : 100;
+            tank.RightTrack.animDelay = tank.LeftTrack.torque == 0 ? 0 : 100;
+            
             //tank.moveYSpeed = driveSpeed * tank.Inputs.LeftTrackInput.read(timestamp);
             //tank.moveXSpeed = driveSpeed/2 * tank.Inputs.StrafeInput.read(timestamp);
             //tank.moveAngSpeed = turnSpeed * tank.Inputs.RightTrackInput.read(timestamp);
@@ -167,33 +173,6 @@ var Game = {
                 tank.Barrel.firing = true;
             tank.Barrel.recoil = Math.min(fireState, 0);
         });
-
-/*
-        var throttle = App.Inputs.ThrottleInput.read(timestamp);
-        var turning = App.Inputs.TankTurnInput.read(timestamp);
-
-        if(Math.abs(turning) < 1E-2) {
-            Game.Tank.LeftTrack.torque = throttle;
-            Game.Tank.RightTrack.torque = throttle;
-        } else if(Math.abs(throttle) < 1E-2) {
-            Game.Tank.LeftTrack.torque = turning;
-            Game.Tank.RightTrack.torque = -turning;
-        } else {
-            Game.Tank.LeftTrack.torque = (throttle + turning) / 2;
-            Game.Tank.RightTrack.torque = (throttle - turning) / 2;
-        }
-        
-        // Game.Tank.LeftTrack.torque = App.Inputs.LeftTrackInput.read(timestamp);
-        // Game.Tank.RightTrack.torque = App.Inputs.RightTrackInput.read(timestamp);
-        
-        //Game.Tank.moveYSpeed = driveSpeed * App.Inputs.LeftTrackInput.read(timestamp);
-        //Game.Tank.moveXSpeed = driveSpeed/2 * App.Inputs.StrafeInput.read(timestamp);
-        //Game.Tank.moveAngSpeed = turnSpeed * App.Inputs.RightTrackInput.read(timestamp);
-        Game.Tank.Barrel.moveAngSpeed = turnSpeed * App.Inputs.TurretTurnInput.read(timestamp);
-        var fireState = App.Inputs.FireInput.read(timestamp);
-        if(fireState == 1)
-            Game.Tank.Barrel.firing = true;
-        Game.Tank.Barrel.recoil = Math.min(fireState, 0);*/
     },
     Logic: function(delta) {
         Game.Tanks.forEach(function(tank) {
@@ -214,7 +193,7 @@ var Game = {
                 tank.Barrel.firing = false;
                 PlaySound("./sound/tank-fire.wav", 80);
             }
-            tank.Barrel.items[0].y = 12 + tank.Barrel.recoil * 6;
+            tank.Barrel.items[0].y = 6 + tank.Barrel.recoil * 6;
             
             if(tank == Game.Tank1)
                 this.updateTankGui(tank, "t1");

@@ -16,6 +16,7 @@ var App = {
         Game.Map.drawMap(ctx, 0, 0);
         Game.RootEntity.draw(ctx);
         ctx.restore();
+        
         ctx.lineWidth = 2;
         ctx.strokeStyle = "#0a0";
         ctx.strokeRect(0, 0, 752, 752);
