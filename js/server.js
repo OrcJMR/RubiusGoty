@@ -1,111 +1,223 @@
+var server = require('http').createServer(),
+    WebSocketServer = require('ws').Server,
+    wss = new WebSocketServer({ server: server }),
+    express = require('express'),
+    app = express();
 
-// Behaviors store their parameters inside target object.
-// Constructors construct init() with initial values, everything else is static.
+// Client stuff
 
-function NetworkCooldownInputKeyboardStub(team, property) {
-    this.team = team;
-    this.property = property;
-}
-NetworkCooldownInputKeyboardStub.prototype = {
-    isDown: function(char) {
+var port = process ? process.env.PORT : 9090;
+if (!port)
+    port = 9090;
+console.log("Port: " + port);
 
-        var team = this.team();
-        if (!team)
-            return 0;
-        var flag1 = 0;
-        var that = this;
-        team.members.forEach(function (member) {
-            var state = member.state;
-            if (!state)
-                return;
+app.use(express.static('.'));
+app.get("/", function (request, response) {
+    response.sendFile(__dirname + '/index.html');
+});
 
-            if (state[that.property] == 1) {
-                flag1 = 1;
-            }
 
-        });
 
-        return flag1;
-    }
+var admin = [];
+var teams = []; //array of Team
+function Team(id, title, color) {
+    this.members = []; //array of client (structure see below var client = {)
+    this.positionsTaken = {};
+    this.title = title;
+    this.color = color;
+    this.id = id;
+};
+teams.push(new Team(1, "Team Indigo", "indigo"));
+teams.push(new Team(2, "Team Yellow", "yellow"));
+teams.push(new Team(3, "Team Green", "green"));
+
+var actions = ['fire', 'turretLeft', 'turretRight', 'strafeRight', 'strafeLeft', 'rightTrackForward', 'rightTrackBackward'
+    , 'moveForward', 'moveBackward', 'leftTrackForward', 'leftTrackBackward'];
+var serverModel = {
+    teams: teams
 };
 
-function NetworkBiDiInput(team, propertyForward, propertyBackward) {
-    this.team = team;
-    this.propertyForward = propertyForward;
-    this.propertyBackward = propertyBackward;
+var _gameState = {
+    state: 0,
+    teams: teams.map(function (team) { return {title: team.title, color: team.color, id: team.id};})
+};
+
+function SendServerModel() {
+    var seen = [];
+    var model = {
+        type: 'ViewModel',
+        teams: [],
+    };
+    teams.forEach(function (team) {
+        model.teams.push({
+            members: team.members.map(function (i){return i.model;}),
+            title: team.title,
+            id: team.id,
+            color: team.color,
+        });
+    });
+
+    console.log("to Server " + admin.length + ": " + JSON.stringify(model));
+    admin.forEach(function(elem) {
+        try{
+            elem.send(JSON.stringify(model));
+        }catch (Exception) {
+        }
+    })
 }
 
-NetworkBiDiInput.prototype = {
-    read: function() {
-        var flag1 = 0;
-        var flag2 = 0;
-
-        var team = this.team();
-        if (!team)
-            return 0;
-
-        var that = this;
+function SendClientViewModelToAllClients() {
+    teams.forEach(function (team) {
         team.members.forEach(function (member) {
-            var state = member.state;
-            if (!state)
-                return;
-
-            if (state[that.propertyForward] == 1) {
-                flag1 = 1;
-            }
-            if (state[that.propertyBackward] == 1) {
-                flag2 = 1;
-            }
-        });
-
-        if(flag1 == flag2)
-            return 0;
-        if(flag1)
-            return 1;
-        if(flag2)
-            return -1;
-    }
+            member.SendClientModel();
+        })
+    })
 }
 
-var Sockets = (function() {
+function RemoveFromArray(array, elem) {
+    var index = array.indexOf(elem);
+    if (index > -1)
+        array.splice(index, 1);
+}
 
-    _socket.onopen = function()
-    {
-        _socket.sendJson({
-            isAdmin: true,
-        });
-        _socket.sendJson({
-            type: 'gameState',
-            state: 0,
-        });
+function UpdateTeamPositions(teamId) {
+    if (!teamId)
+        return;
+    var team = serverModel.teams[teamId-1];
+    var positionsTaken = {};
+    console.log("Members count: " + team.members.length)
+    team.members.forEach(function (member) {
+        positionsTaken[member.model.position] = true;
+    });
+
+    team.positionsTaken = positionsTaken;
+    team.members.forEach(function (member) {
+        member.model.positionsTaken = positionsTaken;
+        member.SendClientModel();
+    });
+}
+
+// Server stuff
+wss.on('connection', function connection(ws) {
+    console.log('someone connected');
+
+    var intervalId = setInterval(function() {
+
+        if (model.ping.getTime() + 10000 < (new Date()).getTime()){
+            console.log('lost client (no ping)');
+            actions.forEach(function (action) {
+                model.state[action] = 0;
+                model.position = "";
+            });
+            //ws.close();
+            SendServerModel();
+        }
+    }, 10000);
+
+    var isAdmin = false;
+    var model = {
+        type: 'ViewModel',
+        ping: new Date(),
+        gameState: _gameState,
+        positionsTaken: {},
+        state: {},
+    };
+    var client = {
+        ws: ws,
+        model: model,
+        SendClientModel: function() {
+            try{
+                var message = JSON.stringify(model);
+                console.log('Send to client: ' + message);
+                ws.send(message);
+            }catch (Exception) {
+            }
+        },
+        UpdateTeam: function (team) {
+            serverModel.teams.forEach(function (team) {
+                RemoveFromArray(team.members, client);
+            });
+
+            model.team = team;
+            if (team == undefined)
+                return;
+            console.log("UpdateTeam: " + team);
+
+            var team = serverModel.teams[model.team - 1];
+            team.members.push(client);
+            UpdateTeamPositions(model.team);
+        }
     }
+    client.SendClientModel();
 
-    /*setInterval(function () {
-        Sockets.SendState();
-    }, 5000);
-*/
-    _socket.onmessage = function(msg){
-        var data = JSON.parse(msg.data);
-        console.log('got msg ' + msg.data);
+    ws.on('close', function close() {
+        if (ws.gameState) {
+            _gameState.state = 0;
+            SendClientViewModelToAllClients
+        }
+        RemoveFromArray(admin, ws);
+        serverModel.teams.forEach(function (team) {
+            RemoveFromArray(team.members, client);
+        });
 
-        if (data.type == 'ViewModel') {
-            Sockets.ViewModel = data;
-            if (Sockets.UpdateCallback) {
-                Sockets.UpdateCallback();
+        UpdateTeamPositions(model.team);
+
+        SendServerModel();
+        clearInterval(intervalId);
+    });
+
+    ws.on('message', function incoming(message) {
+        var data = JSON.parse(message);
+
+        if (data.isAdmin) {
+            isAdmin = true;
+            admin.push(ws);
+            SendServerModel();
+        }
+
+        if (data.type == 'join') {
+            model.name = data.name;
+            model.position = data.position;
+
+            client.UpdateTeam(data.team);
+
+            SendServerModel();
+        } else if (data.type == 'ping') {
+            model.ping = new Date();
+            UpdateTeamPositions(model.team);
+            client.SendClientModel();
+        } else if (data.type == 'close') {
+            model.position = "";
+            UpdateTeamPositions(model.team);
+        } else if (data.type == 'clientState') {
+            model.state = data;
+            SendServerModel();
+        } else if (data.type == 'getPositions') {
+            if (data.team) {
+                client.UpdateTeam(data.team);
+                client.SendClientModel();
             }
         }
 
-    }
+        if (isAdmin) {
+            if (data.type == 'kickAll') {
+                serverModel.teams.forEach(function (team) {
+                    team.members.forEach(function (member) {member.ws.send(JSON.stringify({type: 'kick'}));});
+                    team.members.length = 0;
+                });
 
-    return {
-        ViewModel: {
-            teams: [
-                {}, {}
-            ],
-        },
-        /*SendState: function() {
-            Sockets.sendJson({type: 'gameState', state: Sockets.ViewModel.gameStarted});
-        },*/
-        UpdateCallback: null
-    };
-})();
+                SendServerModel();
+            } else if (data.type == 'gameState') {
+                ws.gameState = data.state;
+                _gameState.state = ws.gameState;
+                SendClientViewModelToAllClients();
+            }
+        }
+    });
+});
+
+// Listen
+server.on('request', app);
+server.listen(port, function () {
+    console.log('Your app is listening on port ' + server.address().port);
+});
