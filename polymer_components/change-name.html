@@ -2,7 +2,8 @@
 <dom-module id="change-name">
     <template>
 
-<a href="#" on-tap="changeName">Change name</a>
+<!--<a href="#" on-tap="changeName">Change name</a>-->
+        <a style="cursor: pointer;" on-tap="changeName">Back</a>
     </template>
 </dom-module>
 
@@ -10,11 +11,16 @@
 
     Polymer({
         is: 'change-name',
+        properties: {
+            resetName: Boolean
+        },
         ready: function() {
         },
         changeName: function() {
-            localStorage.setItem('username', '');
-            GoTo('/');
+            if (this.resetName) {
+                localStorage.setItem('username', '');
+            }
+            window.history.back();
         },
 
     });

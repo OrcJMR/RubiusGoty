@@ -14,7 +14,7 @@
     <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <link rel="import" href="bower_components/polymer/polymer.html">
     <link rel="import" href="bower_components/app-router/app-router.html">
-    <link rel="import" href="polymer_components/change-name.html">
+    <link rel="import" href="polymer_components/server-info.html">
 
     <!--Import jQuery before materialize.js-->
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -25,14 +25,7 @@
     <script type="text/javascript" src="js/client.js"></script>
 </head>
 
-<body style="padding: 0 40px;">
-<app-router>
-    <!-- matches an exact path -->
-    <app-route path="" import="polymer_components/login-page.html"></app-route>
-    <app-route path="/chooseteam" import="polymer_components/choose-team-page.html"></app-route>
-    <app-route path="/team/:teamId" import="polymer_components/choose-position-page.html"></app-route>
-    <app-route path="/team/:teamId/position/:positionId" import="polymer_components/controls-page.html"></app-route>
-</app-router>
-
+<body>
+    <server-info></server-info>
 </body>
 </html>

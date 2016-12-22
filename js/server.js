@@ -74,9 +74,16 @@ var Sockets = (function() {
         _socket.sendJson({
             isAdmin: true,
         });
+        _socket.sendJson({
+            type: 'gameState',
+            state: 0,
+        });
     }
 
-
+    /*setInterval(function () {
+        Sockets.SendState();
+    }, 5000);
+*/
     _socket.onmessage = function(msg){
         var data = JSON.parse(msg.data);
         console.log('got msg ' + msg.data);
@@ -93,9 +100,12 @@ var Sockets = (function() {
     return {
         ViewModel: {
             teams: [
-                {}, {}, {}, {}, {}
-            ]
+                {}, {}
+            ],
         },
+        /*SendState: function() {
+            Sockets.sendJson({type: 'gameState', state: Sockets.ViewModel.gameStarted});
+        },*/
         UpdateCallback: null
     };
 })();

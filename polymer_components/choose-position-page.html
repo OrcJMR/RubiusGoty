@@ -7,35 +7,16 @@
         <main>
 
             <center>
-Hi, {{name}}! You are in Team {{teamId}}
-                Choose your position:
-                <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.turret}}"  data-position="turret" on-tap="setPosition">Turret</button>
-                </div>
-                <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.move1}}" data-position="move1" on-tap="setPosition">Move</button>
-                </div>
-                <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.move2}}" data-position="move2" on-tap="setPosition">Move</button>
-                </div>
-                <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.turn1}}" data-position="turn1" on-tap="setPosition">Turn</button>
-                </div>
-                <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.turn2}}" data-position="turn2" on-tap="setPosition">Turn</button>
-                </div>
-                <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.leftTrack}}" data-position="leftTrack" on-tap="setPosition">leftTrack</button>
-                </div>
-                <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.rightTrack}}" data-position="rightTrack" on-tap="setPosition">rightTrack</button>
-                </div>
-                <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.strafe}}" data-position="strafe" on-tap="setPosition">strafe</button>
-                </div>
-                <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.fire}}" data-position="fire" on-tap="setPosition">fire</button>
-                </div>
+                Привет, <b>{{name}}</b>! You are in Team {{teamId}}.
+<br/>
+                <br/>
+                Choose your role:
+                <br/>
+                <template is="dom-repeat" items="{{positions}}" as="position">
+                    <div class='row'>
+                        <button type='submit' class$='col s12 btn btn-large waves-effect {{position.color}}' disabled="{{position.taken}}" data-position$="{{position.id}}" on-tap="setPosition">{{position.title}}</button>
+                    </div>
+                </template>
 
             </center>
 
@@ -56,21 +37,19 @@ Hi, {{name}}! You are in Team {{teamId}}
             CheckClientNavigationShouldExit('choose-position');
 
             this.name = localStorage.getItem("username");
-            var positions = ['turret', 'move','turn','leftTrack','rightTrack','strafe','fire', 'move1', 'move2', 'turn1', 'turn2'];
 
-
-            var positionsTaken = {
-            };
-            positions.forEach(function (i) {positionsTaken[i] = true;});
-            this.positionsTaken = positionsTaken;
-
+            _positions.forEach(function (position) {position.taken = true;});
+            this.positions = _positions;
         },
         attached: function() {
             var that = this;
             Sockets.sendJson({type: 'getPositions', team: that.teamId});
 
             Sockets.UpdateCallback = function () {
-                that.set('positionsTaken', Sockets.ViewModel.positionsTaken)
+                _positions.forEach(function (position, index) {
+                    position.taken = Sockets.ViewModel.positionsTaken[position.id] || false;
+                    that.notifyPath('positions.'+index+".taken");
+                });
             };
         },
         setPosition: function(e) {
