@@ -70,9 +70,9 @@ Behavior.Move.prototype = {
 Behavior.MoveTank = function(leftTrackSpeed, rightTrackSpeed) {
     this.init = function(obj) {
         obj.speed = 0;
-        obj.maxSpeed = 120/1000; //px/msec
+        obj.maxSpeed = 60/1000; //px/msec
         obj.rotationSpeed = 0;
-        obj.maxRotationSpeed = 100/1000; //deg/msec
+        obj.maxRotationSpeed = 60/1000; //deg/msec
     };
 };
 Behavior.MoveTank.prototype = {
