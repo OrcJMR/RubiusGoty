@@ -5,36 +5,36 @@ var _positions = [
         title: 'Руководить',
         id: 'manager',
         actions: [
-            {action:'managerGood', text: 'Хвалить', icon: 'button-right.png'},
-            {action:'managerBad', text: 'Ругать', icon: 'button-right.png'}
+            {action:'managerGood', text: 'Хвалить', icon: 'button-good.png'},
+            {action:'managerBad', text: 'Ругать', icon: 'button-bad.png'}
         ]
     },
     {
-        title: 'Коммит',
+        title: 'Коммитить',
 
         id: 'fire',
         actions: [
-            {action:'fire', text: 'Коммит', icon: 'button-fire.png'}
+            {action:'fire', text: 'Коммит!', icon: 'button-fire.png'}
         ]
     },
     {
-        title: 'Код Ревью',
+        title: 'Проводить код-ревью',
 
         id: 'turret',
         actions: [
-            {action:'turnLeft', text: 'Принять', icon: 'button-turret.png'},
-            {action:'turnRight', text: 'Отклонить', icon: 'button-turret.png'}
+            {action:'turnLeft', text: 'Принять', icon: 'button-turret-left.png'},
+            {action:'turnRight', text: 'Отклонить', icon: 'button-turret-right.png'}
         ]
     },
     {
-        title: 'Новые Фичи',
+        title: 'Писать новые фичи',
         id: 'move1',
         actions: [
-            {action:'moveForward', text: 'Новые Фичи', icon: 'button-forward.png'}
+            {action:'moveForward', text: 'Написать фичу', icon: 'button-forward.png'}
         ]
     },
     {
-        title: 'Переписать заново',
+        title: 'Переписывать всё заново',
         id: 'move2',
         actions: [
             {action:'moveBackward', text: 'Переписать заново', icon: 'button-backward.png'}
@@ -42,17 +42,17 @@ var _positions = [
     },
 
     {
-        title: 'Делать как СЮ',
+        title: 'Делать как С.Ю.',
         id: 'turn1',
         actions: [
-            {action:'turnLeft', text: 'Делать как СЮ', icon: 'button-left.png'}
+            {action:'turnLeft', text: 'Сделать как С.Ю.', icon: 'button-left.png'}
         ]
     },
     {
-        title: 'Делать как СЕ',
+        title: 'Делать как С.Е.',
         id: 'turn2',
         actions: [
-            {action:'turnRight', text: 'Делать как СЕ', icon: 'button-right.png'}
+            {action:'turnRight', text: 'Сделать как С.Е.', icon: 'button-right.png'}
         ]
     }
 
