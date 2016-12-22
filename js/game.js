@@ -88,6 +88,7 @@ var Game = {
             //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
             tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretLeft', 'turretRight');
             tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
+            tank.teamId = networkTeamId;
         }
 
         //todo fix loop sound gap problem
@@ -258,24 +259,8 @@ var Game = {
             if(tank.boss) {
                 tank.Head.angle = tank.Barrel.angle / 4 - Math.PI / 2;
                 if(tank.Head.angle < -Math.PI / 4) tank.Head.angle += Math.PI / 2;
-            }
-            
-            if(tank == Game.Tank1)
-                this.updateTankGui(tank, "t1");
-            if(tank == Game.Tank2)
-                this.updateTankGui(tank, "t2");
+            }            
         }, this);
-    },
-    updateTankGui: function(tank, prefix){
-        for(var i = 1; i<10; i++) {
-            l(prefix+'hp'+i).style.backgroundImage = tank.hp < i ? "url('images/hp-cube-off.png')" : "url('images/hp-cube.png')";
-        }
-        // l(prefix+'tl').style.visibility = tank.Barrel.moveAngSpeed < -1E-6 ? "visible" : "hidden";
-        // l(prefix+'tr').style.visibility = tank.Barrel.moveAngSpeed > 1E-6 ? "visible" : "hidden";
-        // l(prefix+'lf').style.visibility = tank.LeftTrack.torque > 1E-6 ? "visible" : "hidden";
-        // l(prefix+'lb').style.visibility = tank.LeftTrack.torque < -1E-6 ? "visible" : "hidden";
-        // l(prefix+'rf').style.visibility = tank.RightTrack.torque > 1E-6 ? "visible" : "hidden";
-        // l(prefix+'rb').style.visibility = tank.RightTrack.torque < -1E-6 ? "visible" : "hidden";
     },
 }
 

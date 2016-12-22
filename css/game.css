@@ -14,14 +14,23 @@ body{
 
 .game-frame{
     position: absolute;
+    top: 80px;
     width: 1008px;
-    height: 752px;
+    height: 672px;
 }
 
-.hp{
+.hud-panel{
     position: absolute;
-    width: 16px;
-    height: 16px;
+    top: 0px;
+    width: 240px;
+    height: 64px;
+}
+
+.top-frame{
+    position: absolute;
+    top: 0px;
+    width: 1024px;
+    height: 80px;
 }
 
 #gameCanvas{
@@ -32,25 +41,4 @@ body{
     image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
     image-rendering: pixelated;                 /* Awesome future-browsers       */
     -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
-}
-
-.tank-scheme{
-    position: absolute;
-    width: 240px;
-    height: 240px;
-    top: 8px;
-    background: url("../images/tank.png") no-repeat;
-    background-size: cover;
-}
-
-.scheme-overlay{
-    position: absolute;
-    width: 64px;
-    height: 64px;
-    background-size: cover;
-    background-repeat: no-repeat;
-}
-
-.spacer{
-    clear: both;
 }
