@@ -17,7 +17,14 @@
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="bower_components/materialize/dist/js/materialize.min.js"></script>    
 </head>
-
+<script>
+    $(window).keypress(function (e) {
+        if (e.keyCode === 0 || e.keyCode === 32) {
+        e.preventDefault()
+        window.location.href = '/game.html';
+    }
+})
+</script>
 <body>
 
     <lobby-team-info />
