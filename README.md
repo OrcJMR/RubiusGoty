@@ -17,3 +17,6 @@ Things still missing from this product:
  - SPRITES. The game should contain lots of graphonium, and ideally original.
   - Fonts, frames, powerup icons, tank components, particles, shells, blasts, map tiles, destructibles, ravaged terrain.
  - Proper music - cool, retro-y, and ideally royalty-free.
+
+Start server by running
+`node server.js`

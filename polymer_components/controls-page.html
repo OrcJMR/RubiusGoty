@@ -13,13 +13,20 @@
                 Hi, {{name}}! You are in Team {{teamId}}
                 Your position: {{positionId}}
 
-                <template is="dom-if" if="{{_equals(positionId, 'move')}}">
+                <template is="dom-if" if="{{_equals(positionId, 'move1')}}">
                     <div>
                         <div class='row'>
                             <button class='col s12 btn btn-large waves-effect purple' data-action="moveForward"
                                     on-down="buttonDownAction" on-up="buttonUpAction">Forward
                             </button>
                         </div>
+
+                    </div>
+                </template>
+
+                <template is="dom-if" if="{{_equals(positionId, 'move2')}}">
+                    <div>
+
                         <div class='row'>
                             <button class='col s12 btn btn-large waves-effect green' data-action="moveBackward"
                                     on-down="buttonDownAction" on-up="buttonUpAction">Backward
@@ -29,13 +36,18 @@
                 </template>
 
 
-                <template is="dom-if" if="{{_equals(positionId, 'turn')}}">
+                <template is="dom-if" if="{{_equals(positionId, 'turn1')}}">
                     <div>
                         <div class='row'>
                             <button class='col s12 btn btn-large waves-effect purple' data-action="turnLeft"
                                     on-down="buttonDownAction" on-up="buttonUpAction">Left
                             </button>
                         </div>
+                    </div>
+                </template>
+
+                <template is="dom-if" if="{{_equals(positionId, 'turn2')}}">
+                    <div>
                         <div class='row'>
                             <button class='col s12 btn btn-large waves-effect green' data-action="turnRight"
                                     on-down="buttonDownAction" on-up="buttonUpAction">Right
@@ -130,6 +142,10 @@
     var model = {
         type: 'clientState'
     };
+    var actions = ['fire', 'turretLeft', 'turretRight', 'strafeRight', 'strafeLeft', 'rightTrackForward', 'rightTrackBackward'
+    , 'moveForward', 'moveBackward', 'leftTrackForward', 'leftTrackBackward'];
+    var listener;
+    var interval;
     Polymer({
         is: 'controls-page',
         ready: function() {
@@ -139,6 +155,17 @@
             this.name = localStorage.getItem("username");
 
             Sockets.Init(this.name, this.teamId, this.positionId);
+
+            listener = function(){
+                actions.forEach(function(action) {
+                    model[action] = 0;
+                    Sockets.sendJson(model);
+                })
+            };
+            window.addEventListener('blur', listener, false);
+            interval = setInterval(function() {
+                Sockets.sendJson({type: 'ping'});
+            }, 5000)
         },
         _equals: function (val1, val2) {
             if (val1 == val2)
@@ -148,6 +175,9 @@
         },
         detached: function () {
             Sockets.Close();
+            window.removeEventListener('blur', listener, false);
+            clearInterval(interval);
+
         },
         buttonDownAction: function (e) {
             var action = e.target.dataset.action;

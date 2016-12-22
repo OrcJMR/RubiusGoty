@@ -1,18 +1,15 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <dom-module id="server-info">
     <template>
+        <template is="dom-repeat" items="{{model.teams}}" as="team" >
         <div>
-            Team 1:
-            <template is="dom-repeat" items="{{model.team1.members}}">
+            Team {{_inc(index)}}:
+            <template is="dom-repeat" items="{{team.members}}">
                 <div>Name: <span>{{item.name}}</span> <b>{{item.position}}</b></div>
             </template>
         </div>
-        <div>
-            Team 2:
-            <template is="dom-repeat" items="{{model.team2.members}}">
-                <div>Name: <span>{{item.name}}</span> <b>{{item.position}}</b></div>
-            </template>
-        </div>
+        </template>
+
         <button on-tap="kickAll">Kick all</button>
     </template>
 </dom-module>
@@ -30,7 +27,9 @@
             }
             Sockets.UpdateCallback();
         },
-
+        inc: function(i){
+            return i + 1;
+        },
         kickAll: function() {
             _socket.sendJson({type: 'kickAll'});
         }

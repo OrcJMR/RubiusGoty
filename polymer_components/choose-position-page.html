@@ -13,10 +13,16 @@ Hi, {{name}}! You are in Team {{teamId}}
                     <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.turret}}"  data-position="turret" on-tap="setPosition">Turret</button>
                 </div>
                 <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.move}}" data-position="move" on-tap="setPosition">Move</button>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.move1}}" data-position="move1" on-tap="setPosition">Move</button>
                 </div>
                 <div class='row'>
-                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.turn}}" data-position="turn" on-tap="setPosition">Turn</button>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.move2}}" data-position="move2" on-tap="setPosition">Move</button>
+                </div>
+                <div class='row'>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.turn1}}" data-position="turn1" on-tap="setPosition">Turn</button>
+                </div>
+                <div class='row'>
+                    <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.turn2}}" data-position="turn2" on-tap="setPosition">Turn</button>
                 </div>
                 <div class='row'>
                     <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect pink' disabled="{{positionsTaken.leftTrack}}" data-position="leftTrack" on-tap="setPosition">leftTrack</button>
@@ -50,7 +56,7 @@ Hi, {{name}}! You are in Team {{teamId}}
             CheckClientNavigationShouldExit('choose-position');
 
             this.name = localStorage.getItem("username");
-            var positions = ['turret', 'move','turn','leftTrack','rightTrack','strafe','fire'];
+            var positions = ['turret', 'move','turn','leftTrack','rightTrack','strafe','fire', 'move1', 'move2', 'turn1', 'turn2'];
 
 
             var positionsTaken = {
