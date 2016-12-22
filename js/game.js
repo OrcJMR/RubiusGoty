@@ -133,28 +133,17 @@ var Game = {
 
 
         //todo fix loop sound gap problem
-        tank.throttleSound = PlaySound('./sound/engine working long.mp3', 0.1, 1, type);
+        tank.throttleSound = PlaySound('./sound/engine working long.mp3', 0.05, 1, type);
         //tank.idleSound = PlaySound('./sound/engine working2.mp3', 0, 1, type);
 
         tank.setMovementSound = function(throttle){
             var v = Math.max(
-                0.1 + Math.abs(this.speed*0.6/this.maxSpeed),
-                0.1 + Math.abs(this.rotationSpeed*0.6/this.maxRotationSpeed)
+                0.05 + Math.abs(this.speed*0.6/this.maxSpeed),
+                0.05 + Math.abs(this.rotationSpeed*0.6/this.maxRotationSpeed)
             );
 
             if (v > 1) v = 1;
-
-            if (Math.abs(this.throttleSound.volume - v) > 0.05){
-                this.throttleSound.volume = v;
-            }
-
-            // if (throttle == 0){
-            //     this.throttleSound.volume = 0;
-            //     this.idleSound.volume = 0.8;
-            // } else{
-            //     this.throttleSound.volume = 0.8;
-            //     this.idleSound.volume = 0;
-            // }
+            this.throttleSound.volume = v;                       
         }
 
         return tank;
