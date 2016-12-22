@@ -7,7 +7,7 @@
         <main>
 
             <center>
-                Привет, <b>{{name}}</b>! You are in Team {{teamId}}.
+                Привет, <b>{{name}}</b>! You are in <b>{{team.title}}</b>.
 <br/>
                 <br/>
                 Choose your role:
@@ -46,11 +46,13 @@
             Sockets.sendJson({type: 'getPositions', team: that.teamId});
 
             Sockets.UpdateCallback = function () {
+                that.team = Sockets.ViewModel.gameState.teams[that.teamId - 1];
                 _positions.forEach(function (position, index) {
                     position.taken = Sockets.ViewModel.positionsTaken[position.id] || false;
                     that.notifyPath('positions.'+index+".taken");
                 });
             };
+            Sockets.UpdateCallback();
         },
         setPosition: function(e) {
             var position = e.target.dataset.position;
