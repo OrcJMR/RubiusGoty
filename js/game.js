@@ -92,12 +92,13 @@ var Game = {
         var managerGoodInput;
         var managerBadInput;
         if(tank.boss) {
-            managerGoodInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood'), '2', 10000, true);
-            managerBadInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerBad'), '2', 10000, true);
+            managerGoodInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood'), '2', 5000, true);
+            managerBadInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerBad'), '2', 5000, true);
         } else {
-            managerGoodInput = new KeyboardCooldownInput(App.Keyboard, '4', 10000, true);
-            managerBadInput = new KeyboardCooldownInput(App.Keyboard, '5', 10000, true);            
+            managerGoodInput = new KeyboardCooldownInput(App.Keyboard, '4', 5000, true);
+            managerBadInput = new KeyboardCooldownInput(App.Keyboard, '5', 5000, true);
         }
+        var baloonShown = false;
         setInterval(function() {
             var replics = null;
             if (managerGoodInput.read(new Date().getTime())== 1) {
@@ -105,10 +106,11 @@ var Game = {
             } else if (managerBadInput.read(new Date().getTime())== 1) {
                 replics = _managerBadReplics;
             }
-            if (replics) {
+            if (replics && !baloonShown) {
+                baloonShown = true;
                 var replicId =  Math.floor(Math.random() * replics.length);
                 var replic = replics[replicId];
-                var div = $('<div style="position: absolute;" class="balloon-frame">'+replic+'</div>');
+                var div = $('<div style="position: absolute;" class="balloon-frame"><div class="balloon-frame-inner">'+replic+'</div></div>');
                 div.appendTo($('body'));
                 div.offset({ top: tank.y + 10, left: tank.x + 10 });
 
@@ -126,6 +128,7 @@ var Game = {
 
                 setTimeout(function () {
                     div.remove();
+                    baloonShown = false;
                 },5000);
             }
         }, 200);
