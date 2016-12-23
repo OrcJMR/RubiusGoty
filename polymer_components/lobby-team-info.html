@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <dom-module id="lobby-team-info">
     <template>
+        <!--
         <div class="container row">
             <template is="dom-repeat" items="{{model.teams}}" as="team" >
                 <div class="col s4 section">
@@ -15,6 +16,31 @@
                 </div>
             </template>
         </div>
+-->
+        <div class="container row">
+            <template is="dom-repeat" items="{{model.teams}}" as="team" >
+                <div class="col s4 section">
+                    <h5>{{team.title}}</h5>
+                    <div class="collection">
+                        <template is="dom-repeat" items="{{team.positions}}" as="position">
+                            <div class='row'>
+                                <button type='submit' class='col s12 btn btn-large waves-effect' style$="height: auto; line-height: 25px; padding: 15px 20px; {{position.color}}">
+                                    {{position.title}}
+                                    <template is="dom-if" if="{{position.taken}}">
+<br />
+                                        <span style="font-size: 10px;">{{position.member.name}}</span>
+                                    </template>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+
+        <button on-tap="kickAll">Kick all</button>
+        <button on-tap="startGame">Start game</button>
     </template>
 </dom-module>
 
@@ -24,14 +50,50 @@
         ready: function () {
             this.model = Sockets.ViewModel;
 
+
             var that = this;
             Sockets.UpdateCallback = function () {
+                if (Sockets.ViewModel.teams) {
+                    Sockets.ViewModel.teams.forEach(function (team) {
+
+                        var positions = [];
+                        var positionsDictionary = {};
+
+                        _positions.forEach(function (position) {
+                            position = Object.assign({}, position);
+                            position.color = 'background-color: gold;';
+                            positions.push(position);
+                            positionsDictionary[position.id] = position;
+                        })
+
+
+                        team.members.forEach(function (member) {
+                            var position = positionsDictionary[member.position] || {};
+                            position.color = 'background-color: #4CAF50;';
+                            position.taken = true;
+                            position.member = member;
+                        });
+
+                        team.positions = positions;
+                    });
+                }
+
                 that.set('model', Sockets.ViewModel);
+                that.notifyPath('model.teams.0.positions');
             }
             Sockets.UpdateCallback();
         },
         inc: function(i){
             return i + 1;
+        },
+        kickAll: function() {
+            _socket.sendJson({type: 'kickAll'});
+        },
+        startGame: function() {
+            _socket.sendJson({
+                type: 'gameState',
+                state: 1,
+            });
         },
     });
 </script>
