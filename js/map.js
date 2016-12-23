@@ -6,30 +6,30 @@ function Map(){
 
     var terrain = 
     "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" +
-    "S...........c||||c..........SfffffffS..........c||||c...........S" +
-    "S...........c||||c..........SfffffffS..........c||||c...........S" +
-    "S...........c||||c..........fffffffff..........c||||c...........S" +
-    "S...........c||||c......S...fffffffff...S......c||||c...........S" +
-    "S...........c||||c......S...fffffffff...S......c||||c...........S" +
-    "S...........c||||c......S...SfffffffS...S......c||||c...........S" +
-    "S...........c||||c......S...SSSSSSSSS...S......c||||c...........S" +
-    "S...........c||||c.............................c||||c...........S" +
-    "S...........c||||c.............................c||||c...........S" +
-    "S...........c||||c.............................c||||c...........S" +
-    "S...........c||||c.............................c||||c...........S" +
-    "S...........c||||c.............................c||||c...........S" +
-    "Scccccccccccc||||c.............................c||||ccccccccccccS" +
-    "S------------++||c.............................c||++------------S" +
-    "S------------+++|c.............................c|+++------------S" +
-    "S------------+++|c.............................c|+++------------S" +
-    "S------------++||c.............................c||++------------S" +
-    "Scccccccccccc||||c.............................c||||ccccccccccccS" +
-    "SfffBBBBBBBBc||||c.............................c||||cBBBBBBBBfffS" +
-    "SfffBBBBBBBBc||||c.............................c||||cBBBBBBBBfffS" +
-    "SfffffffffBBc||||c.............................c||||cBBfffffffffS" +
-    "SfffffffffBBc||||c.............................c||||cBBfffffffffS" +
-    "SfffffffffBBc||||c.............................c||||cBBfffffffffS" +
-    "SBBBBBBfffBBc||||c.............................c||||cBBfffBBBBBBS" +
+    "Sffffffffff,c||||cBBB.......SfffffffS.......BBBc||||c,ffffffffffS" +
+    "Sffffffffff,c||||cBB.......,SfffffffS,.......BBc||||c,ffffffffffS" +
+    "Sffffffffff,c||||cB.......,;fffffffff;,.......Bc||||c,ffffffffffS" +
+    "Sffffffffff,c||||c......S.,;fffffffff;,.S......c||||c,ffffffffffS" +
+    "SffffBBBBBB.c||||c......S.,;fffffffff;,.S......c||||c.BBBBBBffffS" +
+    "SffffBBBBBB.c||||c......S..,SfffffffS,..S......c||||c.BBBBBBffffS" +
+    "SffffffffBB.c||||c..B...S..,SSSSSSSSS,..S...B..c||||c.BBffffffffS" +
+    "SffffffffBB.c||||c.BB.......................BB.c||||c.BBffffffffS" +
+    "SffffffffBB.c||||c.BB.......................BB.c||||c.BBffffffffS" +
+    "SBBBBffffBB.c||||c.BBBBBBBBBB,,,,,BBBBBBBBBBBB.c||||c.BBffffBBBBS" +
+    "SBBBBffffBB.c||||c.BBBBBBBBBB;;;;;BBBBBBBBBBBB.c||||c.BBffffBBBBS" +
+    "S....,,,,...c||||c.BBfffffffffffffffffffffffBB.c||||c...,,,,....S" +
+    "Scccccccccccc||||c.BBfffffffffffffffffffffffBB.c||||ccccccccccccS" +
+    "S------------++||c.BBffcccccccccccccccccccffBB.c||++------------S" +
+    "S------------+++|c.BBffcBBBcff.....ffcBBBcffBB.c|+++------------S" +
+    "S------------+++|c.BBffcBSBcff.....ffcBSBcffBB.c|+++------------S" +
+    "S------------++||c.BBffcBBBcff.....ffcBBBcffBB.c||++------------S" +
+    "Scccccccccccc||||c.,;ffcBSBcff.....ffcBSBcff;,.c||||ccccccccccccS" +
+    "SfffBBBBBBBBc||||c.,;ffcBBBcff.....ffcBBBcff;,.c||||cBBBBBBBBfffS" +
+    "SfffBBBBBBBBc||||c.,;ffccccccccccccffcccccff;,.c||||cBBBBBBBBfffS" +
+    "SfffffffffBBc||||c.,;fffffffffffffffffffffff;,.c||||cBBfffffffffS" +
+    "SfffffffffBBc||||c.BBfffffffffffffffffffffffBB.c||||cBBfffffffffS" +
+    "SfffffffffBBc||||c.BBB;;;;BBBBBBBBBBBBB;;;;BBB.c||||cBBfffffffffS" +
+    "SBBBBBBfffBBc||||c.BBB,,,,BBBBBBBBBBBBB,,,,BBB.c||||cBBfffBBBBBBS" +
     "SBBBBBBfffBBc||||c.............................c||||cBBfffBBBBBBS" +
     "S;;;;BBfffBBc||||ccccccccccccccccccccccccccccccc||||cBBfffBB;;;;S" +
     "S,,,,BBfffBBc||++-------------------------------++||cBBfffBB,,,,S" +
@@ -72,9 +72,9 @@ function Map(){
     "            x                                                    "  +
     "             x                                                   "  +
     "              x                                                  "  +
-    "                                                 x               "  +
+    "                               x x               x               "  +
     "                                                x                "  +
-    "                                               x                 "  +
+    "                              xxxx             x                 "  +
     "                                                                 "  +
     "                                                                 "  +
     "                                                                 "  +
@@ -188,7 +188,7 @@ Map.prototype = {
             for(var cy = 0; cy < this.height; cy ++) {
                 var char = this.getTerrainChar(cx, cy);
                 this.drawTile(ctx, cx, cy, char);
-                if(char != 'B' && char != 'S' && char != '.' && cy > 0 && cx > 0 && cy < 43 && cx < 64) {
+                if(char != 'B' && char != 'S' && cy > 0 && cx > 0 && cy < 43 && cx < 64) {
                     var dx = 0;
                     var dy = 0;
                     var dxs = 0;
@@ -200,18 +200,20 @@ Map.prototype = {
                     if(tleft == 'B' || tleft == 'S')  {dx += 2; }
                     if(tright == 'B' || tright == 'S')  dx += 1;
                     if(ttop == 'B' || ttop == 'S')  dy += 2;
-                    if(tbottom == 'B' || tbottom == 'S')  dy += 1;
-                    if(tleft == '.' || tleft == 'q')  dxs += 2;
-                    if(tright == '.' || tright == 'q') dxs += 1;
-                    if(ttop == '.' || ttop == 'q') dys += 2;
-                    if(tbottom == '.' || tbottom == 'q') dys += 1;
-                    if(dx || dy)
-                        ctx.drawImage(this.tilesImage, (12+dx) * this.tileArtWidth, (0+dy) * this.tileArtHeight, this.tileArtWidth, this.tileArtHeight,
-                            cx * this.tileWidth, cy * this.tileHeight, this.tileWidth, this.tileHeight);
+                    if (tbottom == 'B' || tbottom == 'S') dy += 1;
+                    if (char != '.' && char != ',' && char != ';'){
+                        if (tleft == '.' || tleft == ',' || tleft == ';') dxs += 2;
+                        if (tright == '.' || tright == ',' || tright == ';') dxs += 1;
+                        if (ttop == '.' || ttop == ',' || ttop == ';') dys += 2;
+                        if (tbottom == '.' || tbottom == ',' || tbottom == ';') dys += 1;
+                    }
                     if(dxs || dys)
                         ctx.drawImage(this.tilesImage, (8+dxs) * this.tileArtWidth, (0+dys) * this.tileArtHeight, this.tileArtWidth, this.tileArtHeight,
                             cx * this.tileWidth, cy * this.tileHeight, this.tileWidth, this.tileHeight);                                                
-                    
+                    if (dx || dy)
+                        ctx.drawImage(this.tilesImage, (12 + dx) * this.tileArtWidth, (0 + dy) * this.tileArtHeight, this.tileArtWidth, this.tileArtHeight,
+                            cx * this.tileWidth, cy * this.tileHeight, this.tileWidth, this.tileHeight);
+
                 }
                 var bchar = this.getBuildingChar(cx, cy);
                 if( bchar != ' ')
