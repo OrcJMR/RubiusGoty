@@ -1,9 +1,7 @@
 
 var Game = {
     Map: new Map(),
-    RootEntity: new ObjectGroup(0, 0, 0, [], [
-        new Sprite(100, 100, 45, 32, 32, "./images/tank.png", [new Behavior.TimedLife(5000), new Behavior.Move(0,-0.01,-0.01)]),
-    ]),
+    RootEntity: new ObjectGroup(0, 0, 0, [], []),
     Setup: function() {
         this.spawnTank1();
         this.spawnTank2();
