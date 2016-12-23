@@ -1,14 +1,13 @@
 
 var Game = {
     Map: new Map(),
-    RootEntity: new ObjectGroup(0, 0, 0, [], [
-        new Sprite(100, 100, 45, 32, 32, "./images/tank.png", [new Behavior.TimedLife(5000), new Behavior.Move(0,-0.01,-0.01)]),
-    ]),
+    RootEntity: new ObjectGroup(0, 0, 0, [], []),
     Setup: function() {
         this.spawnTank1();
         this.spawnTank2();
+        this.spawnTank3();
         this.spawnTankDefault();
-        this.Tanks = [this.Tank1, this.Tank2, this.Tank];
+        this.Tanks = [this.Tank1, this.Tank2, this.Tank3, this.Tank];
 
         // var tankBot = new Sprite(300, 200, 45, 32, 32, "./images/tank.png", [new Behavior.Move(0,-0.01,-0.01)]);
         // tankBot.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
@@ -17,16 +16,20 @@ var Game = {
 
     },
     spawnTank1: function() {
-        this.Tank1 = this.spawnTank(80, 752 - 80, 180, "1", 0);
+        this.Tank1 = this.spawnTank(72, 640, 180, "1", 0);
         this.RootEntity.addChild(this.Tank1);
     },
     spawnTank2: function() {
-        this.Tank2 = this.spawnTank(1008 - 80, 752 - 80, 180, "2", 1);
+        this.Tank2 = this.spawnTank(1008 - 40, 640, 180, "2", 1);
         this.RootEntity.addChild(this.Tank2);
+    },
+    spawnTank3: function() {
+        this.Tank3 = this.spawnTank(520, 64, 0, "3", 2);
+        this.RootEntity.addChild(this.Tank3);
     },
     spawnTankDefault: function() {
         //this.Tank = this.spawnTank(80, 600, 0, "dimgray", 30); // right before enemy
-        this.Tank = this.spawnTank(504, 80, 0, "boss", -1);
+        this.Tank = this.spawnTank(520, 736, 180, "boss", -1);
         this.RootEntity.addChild(this.Tank);
         Game.Tank.Inputs = {};
         Game.Tank.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
@@ -147,10 +150,16 @@ var Game = {
 
 
         //todo fix loop sound gap problem
-        tank.throttleSound = PlaySound('./sound/engine working long.mp3', 0.05, 1, type);
+        tank.throttleSound = PlaySound('./sound/engine working long.mp3', 0, 1, type);
         //tank.idleSound = PlaySound('./sound/engine working2.mp3', 0, 1, type);
 
+        tank.started = false;
+
         tank.setMovementSound = function(throttle){
+            if (this.speed == 0 && !this.started) return;
+
+            this.started = true;
+
             var v = Math.max(
                 0.05 + Math.abs(this.speed*0.6/this.maxSpeed),
                 0.05 + Math.abs(this.rotationSpeed*0.6/this.maxRotationSpeed)
