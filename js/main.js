@@ -69,10 +69,10 @@ var App = {
         };
         if(team.members)
             team.members.forEach(function(member) {
-                var ps = member.positionsTaken;
-                for(pname in ps) {
-                    positions[pname].taken = ps[pname];
-                };
+                var memPos = member.position;
+                var guiPos = positions[memPos];
+                if(guiPos)
+                    guiPos.taken;
             });
         for(pname in positions) {
             var pos = positions[pname];

@@ -22,8 +22,8 @@ Collider.prototype.IsCollided = function(rect, sourceObject){
     for (var tileX = tileXmin; tileX <= tileXmax; tileX++){
         for(var tileY = tileYmin; tileY <= tileYmax; tileY++){
             if (tileX >= 0 && tileX < this.map.width && tileY >= 0 && tileY < this.map.height){
-                var mapChar = this.map.getTerrainChar(tileX, tileY);
-                if (this.impassableBlocks.indexOf(mapChar) > -1){
+                var mapTile = this.map.getTile(tileX, tileY);
+                if (!mapTile.passable){
                     // check for collision, yeah!
                     var tileRect = new Geom.Rect(
                         tileX*tw + tw/2,

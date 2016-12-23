@@ -1,57 +1,54 @@
 
 function Map(){
 
-    this.width = 63;
-    this.height = 47;
+    this.width = 65;
+    this.height = 44;
 
     var terrain = 
-    "................B...........,||,||,...........B................" +
-    "................B...........,||,||,...........B................" +
-    "................B.........,,,||,||,,..........B................" +
-    "................B.....BBBBaaa||a||aaaBBBB.....B................" +
-    "................B.....BcccaaaaaaaaaaacccB.....B................" +
-    "................B.....BcccaaaaaaaaaaacccB.....B................" +
-    "................B.....BcccaaaaaaaaaaacccB.....B................" +
-    "................B,....ccccaaaaaaaaaaacccc.....B................" +
-    "................B.....ccccccccccccccccccc.....B................" +
-    "................B.....ccccccccccccccccccc.....B................" +
-    "................B.....BcccccccccccccccccB.....B................" +
-    "................B.....BcccBBBaaaaaBBBcccB.....B................" +
-    "................B.....BcccB..aaaaa..BcccB.....B................" +
-    "................B.....BBcBB..aaaaa..BBcBB.....B................" +
-    "................B............aaaaa............B................" +
-    "................B......SSS...aaaaa...SSS......B................" +
-    "BBBBBBBBBBBBBBBBB.........S..aaaaa..S.........BBBBBBBBBBBBBBBBB" +
-    "cccccccccBB...............S..aaaaa..S...............BBccccccccc" +
-    "cccccccccbb...............S..aaaaa..S...............bbccccccccc" +
-    "cccccccccBB..........S.......aaSaa.......S..........BBccccccccc" +
-    "ccccccccBBS.aaaaaaaaaSaaaaaaaaaSaaaaaaaaaSaaaaaaaaa.SBBcccccccc" +
-    "........BS..aaaaaaaaaSaaaaaaaaaSaaaaaaaaaSaaaaaaaaa..SB........" +
-    "..........,,aaaaaaaaaaaaaaSaaaaaaaaaSaaaaaaaaaaaaaa,,.........." +
-    "..cccc...,,,aaaaaaaaaaaaaaSaaaaaaaaaSaaaaaaaaaaaaaa,,,...cccc.." +
-    "..cBBc....,,aaaa..........S.........S..........aaaa,,....cBBc.." +
-    "..cBBc..BB..aaaa..SSSS....BBBBBBBBBBB....SSSS..aaaa..BB..cBBc.." +
-    "..cccc..BB..aaaa..S.......BBBBBBBBBBB.......S..aaaa..BB..cccc.." +
-    ",,......BB..aaaa..S.........B.....B.........S..aaaa..BB......,," +
-    ",,,,....BB..aaaa..S......B..B..B..B..B......S..aaaa..BB....,,,," +
-    ",::,BBBBBB..aaaa..BB.....B.....B.....B.....BB..aaaa..BBBBBB,::," +
-    ",::,BBBBBB..aaaa..BB.....B..B..B..B..B.....BB..aaaa..BBBBBB,::," +
-    ".,,,........aaaa..BB........B.....B........BB..aaaa........,,,." +
-    "aaaaaaaaaaaaaaaa..BBBBBBBBBBBBBBBBBBBBBBBBBBB..aaaaaaaaaaaaaaaa" +
-    "aaaaaaaaaaaaaaaa..BBBBBBBBBBBBBBBBBBBBBBBBBBB..aaaaaaaaaaaaaaaa" +
-    "aaaaaaaaaaaaaaaa..BB........BB,,,,.........BB..aaaaaaaaaaaaaaaa" +
-    "aaaaaaaaaaaaaaaa..BB......,,BB:::::,,......BB..aaaaaaaaaaaaaaaa" +
-    "...aaaa.....aaaa..BB..,..:::BB,,,:::::..,..BB..aaaa.....aaaa..." +
-    "SSSaaaaSSS..aaaa..BB.,:BB,,.BB...BBBBBBB:,.BB..aaaa..SSSaaaaSSS" +
-    "SccccccccS..aaaa,,BB,::BB...BB...BBBBBBB::,BB,,aaaa..SccccccccS" +
-    "SccccccccS..aaaa:::::::BB.............BB:::::::aaaa..SccccccccS" +
-    "SccccccccS..aaaa:::::::BB.............BB:::::::aaaa..SccccccccS" +
-    "SccccccccS..aaaa:::::::BB.............BB:::::::aaaa..SccccccccS" +
-    "SccccccccS..aaaa,,BB,::BBBBBBB...BB...BB::,BB,,aaaa..SccccccccS" +
-    "SccccccccS..aaaa..BB.,:BBBBBBB...BB...BB:,.BB..aaaa..SccccccccS" +
-    "SccccccccS..||||..BB..,:,,.......BB..,,:,..BB..||||..SccccccccS" +
-    "SccccccccS..||||..BB...,,........BB...,,...BB..||||..SccccccccS" +
-    "SSSSSSSSSS..||||..BB.............BB........BB..||||..SSSSSSSSSS";
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" +
+    "S...........c||||c...........,||,||,...........c||||c...........S" +
+    "S...........c||||c.........,,,||,||,,..........c||||c...........S" +
+    "S...........c||||c.....BBBBaaa||a||aaaBBBB.....c||||c...........S" +
+    "S...........c||||c.....BcccaaaaaaaaaaacccB.....c||||c...........S" +
+    "S...........c||||c.....BcccaaaaaaaaaaacccB.....c||||c...........S" +
+    "S...........c||||c.....BcccaaaaaaaaaaacccB.....c||||c...........S" +
+    "S...........c||||c,....ccccaaaaaaaaaaacccc.....c||||c...........S" +
+    "S...........c||||c.....ccccccccccccccccccc.....c||||c...........S" +
+    "S...........c||||c.....ccccccccccccccccccc.....c||||c...........S" +
+    "S...........c||||c.....BcccccccccccccccccB.....c||||c...........S" +
+    "S...........c||||c.....BcccBBBaaaaaBBBcccB.....c||||c...........S" +
+    "S...........c||||c.....BcccB..aaaaa..BcccB.....c||||c...........S" +
+    "Scccccccccccc||||ccccccccccccccccccccccccccccccc||||ccccccccccccS" +
+    "S------------++++-------------------------------++++------------S" +
+    "S------------++++-------------------------------++++------------S" +
+    "S------------++++-------------------------------++++------------S" +
+    "S------------++++-------------------------------++++------------S" +
+    "Scccccccccccc||||ccccccccccccccccccccccccccccccc||||ccccccccccccS" +
+    "ScccccccccBBc||||c....S.......aaSaa.......S....c||||cBBcccccccccS" +
+    "SccccccccBBSc||||caaaaSaaaaaaaaaSaaaaaaaaaSaaaac||||cSBBccccccccS" +
+    "S........BS.c||||caaaaSaaaaaaaaaSaaaaaaaaaSaaaac||||c.SB........S" +
+    "S..........,c||||caaaaaaaaaSaaaaaaaaaSaaaaaaaaac||||c,..........S" +
+    "S..cccc...,,c||||caaaaaaaaaSaaaaaaaaaSaaaaaaaaac||||c,,...cccc..S" +
+    "S..cBBc....,c||||c.........S.........S.........c||||c,....cBBc..S" +
+    "S..cBBc..BB.c||||c.SSSS....BBBBBBBBBBB....SSSS.c||||c.BB..cBBc..S" +
+    "S..cccc..BB.c||||c.S.......BBBBBBBBBBB.......S.c||||c.BB..cccc..S" +
+    "S,,......BB.c||||c.S.........B.....B.........S.c||||c.BB......,,S" +
+    "S,,,,....BB.c||||c.S......B..B..B..B..B......S.c||||c.BB....,,,,S" +
+    "S,;;,BBBBBB.c||||c.BB.....B.....B.....B.....BB.c||||c.BBBBBB,;;,S" +
+    "S,;;,BBBBBB.c||||c.BB.....B..B..B..B..B.....BB.c||||c.BBBBBB,;;,S" +
+    "S.,,,.......c||||c.BB........B.....B........BB.c||||c.......,,,.S" +
+    "Saaaaaaaaaaac||||c.BBBBBBBBBBBBBBBBBBBBBBBBBBB.c||||caaaaaaaaaaaS" +
+    "Saaaaaaaaaaac||||c.BBBBBBBBBBBBBBBBBBBBBBBBBBB.c||||caaaaaaaaaaaS" +
+    "Saaaaaaaaaaac||||c.BB........BB,,,,.........BB.c||||caaaaaaaaaaaS" +
+    "Saaaaaaaaaaac||||c.BB......,,BB;;;;;,,......BB.c||||caaaaaaaaaaaS" +
+    "S...aaaa....c||||c.BB..,..;;;BB,,,;;;;;..,..BB.c||||c....aaaa...S" +
+    "SSSSaaaaSSS.c||||c.BB.,;BB,,.BB...BBBBBBB;,.BB.c||||c.SSSaaaaSSSS" +
+    "SSccccccccS.c||||c,BB,;;BB...BB...BBBBBBB;;,BB,c||||c.SccccccccSS" +
+    "SSccccccccS.c||||c;;;;;;BB.............BB;;;;;;c||||c.SccccccccSS" +
+    "SSccccccccS.c||||c;;;;;;BB.............BB;;;;;;c||||c.SccccccccSS" +
+    "SSccccccccS.c||||c;;;;;;BB.............BB;;;;;;c||||c.SccccccccSS" +
+    "SSccccccccS.c||||c.BB...,,........BB...,,...BB.c||||c.SccccccccSS" +
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS";
 
     var buildings = false;
     // var buildings =
@@ -90,35 +87,18 @@ function Map(){
 
     this.tileDictionary = {};
     this.tileDictionary['.'] = {tileX: 0, tileY: 0, variants: 8, traction: 0.5};
-    this.tileDictionary[','] = {tileX: 0, tileY: 1, variants: 8, traction: 0.45};
-    this.tileDictionary[':'] = {tileX: 0, tileY: 2, variants: 8, traction: 0.4};
-    this.tileDictionary[';'] = {tileX: 0, tileY: 3, variants: 8, traction: 0.35};
-    this.tileDictionary['&'] = {tileX: 0, tileY: 4, variants: 8, traction: 0.25};
-    this.tileDictionary['|'] = {tileX: 0, tileY: 5, variants: 4, traction: 0.75};
-    this.tileDictionary['B'] = {tileX: 0, tileY: 9, variants: 2, traction: 0};
-    this.tileDictionary['S'] = {tileX: 2, tileY: 6, traction: 0};
-    this.tileDictionary['b'] = {tileX: 2, tileY: 9, variants: 2, traction: 0.15};
+    this.tileDictionary[','] = {tileX: 0, tileY: 1, variants: 8, traction: 0.4};
+    this.tileDictionary[';'] = {tileX: 0, tileY: 2, variants: 8, traction: 0.3};
+    this.tileDictionary['-'] = {tileX: 0, tileY: 4, variants: 4, traction: 0.8};
+    this.tileDictionary['+'] = {tileX: 4, tileY: 4, variants: 4, traction: 0.8};
+    this.tileDictionary['|'] = {tileX: 0, tileY: 5, variants: 4, traction: 0.8};
+    this.tileDictionary['B'] = {tileX: 0, tileY: 9, variants: 2, traction: 0.1};
+    this.tileDictionary['S'] = {tileX: 2, tileY: 6, traction: 0.1};
+    this.tileDictionary['b'] = {tileX: 2, tileY: 9, variants: 2, traction: 0.9, speed: 0.3};
     this.tileDictionary['a'] = {tileX: 0, tileY: 7, variants: 8, traction: 0.95};
-    this.tileDictionary['c'] = {tileX: 0, tileY: 8, variants: 8, traction: 0.95};
+    this.tileDictionary['c'] = {tileX: 0, tileY: 8, variants: 4, traction: 0.95};
 
-    this.tileDictionary['╶'] = {tileX:  8, tileY: 0};
-    this.tileDictionary['╴'] = {tileX:  9, tileY: 0};
-    this.tileDictionary['╵'] = {tileX: 10, tileY: 0};
-    this.tileDictionary['╷'] = {tileX: 11, tileY: 0};
-    this.tileDictionary['└'] = {tileX:  8, tileY: 1};
-    this.tileDictionary['┌'] = {tileX:  9, tileY: 1};
-    this.tileDictionary['┘'] = {tileX: 10, tileY: 1};
-    this.tileDictionary['┐'] = {tileX: 11, tileY: 1};
-    this.tileDictionary['├'] = {tileX:  8, tileY: 2};
-    this.tileDictionary['┬'] = {tileX:  9, tileY: 2};
-    this.tileDictionary['┴'] = {tileX: 10, tileY: 2};
-    this.tileDictionary['┤'] = {tileX: 11, tileY: 2};
-    this.tileDictionary['*'] = {tileX:  8, tileY: 3};
-    this.tileDictionary['╎'] = {tileX:  9, tileY: 3};
-    this.tileDictionary['╌'] = {tileX: 10, tileY: 3};
-    this.tileDictionary['┼'] = {tileX: 11, tileY: 3};
-    this.tileDictionary['│'] = {tileX:  8, tileY: 4, variants: 4};
-    this.tileDictionary['─'] = {tileX:  8, tileY: 5, variants: 4};
+    this.tileDictionary['x'] = {tileX:  0, tileY: 3, variants: 4};
 
     return this;
 }
@@ -140,6 +120,7 @@ Map.prototype = {
         var index = y*this.width + x;
         return this.buildingArray[index];
     },
+    impassableTiles: "BS",
     getTile: function(xcell, ycell) {
         var tchar = this.getTerrainChar(xcell, ycell);
         var bchar = this.getBuildingChar(xcell, ycell);
@@ -148,7 +129,7 @@ Map.prototype = {
                 terrain: tchar,
                 building: bchar,
                 tractionFactor: this.tileDictionary[tchar].traction,
-                passable: tchar != 'B' && bchar == ' ',
+                passable: this.impassableTiles.indexOf(tchar) < 0 && bchar == ' ',
             };
     },
     getTileAt: function(xpx, ypx) {
@@ -156,7 +137,7 @@ Map.prototype = {
         var ycell = Math.floor(ypx / this.tileHeight);
         return this.getTile(xcell, ycell);
     },
-    degradation: ".,:;& Bb",
+    degradation: ".,; Bb",
     degradeTile: function(xcell, ycell) {
         if( xcell >= 0 && xcell < this.width && ycell >= 0 && ycell < this.height ) {
             var char = this.getTerrainChar(xcell, ycell);

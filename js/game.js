@@ -62,6 +62,7 @@ var Game = {
                 ])
             ]);
         tank.boss = type == "boss";
+        if(tank.boss) tank.hidden = true;
         var offset = tank.boss ? 1 : 0;
         tank.hp = 9;
         tank.LeftTrack = tank.items[offset];

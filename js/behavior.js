@@ -94,9 +94,9 @@ Behavior.MoveTank.prototype = {
 
         var traction = (ltraction + rtraction) / 2;
 
-        if( Math.random() < 0.01 )
+        if( Math.random() < 0.01 && obj.LeftTrack.torque != 0 )
             Game.Map.degradeTileAt(ltx, lty);
-        if( Math.random() < 0.01 )
+        if( Math.random() < 0.01 && obj.RightTrack.torque != 0 )
             Game.Map.degradeTileAt(rtx, rty);
 
         obj.rotationSpeed = obj.rotationSpeed + (obj.LeftTrack.torque - obj.RightTrack.torque) * traction * delta * obj.maxRotationSpeed / 1000;
