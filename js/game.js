@@ -127,7 +127,7 @@ var Game = {
         tank.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
         tank.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
         //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
-        tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretLeft', 'turretRight');
+        tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretRight', 'turretLeft');
         tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
         tank.teamId = networkTeamId;
     }
