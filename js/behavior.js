@@ -89,10 +89,13 @@ Behavior.MoveTank.prototype = {
 
         var ltile = Game.Map.getTileAt(ltx, lty);
         var ltraction = ltile ? ltile.tractionFactor : 1;
+        var llimit = ltile ? ltile.speed ? ltile.speed : 1 : 1;
         var rtile = Game.Map.getTileAt(rtx, rty);
         var rtraction = rtile ? rtile.tractionFactor : 1;
+        var rlimit = rtile ? rtile.speed ? rtile.speed : 1 : 1;
 
         var traction = (ltraction + rtraction) / 2;
+        var limit = (llimit + rlimit) / 2;
 
         if( Math.random() < 0.01 && obj.LeftTrack.torque != 0 )
             Game.Map.degradeTileAt(ltx, lty);

@@ -89,8 +89,15 @@ var Game = {
             return Sockets.ViewModel.teams[networkTeamId];
         };
 
-        var managerGoodInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood'), '2', 10000, true);
-        var managerBadInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerBad'), '2', 10000, true);
+        var managerGoodInput;
+        var managerBadInput;
+        if(tank.boss) {
+            managerGoodInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood'), '2', 10000, true);
+            managerBadInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerBad'), '2', 10000, true);
+        } else {
+            managerGoodInput = new KeyboardCooldownInput(App.Keyboard, '4', 10000, true);
+            managerBadInput = new KeyboardCooldownInput(App.Keyboard, '5', 10000, true);            
+        }
         setInterval(function() {
             var replics = null;
             if (managerGoodInput.read(new Date().getTime())== 1) {
@@ -101,7 +108,7 @@ var Game = {
             if (replics) {
                 var replicId =  Math.floor(Math.random() * replics.length);
                 var replic = replics[replicId];
-                var div = $('<div style="position: absolute;" class="blue-frame">'+replic+'</div>');
+                var div = $('<div style="position: absolute;" class="balloon-frame">'+replic+'</div>');
                 div.appendTo($('body'));
                 div.offset({ top: tank.y + 10, left: tank.x + 10 });
 
@@ -122,15 +129,17 @@ var Game = {
                 },5000);
             }
         }, 200);
-        tank.Inputs = {};
-        tank.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward');
-        tank.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft');
-        tank.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
-        tank.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
-        //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
-        tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretRight', 'turretLeft');
-        tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
-        tank.teamId = networkTeamId;
+        if(!tank.boss) {
+            tank.Inputs = {};
+            tank.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward');
+            tank.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft');
+            tank.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
+            tank.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
+            //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
+            tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretRight', 'turretLeft');
+            tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
+            tank.teamId = networkTeamId;
+        }
     }
 
 
