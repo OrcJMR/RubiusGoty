@@ -156,9 +156,9 @@ Behavior.MoveTank.prototype = {
             var s = Math.max(
                 Math.abs(obj.speed)*800,
                 Math.abs(obj.rotationSpeed)*200);
-            if (s > 25) s = 25;
-            if (s > 100) s = 100;
-            PlaySound("./sound/crash.wav", s);
+            // if (s > 25) s = 25;
+            // if (s > 100) s = 100;
+            if (s > 10) PlaySound("./sound/crash.wav", 70);
             obj.speed = 0;
             obj.rotationSpeed = 0;
         }
@@ -262,7 +262,9 @@ Behavior.SpawnExplosions.prototype = {
         while(pendingExplosions > 0){
             var pt = new Geom.Point(-obj.width/2 + Math.random() * obj.width, -obj.height/2 + Math.random() * obj.height);
             pt = pt.Rotate(obj.angle).Translate(obj.x, obj.y);
-            Game.spawnExplosion(pt.x, pt.y, 24 + Math.random()*16);
+            var big = false;
+            if (pendingExplosions == 1) big = true;
+            Game.spawnExplosion(pt.x, pt.y, 24 + Math.random()*16, big);
             pendingExplosions--;
             obj.explosionsLeft--;
         }
