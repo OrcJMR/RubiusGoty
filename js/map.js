@@ -164,20 +164,30 @@ Map.prototype = {
             for(var cy = 0; cy < this.height; cy ++) {
                 var char = this.getTerrainChar(cx, cy);
                 this.drawTile(ctx, cx, cy, char);
-                if(char != 'B' && char != 'S' && cy > 0 && cx > 0 && cy < 43 && cx < 64) {
+                if(char != 'B' && char != 'S' && char != '.' && cy > 0 && cx > 0 && cy < 43 && cx < 64) {
                     var dx = 0;
                     var dy = 0;
+                    var dxs = 0;
+                    var dys = 0;
                     var tleft = this.getTerrainChar(cx-1,cy);
                     var tright = this.getTerrainChar(cx+1,cy);
                     var ttop = this.getTerrainChar(cx,cy-1);
                     var tbottom = this.getTerrainChar(cx,cy+1);
-                    if(tleft == 'B')  dx += 2;
-                    if(tright == 'B')  dx += 1;
-                    if(ttop == 'B')  dy += 2;
-                    if(tbottom == 'B')  dy += 1;
+                    if(tleft == 'B' || tleft == 'S')  {dx += 2; }
+                    if(tright == 'B' || tright == 'S')  dx += 1;
+                    if(ttop == 'B' || ttop == 'S')  dy += 2;
+                    if(tbottom == 'B' || tbottom == 'S')  dy += 1;
+                    if(tleft == '.' || tleft == 'q')  dxs += 2;
+                    if(tright == '.' || tright == 'q') dxs += 1;
+                    if(ttop == '.' || ttop == 'q') dys += 2;
+                    if(tbottom == '.' || tbottom == 'q') dys += 1;
                     if(dx || dy)
                         ctx.drawImage(this.tilesImage, (12+dx) * this.tileArtWidth, (0+dy) * this.tileArtHeight, this.tileArtWidth, this.tileArtHeight,
                             cx * this.tileWidth, cy * this.tileHeight, this.tileWidth, this.tileHeight);
+                    if(dxs || dys)
+                        ctx.drawImage(this.tilesImage, (8+dxs) * this.tileArtWidth, (0+dys) * this.tileArtHeight, this.tileArtWidth, this.tileArtHeight,
+                            cx * this.tileWidth, cy * this.tileHeight, this.tileWidth, this.tileHeight);                                                
+                    
                 }
                 var bchar = this.getBuildingChar(cx, cy);
                 if( bchar != ' ')
