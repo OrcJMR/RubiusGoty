@@ -42,8 +42,8 @@ body{
 
 #gameCanvas{
     position: absolute;
-    top: -16px;
-    left: -16px;
+    top: -8px;
+    left: -8px;
     width: 1040px;
     height: 704px;
     image-rendering: optimizeSpeed;             /* Older versions of FF          */
