@@ -6,9 +6,9 @@ var server = require('http').createServer(),
 
 // Client stuff
 
-var port = process ? process.env.PORT : 9090;
+var port = process ? process.env.PORT : 80;
 if (!port)
-    port = 9090;
+   port = 80;
 console.log("Port: " + port);
 
 app.use(express.static('.'));
@@ -27,9 +27,9 @@ function Team(id, title, color) {
     this.color = color;
     this.id = id;
 };
-teams.push(new Team(1, "Team Indigo", "indigo"));
-teams.push(new Team(2, "Team Yellow", "yellow"));
-teams.push(new Team(3, "Team Green", "green"));
+teams.push(new Team(1, "Team Gold", "background-color: gold;"));
+teams.push(new Team(2, "Team Indigo", "background-color: #3f51b5;"));
+teams.push(new Team(3, "Team Green", "background-color: #4CAF50;"));
 
 var actions = ['fire', 'turretLeft', 'turretRight', 'strafeRight', 'strafeLeft', 'rightTrackForward', 'rightTrackBackward'
     , 'moveForward', 'moveBackward', 'leftTrackForward', 'leftTrackBackward'];
