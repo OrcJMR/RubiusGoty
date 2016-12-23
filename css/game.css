@@ -15,8 +15,12 @@ body{
 .balloon-frame{
     border: 8px solid;
     border-image: url("../images/border-balloon.png") 8 repeat;
-    background-color: #fff;
     font-family: "Tahoma"
+}
+
+.balloon-frame-inner{
+    background-color: #fff;
+    padding: 0px 20px 0px 20px;
 }
 
 .game-frame{
