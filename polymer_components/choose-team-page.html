@@ -11,7 +11,7 @@ Hi, {{name}}!
                 Choose your team:
                 <template is="dom-repeat" items="{{teams}}" as="team">
                     <div class='row'>
-                        <button type='submit' name='btn_login' class$='col s12 btn btn-large waves-effect {{team.color}}' data-team$="{{team.id}}" on-tap="join">{{team.title}}</button>
+                        <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect' style$="{{team.color}}" data-team$="{{team.id}}" on-tap="join">{{team.title}}</button>
                     </div>
                 </template>
 

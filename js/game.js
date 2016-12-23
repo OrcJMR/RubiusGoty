@@ -128,7 +128,7 @@ var Game = {
         tank.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
         tank.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
         //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
-        tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretLeft', 'turretRight');
+        tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretRight', 'turretLeft');
         tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
         tank.teamId = networkTeamId;
     }
@@ -226,19 +226,28 @@ var Game = {
         tank.changeCoordinatesFromDescendant(blast, tank.Barrel);
         tank.addChild(blast);
     },
-    spawnExplosion: function(x, y, size) {
+    spawnExplosion: function(x, y, size, big) {
         if(!size)
             size = 24
         var blast = new Sprite(x, y, Math.random()*90, size, size, "./images/explosion.png", [new Behavior.Animate(18, 8, 50), new Behavior.TimedLife(399)]);
         Game.RootEntity.addChild(blast);
 
-        if (Math.random() < 0.5)
-        {
-            PlaySound("./sound/blast1.mp3", 70);
-        }
-        else{
-            PlaySound("./sound/blast2.mp3", 70);
-        }            
+        if (big){
+            PlaySound("./sound/longblast.mp3", 100);
+        } else{
+            var rand = Math.random();
+
+            if (rand < 0.3)
+            {
+                PlaySound("./sound/blast1.mp3", 100);
+            }
+            else if (rand > 0.7){
+                PlaySound("./sound/blast2.mp3", 100);
+            }            
+            else{
+                PlaySound("./sound/tank-fire.wav", 100);
+            }
+        }        
     },
     ConsumeInputs: function(timestamp) {
         var driveSpeed = 60/1000; //px/msec
@@ -298,7 +307,12 @@ var Game = {
                 this.spawnBullet(tank);
                 this.spawnMuzzleBlast(tank, tank.boss);
                 tank.Barrel.firing = false;
-                PlaySound("./sound/tank-fire.wav", 80);
+
+                if (tank.boss){
+                    PlaySound("./sound/shot3.mp3", 100);
+                } else{
+                    PlaySound("./sound/shot2.mp3", 80);
+                }                
             }
             tank.Barrel.items[0].y = 7 + tank.Barrel.recoil * 6;
 
