@@ -12,42 +12,42 @@ function Map(){
     "S...........c||||c......S...fffffffff...S......c||||c...........S" +
     "S...........c||||c......S...fffffffff...S......c||||c...........S" +
     "S...........c||||c......S...SfffffffS...S......c||||c...........S" +
-    "S...........c||||c,.....S...SSSSSSSSS...S......c||||c...........S" +
+    "S...........c||||c......S...SSSSSSSSS...S......c||||c...........S" +
     "S...........c||||c.............................c||||c...........S" +
     "S...........c||||c.............................c||||c...........S" +
     "S...........c||||c.............................c||||c...........S" +
     "S...........c||||c.............................c||||c...........S" +
     "S...........c||||c.............................c||||c...........S" +
-    "Scccccccccccc||||ccccccccccccccccccccccccccccccc||||ccccccccccccS" +
-    "S------------++++-------------------------------++++------------S" +
-    "S------------++++-------------------------------++++------------S" +
-    "S------------++++-------------------------------++++------------S" +
-    "S------------++++-------------------------------++++------------S" +
-    "Scccccccccccc||||ccccccccccccccccccccccccccccccc||||ccccccccccccS" +
-    "ScccccccccBBc||||c....S.......aaSaa.......S....c||||cBBcccccccccS" +
-    "SccccccccBBSc||||caaaaSaaaaaaaaaSaaaaaaaaaSaaaac||||cSBBccccccccS" +
-    "S........BS.c||||caaaaSaaaaaaaaaSaaaaaaaaaSaaaac||||c.SB........S" +
-    "S..........,c||||caaaaaaaaaSaaaaaaaaaSaaaaaaaaac||||c,..........S" +
-    "S..cccc...,,c||||caaaaaaaaaSaaaaaaaaaSaaaaaaaaac||||c,,...cccc..S" +
-    "S..cBBc....,c||||c.........S.........S.........c||||c,....cBBc..S" +
-    "S..cBBc..BB.c||||c.SSSS....BBBBBBBBBBB....SSSS.c||||c.BB..cBBc..S" +
-    "S..cccc..BB.c||||c.S.......BBBBBBBBBBB.......S.c||||c.BB..cccc..S" +
-    "S,,......BB.c||||c.S.........B.....B.........S.c||||c.BB......,,S" +
-    "S,,,,....BB.c||||c.S......B..B..B..B..B......S.c||||c.BB....,,,,S" +
-    "S,;;,BBBBBB.c||||c.BB.....B.....B.....B.....BB.c||||c.BBBBBB,;;,S" +
-    "S,;;,BBBBBB.c||||c.BB.....B..B..B..B..B.....BB.c||||c.BBBBBB,;;,S" +
-    "S.,,,.......c||||c.BB........B.....B........BB.c||||c.......,,,.S" +
-    "S...SSSS....c||||c.BBBBBBBBBBBBBBBBBBBBBBBBBBB.c||||c....SSSS...S" +
-    "S...........c||||c.BBBBBBBBBBBBBBBBBBBBBBBBBBB.c||||c...........S" +
-    "S...........c||||c.BB........BB,,,,.........BB.c||||c...........S" +
-    "S...........c||||c.BB......,,BB;;;;;,,......BB.c||||c...........S" +
-    "SSSfffSS...Sc||||c.BB..,..;;;BB,,,;;;;;..,..BB.c||||cS...SSfffSSS" +
-    "SffffffS...Sc||||c.BB.,;BB,,.BB...BBBBBBB;,.BB.c||||cS...SffffffS" +
-    "Sfffffff...Sc||||c,BB,;;BB...BB...BBBBBBB;;,BB,c||||cS...fffffffS" +
-    "Sfffffff...Sc||||c;;;;;;BB.............BB;;;;;;c||||cS...fffffffS" +
-    "Sfffffff....c||||c;;;;;;BB.............BB;;;;;;c||||c....fffffffS" +
-    "SffffffS....c||||c;;;;;;BB...BBBBBBB...BB;;;;;;c||||c....SffffffS" +
-    "SffffffS....c||||c.BB........BBBBBBB...,,...BB.c||||c....SffffffS" +
+    "Scccccccccccc||||c.............................c||||ccccccccccccS" +
+    "S------------++||c.............................c||++------------S" +
+    "S------------+++|c.............................c|+++------------S" +
+    "S------------+++|c.............................c|+++------------S" +
+    "S------------++||c.............................c||++------------S" +
+    "Scccccccccccc||||c.............................c||||ccccccccccccS" +
+    "SfffBBBBBBBBc||||c.............................c||||cBBBBBBBBfffS" +
+    "SfffBBBBBBBBc||||c.............................c||||cBBBBBBBBfffS" +
+    "SfffffffffBBc||||c.............................c||||cBBfffffffffS" +
+    "SfffffffffBBc||||c.............................c||||cBBfffffffffS" +
+    "SfffffffffBBc||||c.............................c||||cBBfffffffffS" +
+    "SBBBBBBfffBBc||||c.............................c||||cBBfffBBBBBBS" +
+    "SBBBBBBfffBBc||||c.............................c||||cBBfffBBBBBBS" +
+    "S;;;;BBfffBBc||||ccccccccccccccccccccccccccccccc||||cBBfffBB;;;;S" +
+    "S,,,,BBfffBBc||++-------------------------------++||cBBfffBB,,,,S" +
+    "S....BBfffBBc|+++-------------------------------+++|cBBfffBB....S" +
+    "S...........c|+++-------------------------------+++|c...........S" +
+    "S...........c||++-------------------------------++||c...........S" +
+    "S...,,,,....c||||ccccccccccccccccccccccccccccccc||||c....,,,,...S" +
+    "S.,;SSSSBBBBc||||cBBBBBBBBBBBB.....BBBBBBBBBBBBc||||cBBBBSSSS;,.S" +
+    "S....,,,;;;Bc||||cBBBBBBBBBBBB.....BBBBBBBBBBBBc||||cB;;;,,,....S" +
+    "S......,,;;Bc||||cBB........BB.....BB........BBc||||cB;;,,......S" +
+    "S.......,,;Bc||||cBB........BB.....BB........BBc||||cB;,,.......S" +
+    "SSSfffSS.,,Sc||||cBB.........................BBc||||cS,,.SSfffSSS" +
+    "SffffffS..,Sc||||c.....BB...............BB.....c||||cS,..SffffffS" +
+    "Sfffffff..,Sc||||c.....BBB.............BBB.....c||||cS,..fffffffS" +
+    "Sfffffff...Sc||||c.....BB...............BB.....c||||cS...fffffffS" +
+    "Sfffffff....c||||cBB.........BBBBBBB.........BBc||||c....fffffffS" +
+    "SffffffS....c||||cBB........BBBBBBBBB........BBc||||c....SffffffS" +
+    "SffffffS....c||||cBB.......BBBBBBBBBBB.......BBc||||c....SffffffS" +
     "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSfffffSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" +
     "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSfffffSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" +
     "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSfffffSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" +
@@ -55,32 +55,56 @@ function Map(){
     "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSfffffSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" +
     "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS";
 
-    var buildings = false;
-    // var buildings =
-    // "                                                               " +
-    // "                                                               " +
-    // "                                                               " +
-    // "                                                               " +
-    // "                                                               " +
-    // "                                                               " +
-    // "                      **                                       " +
-    // "                                                               " +
-    // "                                                               " +
-    // "                                                               " +
-    // "                      **                                       " +
-    // "                                                               " +
-    // "                                                               " +
-    // "                                                               " +
-    // "                            │        │                         " +
-    // "      ╶╌╴                   │        │                         " +
-    // "                            ╎        ╎                         " +
-    // "     ┌─┬─┐                  │        │                         " +
-    // "     │ │ │  ╷               │        │                         " +
-    // "     ├─┼─┤  ╎               ╎        ╎                         " +
-    // "     │ │ │  ╵               │        │                         " +
-    // "     └─┴─┘                  │        │                         " +
-    // "                            └──╴  ╶──┘                         " +
-    // "                                                               "
+    var buildings = 
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "            x                                                    "  +
+    "             x                                                   "  +
+    "              x                                                  "  +
+    "                                                 x               "  +
+    "                                                x                "  +
+    "                                               x                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "            xx                                     xx            "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                               xxxx                              "  +
+    "                xx                             xx                "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                        x               x                        "  +
+    "                        x               xx                       "  +
+    "            xx                                     xx            "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 "  +
+    "                                                                 ";
 
     this.tilesImage = new Image();
     this.tilesImage.src = "./images/tiles-winter.png"
