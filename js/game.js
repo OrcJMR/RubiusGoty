@@ -37,8 +37,8 @@ var Game = {
         Game.Tank.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'Q', 'Z');
         Game.Tank.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'C');
         //Game.Tank.Inputs.StrafeInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
-        Game.Tank.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, '3', '1');
-        Game.Tank.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, '2', 400, false);
+        Game.Tank.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'L', 'J');
+        Game.Tank.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'I', 400, false);
     },
     spawnTank: function(x, y, angle, type, networkTeamId) {
         var tank;
@@ -98,8 +98,8 @@ var Game = {
             managerGoodInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood'), '2', 5000, true);
             managerBadInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerBad'), '2', 5000, true);
         } else {
-            managerGoodInput = new KeyboardCooldownInput(App.Keyboard, '4', 5000, true);
-            managerBadInput = new KeyboardCooldownInput(App.Keyboard, '5', 5000, true);
+            //managerGoodInput = new KeyboardCooldownInput(App.Keyboard, '4', 5000, true);
+            //managerBadInput = new KeyboardCooldownInput(App.Keyboard, '5', 5000, true);
         }
         var baloonShown = false;
         setInterval(function() {
@@ -143,7 +143,7 @@ var Game = {
             tank.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
             //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
             tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretRight', 'turretLeft');
-            tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 600, true);
+            tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 800, true);
             tank.teamId = networkTeamId;
         }
     }
@@ -161,7 +161,7 @@ var Game = {
             this.started = true;
 
             var v = Math.max(
-                0.05 + Math.abs(this.speed*0.6/this.maxSpeed),
+                0.05 + Math.abs(this.speed*1/this.maxSpeed),
                 0.05 + Math.abs(this.rotationSpeed*0.6/this.maxRotationSpeed)
             );
 
