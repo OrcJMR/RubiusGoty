@@ -1,5 +1,5 @@
-var webSocketUrl = "wss://snotty-stallion.gomix.me";
-//var webSocketUrl = "ws://localhost";
+var webSocketUrl = "ws://" + location.host;
+//var webSocketUrl = "wss://snotty-stallion.gomix.me";
 
 var _positions = [
     {
