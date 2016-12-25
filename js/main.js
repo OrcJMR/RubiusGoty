@@ -72,7 +72,7 @@ var App = {
                 var memPos = member.position;
                 var guiPos = positions[memPos];
                 if(guiPos)
-                    guiPos.taken;
+                    guiPos.taken = true;
             });
         for(pname in positions) {
             var pos = positions[pname];
