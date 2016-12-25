@@ -94,7 +94,7 @@ var Game = {
 
         var managerGoodInput;
         var managerBadInput;
-        if(tank.boss) {
+        if(!tank.boss) {
             managerGoodInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood'), '2', 5000, true);
             managerBadInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerBad'), '2', 5000, true);
         } else {
