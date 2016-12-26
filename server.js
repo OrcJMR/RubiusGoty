@@ -151,10 +151,10 @@ wss.on('connection', function connection(ws) {
     client.SendClientModel();
 
     ws.on('close', function close() {
-        if (ws.gameState) {
+        /*if (ws.gameState) {
             _gameState.state = 0;
-            SendClientViewModelToAllClients
-        }
+            SendClientViewModelToAllClients();
+        }*/
         RemoveFromArray(admin, ws);
         serverModel.teams.forEach(function (team) {
             RemoveFromArray(team.members, client);
