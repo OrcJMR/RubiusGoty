@@ -25,7 +25,7 @@ function Map(){
     "S------------++||c.BBffcBBBcff.....ffcBBBcffBB.c||++------------S" +
     "Scccccccccccc||||c.,;ffcBSBcff.....ffcBSBcff;,.c||||ccccccccccccS" +
     "SfffBBBBBBBBc||||c.,;ffcBBBcff.....ffcBBBcff;,.c||||cBBBBBBBBfffS" +
-    "SfffBBBBBBBBc||||c.,;ffccccccccccccffcccccff;,.c||||cBBBBBBBBfffS" +
+    "SfffBBBBBBBBc||||c.,;ffcccccccccccccccccccff;,.c||||cBBBBBBBBfffS" +
     "SfffffffffBBc||||c.,;fffffffffffffffffffffff;,.c||||cBBfffffffffS" +
     "SfffffffffBBc||||c.BBfffffffffffffffffffffffBB.c||||cBBfffffffffS" +
     "SfffffffffBBc||||c.BBB;;;;BBBBBBBBBBBBB;;;;BBB.c||||cBBfffffffffS" +
@@ -74,8 +74,8 @@ function Map(){
     "              x                                                  "  +
     "                               x x               x               "  +
     "                                                x                "  +
-    "                              xxxx             x                 "  +
-    "                                                                 "  +
+    "                              x   x            x                 "  +
+    "                               xxx                               "  +
     "                                                                 "  +
     "                                                                 "  +
     "            xx                                     xx            "  +
