@@ -75,10 +75,6 @@ var Sockets = (function() {
             _socket.sendJson({
                 isAdmin: true,
             });
-            _socket.sendJson({
-                type: 'gameState',
-                state: 0,
-            });
         }
 
         /*setInterval(function () {

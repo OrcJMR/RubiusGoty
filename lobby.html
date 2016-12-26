@@ -23,6 +23,10 @@
         e.preventDefault()
         window.location.href = '/game.html';
     }
+    _socket.sendJson({
+        type: 'gameState',
+        state: 0,
+    });
 })
 </script>
 <body>
