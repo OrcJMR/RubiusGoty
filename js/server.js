@@ -75,6 +75,11 @@ var Sockets = (function() {
             _socket.sendJson({
                 isAdmin: true,
             });
+            var hasGame = typeof Game == "undefined" ? 0 : 1;
+            _socket.sendJson({
+                type: 'gameState',
+                state: hasGame,
+            });
         }
 
         /*setInterval(function () {
