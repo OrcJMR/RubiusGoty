@@ -69,32 +69,34 @@ NetworkBiDiInput.prototype = {
 
 var Sockets = (function() {
 
-    _socket.onopen = function()
-    {
-        _socket.sendJson({
-            isAdmin: true,
-        });
-        _socket.sendJson({
-            type: 'gameState',
-            state: 0,
-        });
-    }
-
-    /*setInterval(function () {
-        Sockets.SendState();
-    }, 5000);
-*/
-    _socket.onmessage = function(msg){
-        var data = JSON.parse(msg.data);
-        console.log('got msg ' + msg.data);
-
-        if (data.type == 'ViewModel') {
-            Sockets.ViewModel = data;
-            if (Sockets.UpdateCallback) {
-                Sockets.UpdateCallback();
-            }
+    if(_socket) {
+        _socket.onopen = function()
+        {
+            _socket.sendJson({
+                isAdmin: true,
+            });
+            _socket.sendJson({
+                type: 'gameState',
+                state: 0,
+            });
         }
 
+        /*setInterval(function () {
+            Sockets.SendState();
+        }, 5000);
+    */
+        _socket.onmessage = function(msg){
+            var data = JSON.parse(msg.data);
+            console.log('got msg ' + msg.data);
+
+            if (data.type == 'ViewModel') {
+                Sockets.ViewModel = data;
+                if (Sockets.UpdateCallback) {
+                    Sockets.UpdateCallback();
+                }
+            }
+
+        }
     }
 
     return {

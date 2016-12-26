@@ -1,5 +1,9 @@
-var webSocketUrl = "ws://" + location.host;
-//var webSocketUrl = "wss://snotty-stallion.gomix.me";
+var webSocketUrl;
+if (location.host.indexOf("github.io") > -1) {
+    webSocketUrl = "wss://snotty-stallion.gomix.me";
+} else {
+    webSocketUrl = "ws://" + location.host;
+}
 
 var _positions = [
     {
@@ -88,27 +92,29 @@ var _managerBadReplics = [
     "А что скажет заказчик?"
 ];
 
-//var webSocketUrl = "wss://localhost:9090";
+var _socket;
 
-var _socket = new ReconnectingWebSocket(webSocketUrl);
+if(webSocketUrl != "ws://") { // opened from disk?
+    _socket = new ReconnectingWebSocket(webSocketUrl);
 
-_socket.sendJson = function (message, callback) {
-    _socket.waitForConnection(function () {
-        _socket.send(JSON.stringify(message));
-        if (typeof callback !== 'undefined') {
+    _socket.sendJson = function (message, callback) {
+        _socket.waitForConnection(function () {
+            _socket.send(JSON.stringify(message));
+            if (typeof callback !== 'undefined') {
+                callback();
+            }
+        }, 300);
+    };
+
+    _socket.waitForConnection = function (callback, interval) {
+        if (_socket.readyState === 1) {
             callback();
+        } else {
+            var that = this;
+            // optional: implement backoff for interval here
+            setTimeout(function () {
+                that.waitForConnection(callback, interval);
+            }, interval);
         }
-    }, 300);
-};
-
-_socket.waitForConnection = function (callback, interval) {
-    if (_socket.readyState === 1) {
-        callback();
-    } else {
-        var that = this;
-        // optional: implement backoff for interval here
-        setTimeout(function () {
-            that.waitForConnection(callback, interval);
-        }, interval);
-    }
-};
+    };
+}
