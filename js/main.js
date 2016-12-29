@@ -125,7 +125,7 @@ var App = {
 
         Game.Setup();
 
-        PlaySound("./sound/bl-slaughter.mp3", 90, true);
+        //PlaySound("./sound/music.mp3", 90, true);
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }
