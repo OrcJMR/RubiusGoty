@@ -148,7 +148,7 @@ var Game = {
     spawnBullet: function (tank) {
         var bullet = new ObjectGroup(0, 20, 0, [
             new Behavior.Move(0, 0.3),
-            new Behavior.LifeInBounds(0, 0, 1000, 1000)
+            new Behavior.LifeInBounds(-8, -8, 1032, 856)
         ], [
             new Box(0, 0, 0, 5, 7, "black"),
             new Box(0, 0, 0, 3, 5, "orange")
