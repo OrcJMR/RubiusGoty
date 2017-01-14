@@ -125,7 +125,12 @@ var App = {
 
         Game.Setup();
 
-        //PlaySound("./sound/music.mp3", 90, true);
+        // Background music: Plug it In
+        //                by AlumoMusic - http://www.alumomusic.com
+        // 
+        // Licensed for use within this project and its derivatives - please don't extract and reuse separately.
+        // Listen for free at http://www.jamendo.com
+        PlaySound("./sound/background.mp3", 60, true);
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     }

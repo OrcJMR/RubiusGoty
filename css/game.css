@@ -44,6 +44,18 @@ body{
     height: 80px;
 }
 
+.small-overlay-text{
+    color: #bbf;
+    background-color: rgba(0,0,0,0.7);
+    font-size: 10px;
+    font-family: Tahoma
+}
+
+a:link { color: #22f; text-decoration: none; }
+a:visited { color: #66f; text-decoration: none; }
+a:hover { color: #aaf; text-decoration: underline; }
+a:active { color: #aaf; text-decoration: underline; }
+
 #gameCanvas{
     position: absolute;
     top: -8px;
