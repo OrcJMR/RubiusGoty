@@ -130,7 +130,7 @@ var App = {
         // 
         // Licensed for use within this project and its derivatives - please don't extract and reuse separately.
         // Listen for free at http://www.jamendo.com
-        Game.Music = PlaySound("./sound/background.mp3", 60, true);
+        Game.Music = PlaySound("./sound/background-loop.mp3", 60, true);
         App.SetVolumeText(60);
 
         document.onkeypress = function(e) {
