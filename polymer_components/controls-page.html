@@ -10,8 +10,7 @@
         <main>
 
             <center>
-                Привет, <b>{{name}}</b>!<br/> Ты в команде <b>{{team.title}}</b>,<br/>
-                и должен <b>{{position.title}}</b><br/>
+                <div inner-h-t-m-l="{{localize('HiNameYouAreInATeamAndShouldAct', 'name', name, 'team', team.title, 'position', position.title)}}"></div>
 
                 <template is="dom-repeat" items="{{actions}}" as="action">
                     <div class='row'>
@@ -47,6 +46,21 @@
         is: 'controls-page',
         ready: function () {
             CheckClientNavigationShouldExit();
+        },
+        behaviors: [
+            Polymer.AppLocalizeBehavior
+        ],
+        properties: {
+            language: {
+                value: 'en'
+            },
+            resources: {
+                value: function () {
+                    return {
+                        'en': Res
+                    }
+                }
+            }
         },
         attached: function () {
             this.name = localStorage.getItem("username");

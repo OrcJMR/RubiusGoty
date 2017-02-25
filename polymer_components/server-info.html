@@ -5,13 +5,13 @@
         <div>
             {{team.title}}:
             <template is="dom-repeat" items="{{team.members}}">
-                <div>Name: <span>{{item.name}}</span> <b>{{item.position}}</b></div>
+                <div>{{localize('Name')}}: <span>{{item.name}}</span> <b>{{item.position}}</b></div>
             </template>
         </div>
         </template>
 
-        <button on-tap="kickAll">Kick all</button>
-        <button on-tap="startGame">Start game</button>
+        <button on-tap="kickAll">{{localize('KickAll')}}</button>
+        <button on-tap="startGame">{{localize('StartGame')}}</button>
     </template>
 </dom-module>
 
@@ -19,6 +19,21 @@
 
     Polymer({
         is: 'server-info',
+        behaviors: [
+            Polymer.AppLocalizeBehavior
+        ],
+        properties: {
+            language: {
+                value: 'en'
+            },
+            resources: {
+                value: function () {
+                    return {
+                        'en': Res
+                    }
+                }
+            }
+        },
         ready: function () {
             this.model = Sockets.ViewModel;
 

@@ -3,7 +3,7 @@
     <template>
 
 <!--<a href="#" on-tap="changeName">Change name</a>-->
-    <button on-tap="changeName">Back</button>
+    <button on-tap="changeName">{{localize('back')}}</button>
     </template>
 </dom-module>
 
@@ -11,8 +11,21 @@
 
     Polymer({
         is: 'change-name',
+        behaviors: [
+            Polymer.AppLocalizeBehavior
+        ],
         properties: {
-            resetName: Boolean
+            resetName: Boolean,
+            language: {
+                value: 'en'
+            },
+            resources: {
+                value: function () {
+                    return {
+                        'en': Res
+                    }
+                }
+            }
         },
         ready: function() {
         },

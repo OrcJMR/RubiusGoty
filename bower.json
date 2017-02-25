@@ -18,7 +18,10 @@
   "dependencies": {
     "polymer": "^1.7.1",
     "app-router": "^2.7.2",
-    "jquery": "^3.1.1"
+    "jquery": "^3.1.1",
+    "app-localize-behavior": "PolymerElements/app-localize-behavior#^0.10.1",
+    "intl": "^1.2.5",
+    "juicy-html": "^1.1.0"
   },
   "resolutions": {
     "webcomponentsjs": "v1"

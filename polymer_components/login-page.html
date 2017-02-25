@@ -12,13 +12,13 @@
                         <div class='row'>
                                 <div class='input-field col s12'>
                                     <input autofocus="autofocus" class='validate' type='email' name='email' id='email'  value="{{name::change}}"/>
-                                    <label for='email'>Enter your name</label>
+                                    <label for='email'>{{localize('EnterYourName')}}</label>
                                 </div>
                         </div>
 
                 <center>
                     <div class='row'>
-                        <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect indigo' on-tap="enter">Enter</button>
+                        <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect indigo' on-tap="enter">{{localize('Enter')}}</button>
                     </div>
                 </center>
             </center>
@@ -44,6 +44,21 @@
 
     Polymer({
         is: 'login-page',
+        behaviors: [
+            Polymer.AppLocalizeBehavior
+        ],
+        properties: {
+            language: {
+                value: 'en'
+            },
+            resources: {
+                value: function () {
+                    return {
+                        'en': Res
+                    }
+                }
+            }
+        },
         ready: function() {
             if (CheckClientNavigationShouldExit('login-page'))
                 return;

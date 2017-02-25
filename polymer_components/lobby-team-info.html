@@ -39,14 +39,29 @@
         </div>
 
 
-        <button on-tap="kickAll">Kick all</button>
-        <button on-tap="startGame">Start game</button>
+        <button on-tap="kickAll">{{localize('KickAll')}}</button>
+        <button on-tap="startGame">{{localize('StartGame')}}</button>
     </template>
 </dom-module>
 
 <script>
     Polymer({
         is: 'lobby-team-info',
+        behaviors: [
+            Polymer.AppLocalizeBehavior
+        ],
+        properties: {
+            language: {
+                value: 'en'
+            },
+            resources: {
+                value: function () {
+                    return {
+                        'en': Res
+                    }
+                }
+            }
+        },
         ready: function () {
             this.model = Sockets.ViewModel;
 

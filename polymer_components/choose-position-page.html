@@ -7,10 +7,8 @@
         <main>
 
             <center>
-                Привет, <b>{{name}}</b>! You are in <b>{{team.title}}</b>.
-<br/>
-                <br/>
-                Choose your role:
+                <div inner-h-t-m-l="{{localize('HiNameYouAreInTeamChooseYourRole', 'name', name, 'team', team.title)}}"></div>
+
                 <br/>
                 <template is="dom-repeat" items="{{positions}}" as="position">
                     <div class='row'>
@@ -33,6 +31,21 @@
 <script>
     Polymer({
         is: 'choose-position-page',
+        behaviors: [
+            Polymer.AppLocalizeBehavior
+        ],
+        properties: {
+            language: {
+                value: 'en'
+            },
+            resources: {
+                value: function () {
+                    return {
+                        'en': Res
+                    }
+                }
+            }
+        },
         ready: function() {
             CheckClientNavigationShouldExit('choose-position');
 

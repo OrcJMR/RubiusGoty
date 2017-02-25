@@ -5,13 +5,17 @@ var Res = {
     teamGoldName: "Team Gold",
     teamIndigoName: "Team Indigo",
     teamGreenName: "Team Green",
-    //back - change-name
-    //hi, name, you are in team, choose your role - choose-position-page
-    //hi, name, choose your team - choose-team-page
-    //hi, name, your are in team and have to act - controls-page
-    //kick all / start game - lobby-team-info
-    //enter your name - login-page
-    //name / kick all / start game - server-info
+    HiNameChooseYourTeam: "Hi, {name}! Choose your team:",//hi, name, choose your team - choose-team-page
+    HiNameYouAreInTeamChooseYourRole: "Привет, <b>{name}</b>! You are in <b>{team}</b>.<br/><br/>Choose your role:", //hi, name, you are in team, choose your role - choose-position-page
+    back:"Back", //back - change-name
+    HiNameYouAreInATeamAndShouldAct: "Привет, <b>{name}</b>!<br/> Ты в команде <b>{team}</b>,<br/>и должен <b>{position}</b><br/>",    //hi, name, your are in team and have to act - controls-page
+    EnterYourName: "Enter your name", //enter your name - login-page
+    Enter: "Enter",//enter - login-page
+    KickAll: "Kick All",//- server-info
+    StartGame: "Start game",//- server-info
+    Name: "Name",//- server-info
+
+
     generatedNamesAdjectives: 
         ["агрессивный",
         "безрассудный",
