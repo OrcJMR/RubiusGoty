@@ -29,9 +29,9 @@ var App = {
         ctx.save();
         ctx.translate(x, y);
         if(!tank || tank.hidden) {
-            ctx.font="22px Lucida Console";
-            ctx.fillStyle="dimgray";
-            ctx.fillText("Insert coin!", 37, 40);
+            // ctx.font="22px Lucida Console";
+            // ctx.fillStyle="dimgray";
+            // ctx.fillText("Insert coin!", 37, 40);
         } else {
             var scale = 32 / tank.width;
             ctx.drawImage(App.Canvas, tank.x - tank.width, tank.y - tank.width,  tank.width*2, tank.width*2, 0, 0, 64, 64);
@@ -160,6 +160,8 @@ var App = {
                 }
             }
         }
+
+        document.getElementById("hud4message").innerHTML = "Join the game at<br/>" + location.host + "<br/>from your phone browser!";
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     },
