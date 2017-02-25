@@ -175,9 +175,11 @@ var Game = {
                         Game.spawnTank1();
                     if (obj == Game.Tank2)
                         Game.spawnTank2();
+                    if (obj == Game.Tank3)
+                        Game.spawnTank3();
                     if (obj == Game.Tank)
                         Game.spawnTankDefault();
-                    Game.Tanks = [Game.Tank1, Game.Tank2, Game.Tank];
+                    Game.Tanks = [Game.Tank1, Game.Tank2, Game.Tank3, Game.Tank];
                 }
                 obj.moveXSpeed = 0;
                 obj.moveYSpeed = 0;
