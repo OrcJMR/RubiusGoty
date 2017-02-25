@@ -130,9 +130,46 @@ var App = {
         // 
         // Licensed for use within this project and its derivatives - please don't extract and reuse separately.
         // Listen for free at http://www.jamendo.com
-        PlaySound("./sound/background.mp3", 60, true);
+        Game.Music = PlaySound("./sound/background.mp3", 60, true);
+        App.SetVolumeText(60);
+
+        document.onkeypress = function(e) {
+            if(e.key == '-') {
+                var vol = volumeToInteger(Game.Music.volume);
+                if(vol > 0) {
+                    vol -= 10;
+                    vol = Math.max(vol, 0);
+                    Game.Music.volume = volumeToFraction(vol);
+                    if(vol == 0 && !Game.Music.paused) {
+                        Game.Music.pause();
+                        Game.Music.currentTime = 0;
+                    }
+                    App.SetVolumeText(vol);
+                }
+            }
+            else if(e.key == '=') {
+                var vol = volumeToInteger(Game.Music.volume);
+                if(vol < 100) {
+                    vol += 10;
+                    vol = Math.min(vol, 100);
+                    Game.Music.volume = volumeToFraction(vol);
+                    if(vol > 0 && Game.Music.paused) {
+                        Game.Music.play();
+                    }
+                    App.SetVolumeText(vol);
+                }
+            }
+        }
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
+    },
+    SetVolumeText: function(intVolume) {
+        var str = intVolume == 0 
+            ? "&nbsp;&nbsp;OFF" 
+            : intVolume < 100 
+                ? "&nbsp;" + intVolume.toString() + "%" 
+                : intVolume.toString() + "%";
+        document.getElementById("musicVolume").innerHTML = str;
     }
 };
 

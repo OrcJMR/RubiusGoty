@@ -9,7 +9,7 @@ var PlaySound=function(url,vol,loops,id)
     var newSound = function(){ 
         var s = new Audio(url);        
         s.onloadeddata=function(e){
-            e.target.volume=Math.pow(volume/*Game.volume*//100,2);
+            e.target.volume=volumeToFraction(volume);
             e.target.loop = !!loops;            
         }
         return s;
@@ -33,7 +33,7 @@ var PlaySound=function(url,vol,loops,id)
             var sound = soundList[i];
             if (sound.ended){
                 sound.currentTime = 0;
-                sound.volume=Math.pow(volume/*Game.volume*//100,2);
+                sound.volume=volumeToFraction(volume);
                 sound.loop = loops;
                 sound.play();
                 return sound;
@@ -45,4 +45,12 @@ var PlaySound=function(url,vol,loops,id)
     soundList.push(sound);
     sound.play();
     return sound;
+}
+
+var volumeToFraction = function(intVolume) {
+    return Math.pow(intVolume/100, 2);
+}
+
+var volumeToInteger = function(fracVolume) {
+    return Math.sqrt(fracVolume) * 100;
 }
