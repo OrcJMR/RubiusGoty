@@ -161,13 +161,13 @@ var App = {
             }
         }
 
-        document.getElementById("hud4message").innerHTML = "Join the game at<br/>" + location.host + "<br/>from your phone browser!";
+        document.getElementById("hud4message").innerHTML = Res.inviteLine1 + location.host + Res.inviteLine3;
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     },
     SetVolumeText: function(intVolume) {
         var str = intVolume == 0 
-            ? "&nbsp;&nbsp;OFF" 
+            ? Res.volumeOff
             : intVolume < 100 
                 ? "&nbsp;" + intVolume.toString() + "%" 
                 : intVolume.toString() + "%";
