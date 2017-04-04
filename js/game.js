@@ -307,8 +307,7 @@ var Game = {
                 Game.showBalloonMessage(tank, replic);
             }
         });
-    }
-    ,
+    },
     Logic: function (delta) {
         Game.Tanks.forEach(function (tank) {
             //var tank = this.Tank;

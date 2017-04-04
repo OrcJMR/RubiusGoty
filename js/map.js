@@ -10,44 +10,44 @@ function Map(){
     "Sffffffffff,c||||cBB.......,SfffffffS,.......BBc||||c,ffffffffffS" +
     "Sffffffffff,c||||cB.......,;fffffffff;,.......Bc||||c,ffffffffffS" +
     "Sffffffffff,c||||c......S.,;fffffffff;,.S......c||||c,ffffffffffS" +
-    "SffffBBBBBB.c||||c......S.,;fffffffff;,.S......c||||c.BBBBBBffffS" +
-    "SffffBBBBBB.c||||c......S..,SfffffffS,..S......c||||c.BBBBBBffffS" +
-    "SffffffffBB.c||||c..B...S..,SSSSSSSSS,..S...B..c||||c.BBffffffffS" +
-    "SffffffffBB.c||||c.BB.......................BB.c||||c.BBffffffffS" +
+    "SffffBBBBBB.c||||.......S.,;fffffffff;,.S......c||||c.BBBBBBffffS" +
+    "SffffBBBBBB.c|||........S..,SfffffffS,..S......c||||c.BBBBBBffffS" +
+    "SffffffffBB.c|||....B...S..,SSSSSSSSS,..S...B..c||||c.BBffffffffS" +
+    "SffffffffBB.c||||..BB.......................BB.c||||c.BBffffffffS" +
     "SffffffffBB.c||||c.BB.......................BB.c||||c.BBffffffffS" +
     "SBBBBffffBB.c||||c.BBBBBBBBBB,,,,,BBBBBBBBBBBB.c||||c.BBffffBBBBS" +
     "SBBBBffffBB.c||||c.BBBBBBBBBB;;;;;BBBBBBBBBBBB.c||||c.BBffffBBBBS" +
-    "S....,,,,...c||||c.BBfffffffffffffffffffffffBB.c||||c...,,,,....S" +
-    "Scccccccccccc||||c.BBfffffffffffffffffffffffBB.c||||ccccccccccccS" +
-    "S------------++||c.BBffcccccccccccccccccccffBB.c||++------------S" +
-    "S------------+++|c.BBffcBBBcff.....ffcBBBcffBB.c|+++------------S" +
-    "S------------+++|c.BBffcBSBcff.....ffcBSBcffBB.c|+++------------S" +
-    "S------------++||c.BBffcBBBcff.....ffcBBBcffBB.c||++------------S" +
-    "Scccccccccccc||||c.,;ffcBSBcff.....ffcBSBcff;,.c||||ccccccccccccS" +
-    "SfffBBBBBBBBc||||c.,;ffcBBBcff.....ffcBBBcff;,.c||||cBBBBBBBBfffS" +
-    "SfffBBBBBBBBc||||c.,;ffcccccccccccccccccccff;,.c||||cBBBBBBBBfffS" +
-    "SfffffffffBBc||||c.,;fffffffffffffffffffffff;,.c||||cBBfffffffffS" +
+    "S....,,,,...c||||c.BB.......,;;,;;,.........BB.c||||c...,,ff,...S" +
+    "Sccccccccccc.||||c.BB.....,;,,...,;,,.......BB.c||||ccccccccccccS" +
+    "S------------.+||c.BB...,;,,......,;;,,,....BB.c||++------------S" +
+    "S------------+++|c.BB.,;;,.........,,,;;,,..BB..|+++------------S" +
+    "S------------+++|c.BBfffffffffffffffffffffffBB....++------------S" +
+    "S------------++||c.,faaffffffffffBBffBBfffBfBB...|++------------S" +
+    "Scccccccccccc||||c,;fafaffaffafafBfBfBfBfBfBf,,.||||cccc..ccccccS" +
+    "SfffBBBBBBBBc||||c,;fafafafafafafBBffBBffBfBf;,c||||cBBBBBBBBfffS" +
+    "SfffBBBBBBBBc||||c.;fafafaaffafafBfffBfBfBfBf;,c||||cBBBBBBBBfffS" +
+    "SfffffffffBBc||||c.,faafffaaffaffBfffBfBffBff,.c||||cBBfffffffffS" +
     "SfffffffffBBc||||c.BBfffffffffffffffffffffffBB.c||||cBBfffffffffS" +
     "SfffffffffBBc||||c.BBB;;;;BBBBBBBBBBBBB;;;;BBB.c||||cBBfffffffffS" +
     "SBBBBBBfffBBc||||c.BBB,,,,BBBBBBBBBBBBB,,,,BBB.c||||cBBfffBBBBBBS" +
     "SBBBBBBfffBBc||||c.............................c||||cBBfffBBBBBBS" +
-    "S;;;;BBfffBBc||||ccccccccccccccccccccccccccccccc||||cBBfffBB;;;;S" +
+    "S;;;;BBfffBBc||||cccccccccccccc....ccccccccccccc||||cBBfffBB;;;;S" +
     "S,,,,BBfffBBc||++-------------------------------++||cBBfffBB,,,,S" +
     "S....BBfffBBc|+++-------------------------------+++|cBBfffBB....S" +
     "S...........c|+++-------------------------------+++|c...........S" +
-    "S...........c||++-------------------------------++||c...........S" +
-    "S...,,,,....c||||ccccccccccccccccccccccccccccccc||||c....,,,,...S" +
-    "S.,;SSSSBBBBc||||cBBBBBBBBBBBB.....BBBBBBBBBBBBc||||cBBBBSSSS;,.S" +
-    "S....,,,;;;Bc||||cBBBBBBBBBBBB.....BBBBBBBBBBBBc||||cB;;;,,,....S" +
-    "S......,,;;Bc||||cBB........BB.....BB........BBc||||cB;;,,......S" +
-    "S.......,,;Bc||||cBB........BB.....BB........BBc||||cB;,,.......S" +
-    "SSSfffSS.,,Sc||||cBB.........................BBc||||cS,,.SSfffSSS" +
-    "SffffffS..,Sc||||c.....BB...............BB.....c||||cS,..SffffffS" +
-    "Sfffffff..,Sc||||c.....BBB.............BBB.....c||||cS,..fffffffS" +
-    "Sfffffff...Sc||||c.....BB...............BB.....c||||cS...fffffffS" +
+    "S............||++-----------------------.-------++||c...........S" +
+    "S...,,,,.....||||cccccccccccccccccccccc...cccccc||||c....,,,,...S" +
+    "S.,;SSSSBBBB.||||cBBBBBBBBBBBB.ccc.BBBBBBBBBBBBc||||cBBBBSSSS;,.S" +
+    "S....,,,;;;Bc||||cBBBBBBBBBBBB.ccc.BBBBBBBBBBBBc||||cB;;;,,,....S" +
+    "S......,,;;Bc||||cBB........BB.ccc.BB........BBc||||cB;;,,......S" +
+    "S.......,,;Bc||||cBB........BB.ccc.BB........BBc||||cB;,,.......S" +
+    "SSSfffSS.,,Sc||||cBB...........ccc...........BBc||||cS,,.SSfffSSS" +
+    "SffffffS..,Sc||||c.....,B,.....ccc.....,B,.....c||||cS,..SffffffS" +
+    "Sfffffff..,Sc||||c.....BSB.....ccc.....BSB.....c||||cS,..fffffffS" +
+    "Sfffffff...Sc||||c.....,B,.....ccc.....,B,.....c||||cS...fffffffS" +
     "Sfffffff....c||||cBB.........BBBBBBB.........BBc||||c....fffffffS" +
-    "SffffffS....c||||cBB........BBBBBBBBB........BBc||||c....SffffffS" +
-    "SffffffS....c||||cBB.......BBBBBBBBBBB.......BBc||||c....SffffffS" +
+    "SffffffS....c||||cBB........BBBBBBBBB........BBc||||.....SffffffS" +
+    "SffffffS....c||||cBB.......BBBBBBBBBBB.......BBc|||......SffffffS" +
     "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSfffffSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" +
     "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSfffffSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" +
     "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSfffffSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" +
@@ -72,10 +72,10 @@ function Map(){
     "            x                                                    "  +
     "             x                                                   "  +
     "              x                                                  "  +
-    "                               x x               x               "  +
+    "                                                 x               "  +
     "                                                x                "  +
-    "                              x   x            x                 "  +
-    "                               xxx                               "  +
+    "                                               x                 "  +
+    "                                                                 "  +
     "                                                                 "  +
     "                                                                 "  +
     "            xx                                     xx            "  +
