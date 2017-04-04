@@ -5,10 +5,15 @@ var App = {
     Inputs: {},
     Resources: {},
     UpdateFrame: function(delta) {
+        App.GuiLogic(delta);
         Game.Logic(delta);
         Game.RootEntity.update(delta);
     },
     globalScale: 1,
+    elapsedMsec: 0,
+    GuiLogic: function(delta) {
+        this.elapsedMsec += delta;
+    },
     DrawFrame: function(interpolationPercentage) {
         var ctx = App.Context;
         ctx.clearRect(0, 0, App.Canvas.width, App.Canvas.height);
@@ -23,7 +28,7 @@ var App = {
         App.DrawTankGui(ctx, Game.Tank1, 0, 0);
         App.DrawTankGui(ctx, Game.Tank2, 256, 0);
         App.DrawTankGui(ctx, Game.Tank3, 512, 0);
-        App.DrawTankGui(ctx, Game.Tank, 768, 0);
+        App.DrawJoinTicker(ctx, 896, 32);
     },
     DrawTankGui: function(ctx, tank, x, y) {
         ctx.save();
@@ -36,13 +41,13 @@ var App = {
             var scale = 32 / tank.width;
             ctx.drawImage(App.Canvas, tank.x - tank.width, tank.y - tank.width,  tank.width*2, tank.width*2, 0, 0, 64, 64);
             ctx.translate(190, 0);
-            App.DrawCube(ctx, tank);
+            App.DrawHealthCube(ctx, tank);
             ctx.translate(-96, 0);
             App.DrawInputs(ctx, tank);
         }
         ctx.restore();
     },
-    DrawCube: function(ctx, tank) {
+    DrawHealthCube: function(ctx, tank) {
         ctx.drawImage(App.Resources.hpLeaf, 8, 0, 16, 16);
         var hp = 9;
         for(var y = 16; y < 64; y += 16)
@@ -51,6 +56,21 @@ var App = {
                 ctx.drawImage(lit ? App.Resources.hpCubeLit : App.Resources.hpCubeDim, x, y, 16, 16);
                 hp--;
             }
+    },
+    DrawJoinTicker: function(ctx, x, y) {
+        ctx.font = "bold 14px Tahoma";
+        ctx.fillStyle = "#F00";
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        ctx.save();
+        ctx.translate(x, y);
+        // 5 degrees max tilt, Pi seconds period
+        ctx.rotate(5 / 180 * Math.PI * Math.sin(this.elapsedMsec/1000));
+        // song is 128 bpm = 2,1333 bps, 1000 / Pi / 2,1333 = 149
+        var scale = 1.1 + 0.1 * Math.sin(this.elapsedMsec/149);
+        ctx.scale(scale, scale);
+        ctx.fillText(location.host, 0, 0);
+        ctx.restore();
     },
     DrawInputs: function(ctx, tank) {
         if(typeof tank.teamId == 'undefined')
@@ -130,7 +150,7 @@ var App = {
         // 
         // Licensed for use within this project and its derivatives - please don't extract and reuse separately.
         // Listen for free at http://www.jamendo.com
-        Game.Music = PlaySound("./sound/background-loop.mp3", 60, true);
+        Game.Music = PlaySound("./sound/background.mp3", 60, true);
         App.SetVolumeText(60);
 
         document.onkeypress = function(e) {
@@ -161,7 +181,7 @@ var App = {
             }
         }
 
-        document.getElementById("hud4message").innerHTML = Res.inviteLine1 + location.host + Res.inviteLine3;
+        document.getElementById("hud4message").innerHTML = Res.inviteLine1 /*+ location.host*/ + Res.inviteLine3;
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     },
