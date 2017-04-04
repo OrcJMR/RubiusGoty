@@ -26,4 +26,5 @@ How to run the messaging server:
 `npm install`  
 `node server.js`
 
-Server port is defined at the very top of `server.js`
+Port and interface for a server can be configured with environment variables `IFACE` and `PORT`.  
+By default, the server is run on port `80` with an unspecified address (`0.0.0.0`). This should mean listening on all interfaces, but it was observed that when a requested port is occupied on one of the interfaces, Node silently opens only on `127.0.0.1`. Configure an explicit interface to be sure.

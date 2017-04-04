@@ -6,10 +6,11 @@ var server = require('http').createServer(),
 
 // Client stuff
 
+var iface = process ? process.env.IFACE : null;
 var port = process ? process.env.PORT : 80;
 if (!port)
    port = 80;
-console.log("Port: " + port);
+console.log("Configured address: " + iface + ":" + port);
 
 app.use(express.static('.'));
 app.get("/", function (request, response) {
@@ -218,6 +219,11 @@ wss.on('connection', function connection(ws) {
 
 // Listen
 server.on('request', app);
-server.listen(port, function () {
-    console.log('Your app is listening on port ' + server.address().port);
-});
+if(!iface)
+    server.listen(port, function () {
+        console.log('Your app is listening on port ' + server.address().port + ", default address.");
+    });
+else
+    server.listen(port, iface, function () {
+        console.log('Your app is listening on ' + server.address().address + ":" + server.address().port);
+    });
