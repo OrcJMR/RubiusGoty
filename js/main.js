@@ -141,6 +141,28 @@ var App = {
         App.Resources.arrowFlag = new Image();
         App.Resources.arrowFlag.src = "./images/arrow-flag.png";
 
+        var sounds = [
+            "./sound/crash.wav",
+            "./sound/longblast.mp3",
+            "./sound/blast1.mp3",
+            "./sound/blast2.mp3",
+            "./sound/tank-fire.wav",
+            "./sound/shot2.mp3",
+            "./sound/shot3.mp3"
+        ];
+        var target = sounds.length + 1;
+        var onloaded = function() {
+            App.soundsLoaded++;
+            if(App.soundsLoaded == target)
+                App.FinishEntry();
+        }
+        for(var i in sounds)
+            Sound.Load(sounds[i], onloaded);
+        Sound.Load("./sound/engine working long.mp3", onloaded, "1");
+    },
+    soundsLoaded: 0,
+    FinishEntry: function() {
+
         Game.Setup();
 
         // Background music: Plug it In
@@ -148,7 +170,7 @@ var App = {
         // 
         // Licensed for use within this project and its derivatives - please don't extract and reuse separately.
         // Listen for free at http://www.jamendo.com
-        Game.Music = PlaySound("./sound/background.mp3", 60, true);
+        Game.Music = Sound.Play("./sound/background.mp3", 60, true);
         App.SetVolumeText(60);
 
         document.onkeypress = function(e) {

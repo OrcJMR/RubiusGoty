@@ -108,7 +108,7 @@ var Game = {
 
 
         //todo fix loop sound gap problem
-        tank.throttleSound = PlaySound('./sound/engine working long.mp3', 0, 1, type);
+        tank.throttleSound = Sound.Play('./sound/engine working long.mp3', 0, 1, type);
         //tank.idleSound = PlaySound('./sound/engine working2.mp3', 0, 1, type);
 
         tank.started = false;
@@ -164,7 +164,7 @@ var Game = {
             //PlaySound("./sound/splat.wav", 100);
         };
         bullet.OnObjectCollision = function (obj) {
-            Game.spawnExplosion(this.x, this.y);
+            Game.spawnExplosion(this.x, this.y, null, obj.class == "tank" ? "tank" : null);
             if (obj.class == "tank") {
                 obj.hp -= 1;
                 if (obj.hp == 0) {
@@ -208,26 +208,21 @@ var Game = {
         tank.changeCoordinatesFromDescendant(blast, tank.Barrel);
         tank.addChild(blast);
     },
-    spawnExplosion: function (x, y, size, big) {
+    spawnExplosion: function (x, y, size, type) {
         if (!size)
             size = 24
         var blast = new Sprite(x, y, Math.random() * 90, size, size, "./images/explosion.png", [new Behavior.Animate(18, 8, 50), new Behavior.TimedLife(399)]);
         Game.RootEntity.addChild(blast);
 
-        if (big) {
-            PlaySound("./sound/longblast.mp3", 100);
+        if (type == "echo") {
+            Sound.Play("./sound/longblast.mp3", 100);
+        } else if (type == "tank") {
+            Sound.Play("./sound/tank-fire.wav", 100);
         } else {
-            var rand = Math.random();
-
-            if (rand < 0.3) {
-                PlaySound("./sound/blast1.mp3", 100);
-            }
-            else if (rand > 0.7) {
-                PlaySound("./sound/blast2.mp3", 100);
-            }
-            else {
-                PlaySound("./sound/tank-fire.wav", 100);
-            }
+            if (Math.random() < 0.5)
+                Sound.Play("./sound/blast1.mp3", 100);
+            else
+                Sound.Play("./sound/blast2.mp3", 100);
         }
     },
     showBalloonMessage: function (tank, message) {
@@ -328,9 +323,9 @@ var Game = {
                 tank.Barrel.firing = false;
 
                 if (tank.boss) {
-                    PlaySound("./sound/shot3.mp3", 100);
+                    Sound.Play("./sound/shot3.mp3", 100);
                 } else {
-                    PlaySound("./sound/shot2.mp3", 80);
+                    Sound.Play("./sound/shot2.mp3", 80);
                 }
             }
             tank.Barrel.items[0].y = 7 + tank.Barrel.recoil * 6;
