@@ -1,4 +1,6 @@
 
+var urlToJoinGame = null; // put the url to connect to here
+
 function l(what) {return document.getElementById(what);}
 
 var App = {
@@ -33,11 +35,7 @@ var App = {
     DrawTankGui: function(ctx, tank, x, y) {
         ctx.save();
         ctx.translate(x, y);
-        if(!tank || tank.hidden) {
-            // ctx.font="22px Lucida Console";
-            // ctx.fillStyle="dimgray";
-            // ctx.fillText("Insert coin!", 37, 40);
-        } else {
+        if(tank && !tank.hidden) {
             var scale = 32 / tank.width;
             ctx.drawImage(App.Canvas, tank.x - tank.width, tank.y - tank.width,  tank.width*2, tank.width*2, 0, 0, 64, 64);
             ctx.translate(190, 0);
@@ -62,6 +60,8 @@ var App = {
         ctx.fillStyle = "#F00";
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
+        if(!urlToJoinGame)
+            urlToJoinGame = location.host;
         ctx.save();
         ctx.translate(x, y);
         // 5 degrees max tilt, Pi seconds period
@@ -69,7 +69,7 @@ var App = {
         // song is 128 bpm = 2,1333 bps, 1000 / Pi / 2,1333 = 149
         var scale = 1.1 + 0.1 * Math.sin(this.elapsedMsec/149);
         ctx.scale(scale, scale);
-        ctx.fillText(location.host, 0, 0);
+        ctx.fillText(urlToJoinGame, 0, 0);
         ctx.restore();
     },
     DrawInputs: function(ctx, tank) {
@@ -181,7 +181,8 @@ var App = {
             }
         }
 
-        document.getElementById("hud4message").innerHTML = Res.inviteLine1 /*+ location.host*/ + Res.inviteLine3;
+        // no address here, it is drawn in DrawJoinTicker
+        document.getElementById("hud4message").innerHTML = Res.inviteLine1 + Res.inviteLine3;
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     },
