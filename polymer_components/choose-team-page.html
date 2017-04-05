@@ -9,6 +9,7 @@
 
             <center>
                 <div inner-h-t-m-l="{{localize('HiNameChooseYourTeam', 'name', name)}}"></div>
+                <br/>
                 <template is="dom-repeat" items="{{teams}}" as="team">
                     <div class='row'>
                         <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect' style$="[[_teamStyle(team.id)]]" data-team$="{{team.id}}" on-tap="join">[[_teamName(team.id)]]</button>
@@ -17,9 +18,6 @@
 
             </center>
 
-
-
-            <div class="section"></div>
             <div class="section"></div>
         </main>
 

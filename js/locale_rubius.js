@@ -2,10 +2,10 @@ var Res = {
     inviteLine1: "Join the game at",
     inviteLine3: "from your phone browser!",
     volumeOff: "&nbsp;&nbsp;OFF",
-    HiNameChooseYourTeam: "Hi, {name}! Choose your team:",//hi, name, choose your team - choose-team-page
-    HiNameYouAreInTeamChooseYourRole: "Привет, <b>{name}</b>! You are in <b>{team}</b>.<br/><br/>Choose your role:", //hi, name, you are in team, choose your role - choose-position-page
+    HiNameChooseYourTeam: "Hi, <b>{name}</b>!<br/>Choose your team:",//hi, name, choose your team - choose-team-page
+    HiNameYouAreInTeamChooseYourRole: "Привет, <b>{name}</b>!<br/>You are in <b>{team}</b>.<br/>Choose your role:", //hi, name, you are in team, choose your role - choose-position-page
     back:"Back", //back - change-name
-    HiNameYouAreInATeamAndShouldAct: "Привет, <b>{name}</b>!<br/> Ты в команде <b>{team}</b>,<br/>и должен <b>{position}</b><br/>",    //hi, name, your are in team and have to act - controls-page
+    HiNameYouAreInATeamAndShouldAct: "Привет, <b>{name}</b>!<br/>Ты в команде <b>{team}</b>,<br/>и должен <b>{position}</b>.",    //hi, name, your are in team and have to act - controls-page
     EnterYourName: "Enter your name", //enter your name - login-page
     Enter: "Enter",//enter - login-page
     KickAll: "Kick All",//- server-info
@@ -14,12 +14,12 @@ var Res = {
 
     Teams: [
         "Team Gold",
-        "Team Indigo",
+        "Team Purple",
         "Team Jade"
     ],
     TeamStyles: [
         "background-color: gold;",
-        "background-color: #3f51b5;",
+        "background-color: #9c27b0;",
         "background-color: #4CAF50;"
     ],
 

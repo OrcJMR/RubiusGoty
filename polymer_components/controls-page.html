@@ -11,7 +11,7 @@
 
             <center>
                 <div inner-h-t-m-l="{{localize('HiNameYouAreInATeamAndShouldAct', 'name', name, 'team', teamName, 'position', position.title)}}"></div>
-
+                <br/>
                 <template is="dom-repeat" items="{{actions}}" as="action">
                     <div class='row'>
                         <button class$='col s12 btn btn-large waves-effect {{action.color}}'
@@ -28,6 +28,7 @@
                 </template>
 
             </center>
+            <div class="section"></div>
 
         </main>
         <change-name></change-name>
