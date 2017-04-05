@@ -3,7 +3,7 @@
     <template>
         <template is="dom-repeat" items="{{model.teams}}" as="team" >
         <div>
-            {{team.title}}:
+            {{_teamName(team.id)}}:
             <template is="dom-repeat" items="{{team.members}}">
                 <div>{{localize('Name')}}: <span>{{item.name}}</span> <b>{{item.position}}</b></div>
             </template>
@@ -34,6 +34,7 @@
                 }
             }
         },
+        _teamName: function(teamNumber) { return Res.Teams[teamNumber - 1]; },
         ready: function () {
             this.model = Sockets.ViewModel;
 

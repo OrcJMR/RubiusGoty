@@ -123,7 +123,7 @@ function Map(){
     this.tileDictionary['|'] = {tileX: 0, tileY: 5, variants: 4, traction: 0.8};
     this.tileDictionary['B'] = {tileX: 0, tileY: 9, variants: 2, traction: 0.1};
     this.tileDictionary['S'] = {tileX: 2, tileY: 6, traction: 0.1};
-    this.tileDictionary['b'] = {tileX: 2, tileY: 9, variants: 2, traction: 0.9, speed: 0.3};
+    this.tileDictionary['b'] = {tileX: 2, tileY: 9, variants: 2, traction: 0.9, speed: 0.5};
     this.tileDictionary['a'] = {tileX: 0, tileY: 7, variants: 8, traction: 0.95};
     this.tileDictionary['c'] = {tileX: 0, tileY: 8, variants: 4, traction: 0.95};
     this.tileDictionary['f'] = {tileX: 4, tileY: 8, variants: 4, traction: 0.95};
@@ -159,6 +159,7 @@ Map.prototype = {
                 terrain: tchar,
                 building: bchar,
                 tractionFactor: this.tileDictionary[tchar].traction,
+                speed: this.tileDictionary[tchar].speed,
                 passable: this.impassableTiles.indexOf(tchar) < 0 && bchar == ' ',
             };
     },

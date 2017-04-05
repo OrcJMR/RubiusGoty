@@ -103,14 +103,16 @@ Behavior.MoveTank.prototype = {
             Game.Map.degradeTileAt(rtx, rty);
 
         var rotationDir = obj.LeftTrack.torque - obj.RightTrack.torque;
-        if (rotationDir != 0 && Math.sign(rotationDir) != Math.sign(obj.rotationSpeed)) obj.rotationSpeed *= 0.8;        
-        obj.rotationSpeed = obj.rotationSpeed + rotationDir * traction * delta * obj.maxRotationSpeed / 1000;
-        if (Math.abs(obj.rotationSpeed) > obj.maxRotationSpeed) obj.rotationSpeed = Math.sign(obj.rotationSpeed) * obj.maxRotationSpeed;
+        if (rotationDir != 0 && Math.sign(rotationDir) != Math.sign(obj.rotationSpeed)) obj.rotationSpeed *= 0.8;
+        var maxRotationSpeed = obj.maxRotationSpeed * limit;
+        obj.rotationSpeed = obj.rotationSpeed + rotationDir * traction * delta * maxRotationSpeed / 1000;
+        if (Math.abs(obj.rotationSpeed) > maxRotationSpeed) obj.rotationSpeed = Math.sign(obj.rotationSpeed) * maxRotationSpeed;
         
         var speedDir = obj.LeftTrack.torque + obj.RightTrack.torque;
         if (speedDir != 0 && Math.sign(speedDir) != Math.sign(obj.speed)) obj.speed *= 0.8;
-        obj.speed = obj.speed + (obj.LeftTrack.torque + obj.RightTrack.torque) / 2 * traction * delta * obj.maxSpeed / 1000;
-        if (Math.abs(obj.speed) > obj.maxSpeed) obj.speed = Math.sign(obj.speed) * obj.maxSpeed;
+        var maxSpeed = obj.maxSpeed * limit;
+        obj.speed = obj.speed + (obj.LeftTrack.torque + obj.RightTrack.torque) / 2 * traction * delta * maxSpeed / 1000;
+        if (Math.abs(obj.speed) > maxSpeed) obj.speed = Math.sign(obj.speed) * maxSpeed;
         
         if(obj.speed != 0) {
             newx -= Math.sin(obj.angle) * delta * obj.speed;
