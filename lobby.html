@@ -14,12 +14,16 @@
     <script type="text/javascript" src="bower_components/reconnectingWebsocket/reconnecting-websocket.min.js"></script>
     <script src="js/socketsconfig.js"></script>
     <script src="js/server.js"></script>
+    <script src="js/locale_rubius.js"></script>
 
     <!--Import jQuery before materialize.js-->
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="bower_components/materialize/dist/js/materialize.min.js"></script>    
 </head>
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("joinTitle").innerHTML = Res.inviteLine1 + " <span style=\"color: red\">" + urlToJoinGame + "</span> " + Res.inviteLine3;
+    });
     $(window).keypress(function (e) {
         if (e.keyCode === 0 || e.keyCode === 32) {
         e.preventDefault()
@@ -33,6 +37,7 @@
 </script>
 <body>
 
+    <h3 id="joinTitle" style="font: 28px sans-serif; text-align: center"></h3>
     <lobby-team-info />
 
 </body>

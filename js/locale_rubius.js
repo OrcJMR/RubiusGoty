@@ -1,6 +1,6 @@
 var Res = {
-    inviteLine1: "Join the game at<br/>",
-    inviteLine3: "<br/>from your phone browser!",
+    inviteLine1: "Join the game at",
+    inviteLine3: "from your phone browser!",
     volumeOff: "&nbsp;&nbsp;OFF",
     teamGoldName: "Team Gold",
     teamIndigoName: "Team Indigo",

@@ -1,6 +1,4 @@
 
-var urlToJoinGame = null; // put the url to connect to here
-
 function l(what) {return document.getElementById(what);}
 
 var App = {
@@ -182,7 +180,7 @@ var App = {
         }
 
         // no address here, it is drawn in DrawJoinTicker
-        document.getElementById("hud4message").innerHTML = Res.inviteLine1 + Res.inviteLine3;
+        document.getElementById("hud4message").innerHTML = Res.inviteLine1 + "<br/><br/>" + Res.inviteLine3;
 
         MainLoop.setBegin(Game.ConsumeInputs).setUpdate(App.UpdateFrame).setDraw(App.DrawFrame).setEnd(App.EndFrame).start();
     },
