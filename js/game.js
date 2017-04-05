@@ -297,9 +297,9 @@ var Game = {
 
             var replics = null;
             if (tank.Inputs.ManagerGood && (tank.Inputs.ManagerGood.read(timestamp) == 1)) {
-                replics = _managerGoodReplics;
+                replics = Res.ManagerGoodPhrases;
             } else if (tank.Inputs.ManagerBad && (tank.Inputs.ManagerBad.read(timestamp) == 1)) {
-                replics = _managerBadReplics;
+                replics = Res.ManagerBadPhrases;
             }
             if (replics) {
                 var replicId =  Math.floor(Math.random() * replics.length);

@@ -21,16 +21,14 @@ app.get("/", function (request, response) {
 
 var admin = [];
 var teams = []; //array of Team
-function Team(id, title, color) {
+function Team(id) {
     this.members = []; //array of client (structure see below var client = {)
     this.positionsTaken = {};
-    this.title = title;
-    this.color = color;
     this.id = id;
 };
-teams.push(new Team(1, "Team Gold", "background-color: gold;"));
-teams.push(new Team(2, "Team Indigo", "background-color: #3f51b5;"));
-teams.push(new Team(3, "Team Green", "background-color: #4CAF50;"));
+teams.push(new Team(1));
+teams.push(new Team(2));
+teams.push(new Team(3));
 
 var actions = ['fire', 'turretLeft', 'turretRight', 'strafeRight', 'strafeLeft', 'rightTrackForward', 'rightTrackBackward'
     , 'moveForward', 'moveBackward', 'leftTrackForward', 'leftTrackBackward'];

@@ -2,9 +2,6 @@ var Res = {
     inviteLine1: "Join the game at",
     inviteLine3: "from your phone browser!",
     volumeOff: "&nbsp;&nbsp;OFF",
-    teamGoldName: "Team Gold",
-    teamIndigoName: "Team Indigo",
-    teamGreenName: "Team Green",
     HiNameChooseYourTeam: "Hi, {name}! Choose your team:",//hi, name, choose your team - choose-team-page
     HiNameYouAreInTeamChooseYourRole: "Привет, <b>{name}</b>! You are in <b>{team}</b>.<br/><br/>Choose your role:", //hi, name, you are in team, choose your role - choose-position-page
     back:"Back", //back - change-name
@@ -15,6 +12,65 @@ var Res = {
     StartGame: "Start game",//- server-info
     Name: "Name",//- server-info
 
+    Teams: [
+        "Team Gold",
+        "Team Indigo",
+        "Team Jade"
+    ],
+    TeamStyles: [
+        "background-color: gold;",
+        "background-color: #3f51b5;",
+        "background-color: #4CAF50;"
+    ],
+
+    Roles: {
+        ManageRole:'Руководить',
+        ManageGood:'Хвалить',
+        ManageBad:'Ругать',
+        ShootRole:'Коммитить',
+        Shoot:'Коммит!',
+        TurretRole:'Проводить код-ревью',
+        TurretLeft:'Принять',
+        TurretRight:'Отклонить',
+        ForwardRole:'Писать новые фичи',
+        Forward:'Написать фичу',
+        BackwardRole:'Переписывать всё заново',
+        Backward:'Переписать заново',
+        LeftRole:'Делать как С.Ю.',
+        Left:'Сделать как С.Ю.',
+        RightRole:'Делать как С.Е.',
+        Right:'Сделать как С.Е.'
+    },
+
+    ManagerGoodPhrases: [
+        "Вперёд!",
+        "Так держать!",
+        "Молодцы!",
+        "Всем по премии!",
+        "Коэффициент 1,5 каждому!",
+        "Больше плюшек!",
+        "Страна вами гордится!",
+        "Гагарин вами бы гордился!",
+        "Чувствуется русская инженерная школа!",
+        "Быстрее! Выше! Сильнее!",
+        "Вместе мы – сила!",
+        "Заказчики счастливы!"
+    ],
+    ManagerBadPhrases: [
+        "Кто вас такому учил?",
+        "Срываем все сроки!",
+        "Всех уволить!",
+        "Ты работаешь хуже Семёна!",
+        "Коэффициент 0,5 каждому!",
+        "Вы позорите Родину!",
+        "Ну, соберитесь уже!",
+        "Вы – слабое звено!",
+        "Гагарин смог, а вы – нет...",
+        "Это пятиминутная задача!",
+        "Перехвалил!",
+        "А всё потому, что устав не читали!",
+        "А что скажет заказчик?"
+    ],
 
     generatedNamesAdjectives: 
         ["агрессивный",

@@ -1,5 +1,5 @@
 
-var urlToJoinGame = "dadbook"; // put the url to connect to here
+var urlToJoinGame = null; // put the url to connect to here
 var webSocketUrl;
 
 if (location.host.indexOf("github.io") > -1) {
@@ -13,89 +13,59 @@ if (location.host.indexOf("github.io") > -1) {
 
 var _positions = [
     {
-        title: 'Руководить',
+        title: Res.Roles.ManageRole,
         id: 'manager',
         actions: [
-            {action:'managerGood', text: 'Хвалить', icon: 'button-good.png'},
-            {action:'managerBad', text: 'Ругать', icon: 'button-bad.png'}
+            {action:'managerGood', text: Res.Roles.ManageGood, icon: 'button-good.png'},
+            {action:'managerBad', text: Res.Roles.ManageBad, icon: 'button-bad.png'}
         ]
     },
     {
-        title: 'Коммитить',
+        title: Res.Roles.ShootRole,
 
         id: 'fire',
         actions: [
-            {action:'fire', text: 'Коммит!', icon: 'button-fire.png'}
+            {action:'fire', text: Res.Roles.Shoot, icon: 'button-fire.png'}
         ]
     },
     {
-        title: 'Проводить код-ревью',
+        title: Res.Roles.TurretRole,
 
         id: 'turret',
         actions: [
-            {action:'turretLeft', text: 'Принять', icon: 'button-turret-left.png'},
-            {action:'turretRight', text: 'Отклонить', icon: 'button-turret-right.png'}
+            {action:'turretLeft', text: Res.Roles.TurretLeft, icon: 'button-turret-left.png'},
+            {action:'turretRight', text: Res.Roles.TurretRight, icon: 'button-turret-right.png'}
         ]
     },
     {
-        title: 'Писать новые фичи',
+        title: Res.Roles.ForwardRole,
         id: 'move1',
         actions: [
-            {action:'moveForward', text: 'Написать фичу', icon: 'button-forward.png'}
+            {action:'moveForward', text: Res.Roles.Forward, icon: 'button-forward.png'}
         ]
     },
     {
-        title: 'Переписывать всё заново',
+        title: Res.Roles.BackwardRole,
         id: 'move2',
         actions: [
-            {action:'moveBackward', text: 'Переписать заново', icon: 'button-backward.png'}
+            {action:'moveBackward', text: Res.Roles.Backward, icon: 'button-backward.png'}
         ]
     },
 
     {
-        title: 'Делать как С.Ю.',
+        title: Res.Roles.LeftRole,
         id: 'turn1',
         actions: [
-            {action:'turnLeft', text: 'Сделать как С.Ю.', icon: 'button-left.png'}
+            {action:'turnLeft', text: Res.Roles.Left, icon: 'button-left.png'}
         ]
     },
     {
-        title: 'Делать как С.Е.',
+        title: Res.Roles.RightRole,
         id: 'turn2',
         actions: [
-            {action:'turnRight', text: 'Сделать как С.Е.', icon: 'button-right.png'}
+            {action:'turnRight', text: Res.Roles.Right, icon: 'button-right.png'}
         ]
     }
-];
-
-var _managerGoodReplics = [
-    "Вперёд!",
-    "Так держать!",
-    "Молодцы!",
-    "Всем по премии!",
-    "Коэффициент 1,5 каждому!",
-    "Больше плюшек!",
-    "Страна вами гордится!",
-    "Гагарин вами бы гордился!",
-    "Чувствуется русская инженерная школа!",
-    "Быстрее! Выше! Сильнее!",
-    "Вместе мы – сила!",
-    "Заказчики счастливы!"
-    ];
-var _managerBadReplics = [
-    "Кто вас такому учил?",
-    "Срываем все сроки!",
-    "Всех уволить!",
-    "Ты работаешь хуже Семёна!",
-    "Коэффициент 0,5 каждому!",
-    "Вы позорите Родину!",
-    "Ну, соберитесь уже!",
-    "Вы – слабое звено!",
-    "Гагарин смог, а вы – нет...",
-    "Это пятиминутная задача!",
-    "Перехвалил!",
-    "А всё потому, что устав не читали!",
-    "А что скажет заказчик?"
 ];
 
 var _socket;

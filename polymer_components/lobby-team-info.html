@@ -20,7 +20,7 @@
         <div class="container row">
             <template is="dom-repeat" items="{{model.teams}}" as="team" >
                 <div class="col s4 section">
-                    <h5>{{team.title}}</h5>
+                    <h5>{{_teamName(team.id)}}</h5>
                     <div class="collection">
                         <template is="dom-repeat" items="{{team.positions}}" as="position">
                             <div class='row'>
@@ -62,6 +62,7 @@
                 }
             }
         },
+        _teamName: function(teamNumber) { return Res.Teams[teamNumber - 1]; },
         ready: function () {
             this.model = Sockets.ViewModel;
 

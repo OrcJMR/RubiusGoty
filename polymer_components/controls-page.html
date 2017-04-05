@@ -10,7 +10,7 @@
         <main>
 
             <center>
-                <div inner-h-t-m-l="{{localize('HiNameYouAreInATeamAndShouldAct', 'name', name, 'team', team.title, 'position', position.title)}}"></div>
+                <div inner-h-t-m-l="{{localize('HiNameYouAreInATeamAndShouldAct', 'name', name, 'team', teamName, 'position', position.title)}}"></div>
 
                 <template is="dom-repeat" items="{{actions}}" as="action">
                     <div class='row'>
@@ -60,8 +60,13 @@
                         'en': Res
                     }
                 }
+            },
+            teamName: {
+                type: String,
+                computed: "_teamName(team.id)"
             }
         },
+        _teamName: function(teamNumber) { return Res.Teams[teamNumber - 1]; },
         attached: function () {
             this.name = localStorage.getItem("username");
             var that = this;

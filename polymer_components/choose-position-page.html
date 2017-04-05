@@ -7,7 +7,7 @@
         <main>
 
             <center>
-                <div inner-h-t-m-l="{{localize('HiNameYouAreInTeamChooseYourRole', 'name', name, 'team', team.title)}}"></div>
+                <div inner-h-t-m-l="{{localize('HiNameYouAreInTeamChooseYourRole', 'name', name, 'team', teamName)}}"></div>
 
                 <br/>
                 <template is="dom-repeat" items="{{positions}}" as="position">
@@ -44,8 +44,13 @@
                         'en': Res
                     }
                 }
+            },
+            teamName: {
+                type: String,
+                computed: "_teamName(team.id)"
             }
         },
+        _teamName: function(teamNumber) { return Res.Teams[teamNumber - 1]; },
         ready: function() {
             CheckClientNavigationShouldExit('choose-position');
 
