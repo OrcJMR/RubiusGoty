@@ -1,6 +1,6 @@
 var webSocketUrl;
 if (location.host.indexOf("github.io") > -1) {
-    webSocketUrl = "wss://snotty-stallion.gomix.me";
+    webSocketUrl = "wss://cactus-trapezoid.glitch.me/";
 } else {
     webSocketUrl = "ws://" + location.host;
 }

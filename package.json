@@ -1,24 +1,29 @@
 {
-  "name": "orcjmr.github.io",
+  "//1": "describes your app and its dependencies",
+  "//2": "https://docs.npmjs.com/files/package.json",
+  "//3": "updating this file will download and update your packages",
+
+  "name": "rubius-goty",
   "version": "1.0.0",
-  "description": "Things still missing from this product:",
-  "main": "index.js",
+  "description": "Message server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "express": "^4.14.0",
     "ws": "^1.1.1"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "engines": {
+    "node": "6.10.x"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OrcJMR/orcjmr.github.io.git"
+    "url": "git+https://github.com/OrcJMR/RubiusGoty.git"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/OrcJMR/orcjmr.github.io/issues"
+    "url": "https://github.com/OrcJMR/RubiusGoty/issues"
   },
-  "homepage": "https://github.com/OrcJMR/orcjmr.github.io#readme"
+  "homepage": "https://github.com/OrcJMR/RubiusGoty#readme"
 }
