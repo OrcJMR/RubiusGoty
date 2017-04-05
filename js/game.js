@@ -340,7 +340,6 @@ var Game = {
                 if (tank.Head.angle < -Math.PI / 4) tank.Head.angle += Math.PI / 2;
             }
         }, this);
-    }
-    ,
+    },
 }
 
