@@ -7,13 +7,13 @@ function KeyboardBiDiInput(kybd, charForward, charBackward) {
 
 KeyboardBiDiInput.prototype = {
     read: function() {
-        var flag1 = this.kybd.isDown(this.char1);
-        var flag2 = this.kybd.isDown(this.char2);
-        if(flag1 == flag2)
+        this.valueForward = this.kybd.isDown(this.char1);
+        this.valueBackward = this.kybd.isDown(this.char2);
+        if(this.valueForward == this.valueBackward)
             return 0;
-        if(flag1)
+        if(this.valueForward)
             return 1;
-        if(flag2)
+        if(this.valueBackward)
             return -1;
     }
 }
@@ -25,6 +25,8 @@ function KeyboardCooldownInput(kybd, char, cooldown, manualRefire) {
     this.lastFired = Number.MIN_SAFE_INTEGER;
     this.manualRefire = manualRefire;
     this.armed = true;
+
+    this.vacant = this.kybd.vacant; // real keyboard does not have it, but network stubs do
 }
 
 KeyboardCooldownInput.prototype = {
@@ -33,20 +35,23 @@ KeyboardCooldownInput.prototype = {
 
          // if on cooldown, report progress, negative value from -1 to 0
         if( elapsed < this.cooldown) {
-            return (elapsed - this.cooldown) / this.cooldown;
+            this.value = (elapsed - this.cooldown) / this.cooldown;
         // if has to be rearmed, only check after cooldown passes
         } else if(!this.armed) {
             if (!this.kybd.isDown(this.char))
                 this.armed = true;
-            return 0;
+            this.value = 0;
         // fire!!
         } else if(this.kybd.isDown(this.char)) {
             this.lastFired = timestamp;
             if(this.manualRefire)
                 this.armed = false;
-            return 1;
-        }
-        return 0;
+            this.value = 1;
+        } else 
+            this.value = 0;
+        
+        this.vacant = this.kybd.vacant; // real keyboard does not have it, but network stubs do
+        return this.value;
     }
 }
 

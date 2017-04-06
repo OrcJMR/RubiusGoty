@@ -7,6 +7,7 @@ var Game = {
         this.Teams.push(this.SetupTeam("2", 1, 520, 64, 0, 1500));
         this.Teams.push(this.SetupTeam("3", 2, 1008 - 40, 640, 180, 2000));
         this.Teams.push(this.SetupTeam("boss", -1, 520, 736, 180, 0));
+        //this.Teams.push(this.SetupTeam("boss", -1, 520, 300, 180, 0));
 
         // var tankBot = new Sprite(300, 200, 45, 32, 32, "./images/tank.png", [new Behavior.Move(0,-0.01,-0.01)]);
         // tankBot.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
@@ -35,8 +36,8 @@ var Game = {
         if(name == "boss") {
             team.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
             team.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
-            team.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'Q', 'Z');
-            team.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'C');
+            // team.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'Q', 'Z');
+            // team.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'C');
             team.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'L', 'J');
             team.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'I', 400, false);
         } else {
@@ -51,8 +52,8 @@ var Game = {
             };
             team.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward');
             team.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft');
-            team.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
-            team.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
+            // team.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
+            // team.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
             team.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretRight', 'turretLeft');
             team.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 800, true);
             team.Inputs.ManagerGood = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood'), '2', 5000, true);
@@ -272,8 +273,8 @@ var Game = {
                 tank.RightTrack.torque = (throttle - turning) / 2;
             }
 
-            tank.LeftTrack.torque += team.Inputs.LeftTrackInput.read(timestamp);
-            tank.RightTrack.torque += team.Inputs.RightTrackInput.read(timestamp);
+            // tank.LeftTrack.torque += team.Inputs.LeftTrackInput.read(timestamp);
+            // tank.RightTrack.torque += team.Inputs.RightTrackInput.read(timestamp);
 
             // torques are stored in wrong tracks
             tank.LeftTrack.animDelay = tank.RightTrack.torque == 0 ? 0 : 100;

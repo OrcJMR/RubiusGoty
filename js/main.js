@@ -77,43 +77,43 @@ var App = {
         ctx.fillText(urlToJoinGame, 0, 0);
         ctx.restore();
     },
+    GuiPositions: null,
     DrawInputs: function(ctx, team) {
-        if(team.teamId < 0)
-            return;
-        if(!Sockets.ViewModel.teams) return;
-        var teamModel = Sockets.ViewModel.teams[team.teamId];
-        if(!team) return;
-        var positions = { // recreated each time to reset .taken
-            turn1:   {x: 0, y:42, icon: App.Resources.arrowTop, rot:-Math.PI/2},
-            turn2:   {x:42, y:42, icon: App.Resources.arrowTop, rot:Math.PI/2},
-            move1:   {x:21, y:21, icon: App.Resources.arrowTop},
-            move2:   {x:21, y:42, icon: App.Resources.arrowTop, rot:Math.PI},
-            turret:  {x: 0, y: 0, icon: App.Resources.arrowLeft, flipx:41},
-            fire:    {x:21, y: 0, icon: App.Resources.arrowShot},
-            manager: {x:42, y:21, icon: App.Resources.arrowFlag},
-        };
-        if(teamModel.members)
-            teamModel.members.forEach(function(member) {
-                var memPos = member.position;
-                var guiPos = positions[memPos];
-                if(guiPos)
-                    guiPos.taken = true;
-            });
-        for(pname in positions) {
-            var pos = positions[pname];
-            ctx.save();
-            ctx.globalAlpha = pos.taken ? 1 : 0.4;
-            ctx.translate(pos.x+10.5, pos.y+10.5);
-            if(pos.rot)
-                ctx.rotate(pos.rot);
-            ctx.drawImage(pos.icon, -10.5, -10.5, 21, 21);
-            if(pos.flipx) {
-                ctx.translate(pos.flipx, 0);
-                ctx.scale(-1, 1);
-                ctx.drawImage(pos.icon, -10.5, -10.5, 21, 21);
+
+        for(var i = 0; i < this.GuiPositions.length; i++) {
+            var guiSpec = this.GuiPositions[i];
+            if (!(guiSpec.name in team.Inputs))
+                continue;
+            
+            var input = team.Inputs[guiSpec.name];
+            var valueProp = "value";
+            var vacantProp = "vacant";
+            if (guiSpec.p) {
+                valueProp += guiSpec.p;
+                vacantProp += guiSpec.p;
             }
+            var vacant = input[vacantProp];
+            var value = input[valueProp];
+            
+            ctx.save();
+
+            ctx.translate(guiSpec.x+10.5, guiSpec.y+10.5);
+            if (value == 1) {
+                ctx.fillStyle = "#FFFFA0";
+                ctx.fillRect(-10.5, -10.5, 21, 21);
+            } else if (value < 0) {
+                ctx.fillStyle = "#808080";
+                ctx.fillRect(-10.5, 10.5 + 21 * value, 21, -21 * value);                
+            }
+            ctx.globalAlpha = (vacant || value < 0) ? 0.4 : 1;
+            if(guiSpec.rot)
+                ctx.rotate(guiSpec.rot);
+            if(guiSpec.flipx)
+                ctx.scale(-1, 1);
+            ctx.drawImage(guiSpec.icon, -10.5, -10.5, 21, 21);
+
             ctx.restore();
-        };
+        }
     },
     EndFrame: function(fps, panic) {
             if (panic) {
@@ -145,10 +145,23 @@ var App = {
         App.Resources.arrowLeft.src = "./images/arrow-rot-left.png";
         App.Resources.arrowShot = new Image();
         App.Resources.arrowShot.src = "./images/arrow-shot.png";
-        App.Resources.arrowFlag = new Image();
-        App.Resources.arrowFlag.src = "./images/arrow-flag.png";
+        App.Resources.arrowChevron = new Image();
+        App.Resources.arrowChevron.src = "./images/arrow-flag.png";
         App.Resources.noise = new Image();
         App.Resources.noise.src = "./images/noise.png";
+
+        this.GuiPositions = [
+            {name: "TankTurnInput", p:"Backward",   x: 0, y:42, icon: App.Resources.arrowTop, rot:-Math.PI/2},
+            {name: "TankTurnInput", p:"Forward",    x:42, y:42, icon: App.Resources.arrowTop, rot:Math.PI/2},
+            {name: "ThrottleInput", p:"Forward",    x:21, y:21, icon: App.Resources.arrowTop},
+            {name: "ThrottleInput", p:"Backward",   x:21, y:42, icon: App.Resources.arrowTop, rot:Math.PI},
+            {name: "TurretTurnInput", p:"Backward", x: 0, y: 0, icon: App.Resources.arrowLeft},
+            {name: "TurretTurnInput", p:"Forward",  x:42, y: 0, icon: App.Resources.arrowLeft, flipx:true},
+            {name: "FireInput",                     x:21, y: 0, icon: App.Resources.arrowShot},
+            {name: "ManagerGood",                   x: 0, y:21, icon: App.Resources.arrowChevron},
+            {name: "ManagerBad",                    x:42, y:21, icon: App.Resources.arrowChevron, rot:Math.PI},
+            {name: "ManagerBoss",                   x:42, y:21, icon: App.Resources.arrowChevron},
+        ];
 
         var sounds = [
             "./sound/crash.wav",
