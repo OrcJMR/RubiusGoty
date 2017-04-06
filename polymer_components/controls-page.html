@@ -88,7 +88,7 @@
             this.actions = this.position.actions;
 
             var timeToCheckPosition = Date.now() + 5000;
-            
+
             Sockets.Init(this.name, this.teamId, this.positionId);
             Sockets.UpdateCallback = function () {
                 that.team = Sockets.ViewModel.gameState.teams[that.teamId - 1];
@@ -96,6 +96,7 @@
                 // avoid insta-kick
                 if(Date.now() > timeToCheckPosition && Sockets.ViewModel.position == "") {
                     window.history.back();
+                    timeToCheckPosition += 600000; // avoid double calls
                 }
             };
             Sockets.UpdateCallback();
