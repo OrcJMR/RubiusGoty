@@ -20,7 +20,7 @@
         <div class="container row">
             <template is="dom-repeat" items="{{model.teams}}" as="team" >
                 <div class="col s4 section">
-                    <h5 style="text-align: center; font-weight: bold; font-family: 'Roboto'">{{_teamName(team.id)}}</h5>
+                    <h5 style="text-align: center; font-weight: 500; font-family: 'Roboto'; margin-bottom: 20px">{{_teamName(team.id)}}</h5>
                     <div class="collection" style="border-width: 0px">
                         <template is="dom-repeat" items="{{team.positions}}" as="position">
                             <div class='row'>
