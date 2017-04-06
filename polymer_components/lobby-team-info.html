@@ -20,8 +20,8 @@
         <div class="container row">
             <template is="dom-repeat" items="{{model.teams}}" as="team" >
                 <div class="col s4 section">
-                    <h5>{{_teamName(team.id)}}</h5>
-                    <div class="collection">
+                    <h5 style="text-align: center; font-weight: bold; font-family: 'Roboto'">{{_teamName(team.id)}}</h5>
+                    <div class="collection" style="border-width: 0px">
                         <template is="dom-repeat" items="{{team.positions}}" as="position">
                             <div class='row'>
                                 <button type='submit' class='col s12 btn btn-large waves-effect' style$="height: auto; line-height: 25px; padding: 15px 20px; {{position.color}}">
@@ -77,7 +77,7 @@
 
                         _positions.forEach(function (position) {
                             position = Object.assign({}, position);
-                            position.color = 'background-color: gold;';
+                            position.color = 'background-color: gray;';
                             positions.push(position);
                             positionsDictionary[position.id] = position;
                         })

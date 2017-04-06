@@ -98,7 +98,7 @@ var App = {
         ctx.textAlign = "center";
         var tank = team.Tank;
         if(tank && !tank.hidden)
-            ctx.fillStyle = Res.TeamStyles[team.teamId].substr(18);
+            ctx.fillStyle = Res.TeamStyles[team.teamId];
         else
             ctx.fillStyle = "gray";
         ctx.globalAlpha = 0.6;
@@ -134,7 +134,7 @@ var App = {
             }
     },
     DrawJoinTicker: function(ctx, x, y) {
-        ctx.font = "bold 14px Tahoma";
+        ctx.font = "bold 14px Roboto";
         ctx.fillStyle = "#F00";
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";

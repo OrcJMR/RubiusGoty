@@ -19,9 +19,9 @@ var Res = {
         "Team Jade"
     ],
     TeamStyles: [
-        "background-color: gold",
-        "background-color: #9c27b0",
-        "background-color: #4CAF50"
+        "gold",
+        "#9c27b0",
+        "#4CAF50"
     ],
 
     Roles: {

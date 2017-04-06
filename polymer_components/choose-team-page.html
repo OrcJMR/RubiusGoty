@@ -44,7 +44,7 @@
             }
         },
         _teamName: function(teamNumber) { return Res.Teams[teamNumber - 1]; },
-        _teamStyle: function(teamNumber) { return Res.TeamStyles[teamNumber - 1]; },
+        _teamStyle: function(teamNumber) { return "background-color: " + Res.TeamStyles[teamNumber - 1]; },
         ready: function() {
             CheckClientNavigationShouldExit('choose-team');
             this.name = localStorage.getItem("username");
