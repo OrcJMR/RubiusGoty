@@ -1,5 +1,12 @@
 ﻿<html>
     <head>
+        <link href='//fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet'>
+        <link href='//fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet'>
+        <link href='//fonts.googleapis.com/css?family=Play' rel='stylesheet'>
+        <link href='//fonts.googleapis.com/css?family=Russo+One' rel='stylesheet'>
+        <link href='//fonts.googleapis.com/css?family=Pangolin' rel='stylesheet'>
+        <link href='//fonts.googleapis.com/css?family=Neucha' rel='stylesheet'>
+        <link href='//fonts.googleapis.com/css?family=Kelly+Slab' rel='stylesheet'>
         <link href="css/game.css" rel="stylesheet" type="text/css"/>
         <title>Team City!</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -26,15 +33,15 @@
             <div id="hud1" class="hud-panel blue-frame" style="left:0px"></div>
             <div id="hud2" class="hud-panel blue-frame" style="left:256px"></div>
             <div id="hud3" class="hud-panel blue-frame" style="left:512px"></div>
-            <div id="hud4" class="hud-panel blue-frame" style="left:768px; text-align:center; display: table">
-                <span id="hud4message" style="display: table-cell; vertical-align: middle; font-size:14px; font-weight:bold; font-family:Tahoma; color:darkturquoise"></span>
+            <div id="hud4" class="hud-panel blue-frame center-outer" style="left:768px">
+                <span id="hud4message" class="center-inner" style="font-size:16px; font-weight:bold; font-family:'Tahoma'; color:darkturquoise"></span>
             </div>
             <canvas id="topCanvas" width="1008px" height="64px" style="position:absolute;top:8px;left:8px"></canvas>
         </div>
         <div class="small-overlay-text" style="position:absolute;top:73px;left:825px;width:192px">
             &nbsp;Music: <strong>Plug it In</strong> by <strong><a href="https://www.alumomusic.com/">AlumoMusic</a>&nbsp;<span id="musicVolume"></span></strong>
         </div>
-
+<!--
         <div style="left:700px; top:100px; position: absolute; background-color: #ffa">
             <server-info>
             </server-info>
@@ -42,7 +49,7 @@
 
         <div style="left:776px; top:300px; position: absolute; background-color: #aaf" id="debugText">
         </div>
-
+-->
         <script src="js/sound.js"></script>
         <script src="js/mainloop.min.js"></script>
         <script src="js/geom.js"></script>

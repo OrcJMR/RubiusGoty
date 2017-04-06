@@ -53,6 +53,16 @@ body{
     height: 64px;
 }
 
+.center-outer{
+    text-align: center;
+    display: table;
+}
+
+.center-inner{
+    display: table-cell;
+    vertical-align: middle;
+}
+
 .top-frame{
     position: absolute;
     top: 0px;

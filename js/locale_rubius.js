@@ -2,6 +2,7 @@ var Res = {
     inviteLine1: "Join the game at",
     inviteLine3: "from your phone browser!",
     volumeOff: "&nbsp;&nbsp;OFF",
+    Score: "PTS",
     HiNameChooseYourTeam: "Hi, <b>{name}</b>!<br/>Choose your team:",//hi, name, choose your team - choose-team-page
     HiNameYouAreInTeamChooseYourRole: "Привет, <b>{name}</b>!<br/>You are in <b>{team}</b>.<br/>Choose your role:", //hi, name, you are in team, choose your role - choose-position-page
     back:"Back", //back - change-name
@@ -18,9 +19,9 @@ var Res = {
         "Team Jade"
     ],
     TeamStyles: [
-        "background-color: gold;",
-        "background-color: #9c27b0;",
-        "background-color: #4CAF50;"
+        "background-color: gold",
+        "background-color: #9c27b0",
+        "background-color: #4CAF50"
     ],
 
     Roles: {

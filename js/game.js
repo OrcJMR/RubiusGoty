@@ -141,7 +141,7 @@ var Game = {
         this.RootEntity.changeCoordinatesFromDescendant(dirt, parent);
         this.RootEntity.addChild(dirt, 0);
     },
-    spawnBullet: function (tank) {
+    spawnBullet: function (tank, team) {
         var bullet = new ObjectGroup(0, 20, 0, [
             new Behavior.Move(0, 0.3),
             new Behavior.LifeInBounds(-8, -8, 1032, 856)
@@ -159,12 +159,15 @@ var Game = {
             this.dead = true;
             //PlaySound("./sound/splat.wav", 100);
         };
+        var ourTeam = team;
         bullet.OnObjectCollision = function (obj) {
             Game.spawnExplosion(this.x, this.y, null, obj.class == "tank" ? "tank" : null);
             if (obj.class == "tank") {
                 var tank = obj;
                 tank.hp -= 1;
                 if (tank.hp == 0) {
+                    ourTeam.kills ++;
+                    ourTeam.popKills = true;
                     tank.addBehavior(new Behavior.TimedLife(3000));
                     tank.addBehavior(new Behavior.SpawnExplosions(200, 10));
                     tank.Barrel.dead = true;
@@ -178,6 +181,10 @@ var Game = {
                         }
                     }
                 }
+                tank.LeftTrack.torque = 0;
+                tank.RightTrack.torque = 0;
+                tank.LeftTrack.animDelay = 0;
+                tank.RightTrack.animDelay = 0;
                 // obj.moveXSpeed = 0;
                 // obj.moveYSpeed = 0;
                 // obj.moveAngSpeed = 0;
@@ -305,14 +312,27 @@ var Game = {
     },
     Logic: function (delta) {
         Game.Teams.forEach(function (team) {
+
+            if (team.popKillsTime >= 0)
+                team.popKillsTime += delta;
+            if (team.popKills) {
+                team.popKillsTime = 0;
+                team.popKills = false;
+            }
+
             if(!team.Tank) {
                 // if already <0, abort and never spawn
                 if(team.tanksSpawnsIn < 0)
                     return;
                 else {
                     team.tanksSpawnsIn -= delta;
-                    if(team.tanksSpawnsIn <= 0)
+                    if(team.tanksSpawnsIn <= 0) {
                         team.SpawnTank();
+                        if (!team.poppedOnStart) {
+                            team.popKills = true;
+                            team.poppedOnStart = true;
+                        }
+                    }
                 }
             } else { // if can has tank
                 var tank = team.Tank;
@@ -328,7 +348,7 @@ var Game = {
                 }
 
                 if (tank.Barrel.firing) {
-                    this.spawnBullet(tank);
+                    this.spawnBullet(tank, team);
                     this.spawnMuzzleBlast(tank, tank.boss);
                     tank.Barrel.firing = false;
 

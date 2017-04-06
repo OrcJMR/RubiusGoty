@@ -35,49 +35,26 @@ var App = {
         ctx.translate(x, y);
         var tank = team.Tank;
         if(tank && !tank.hidden) {
-            var scale = 32 / tank.width;
-            ctx.drawImage(App.Canvas, tank.x - tank.width, tank.y - tank.width,  tank.width*2, tank.width*2, 0, 0, 64, 64);
+            var scale = 30 / tank.width;
+            ctx.drawImage(App.Canvas, tank.x - tank.width, tank.y - tank.width,  tank.width*2, tank.width*2, 2, 1, 60, 60);
         } else {
             var phase = Math.floor( this.elapsedMsec / 50 % 4 );
             //l("debugText").innerHTML = "phase: " + phase;
-            ctx.drawImage(App.Resources.noise, phase * 32, 0, 32, 32, 0, 0, 64, 64);
+            ctx.drawImage(App.Resources.noise, phase * 30, 0, 30, 30, 2, 1, 60, 60);
         }
-        ctx.translate(94, 0);
+
+        ctx.translate(64, 0);
         App.DrawInputs(ctx, team);
-        ctx.translate(96, 0);
+
+        ctx.translate(64, 0);
+        App.DrawScore(ctx, team);
+
+        ctx.translate(62, 0);
         App.DrawHealthCube(ctx, team);
+
         ctx.restore();
     },
-    DrawHealthCube: function(ctx, team) {
-        if(team.Tank)
-            ctx.drawImage(App.Resources.hpLeaf, 8, 0, 16, 16);
-        var hp = 9;
-        var tankHp = team.Tank ? team.Tank.hp : 0;
-        for(var y = 16; y < 64; y += 16)
-            for(var x = 0; x < 48; x += 16) {
-                var lit = tankHp >= hp;
-                ctx.drawImage(lit ? App.Resources.hpCubeLit : App.Resources.hpCubeDim, x, y, 16, 16);
-                hp--;
-            }
-    },
-    DrawJoinTicker: function(ctx, x, y) {
-        ctx.font = "bold 14px Tahoma";
-        ctx.fillStyle = "#F00";
-        ctx.textBaseline = "middle";
-        ctx.textAlign = "center";
-        if(!urlToJoinGame)
-            urlToJoinGame = location.host;
-        ctx.save();
-        ctx.translate(x, y);
-        // 5 degrees max tilt, Pi seconds period
-        ctx.rotate(5 / 180 * Math.PI * Math.sin(this.elapsedMsec/1000));
-        // song is 128 bpm = 2,1333 bps, 1000 / Pi / 2,1333 = 149
-        var scale = 1.1 + 0.1 * Math.sin(this.elapsedMsec/149);
-        ctx.scale(scale, scale);
-        ctx.fillText(urlToJoinGame, 0, 0);
-        ctx.restore();
-    },
-    GuiPositions: null,
+    GuiPositions: null, // see EntryPoint
     DrawInputs: function(ctx, team) {
 
         for(var i = 0; i < this.GuiPositions.length; i++) {
@@ -114,6 +91,64 @@ var App = {
 
             ctx.restore();
         }
+    },
+    DrawScore: function(ctx, team) {
+        ctx.save();
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        var tank = team.Tank;
+        if(tank && !tank.hidden)
+            ctx.fillStyle = Res.TeamStyles[team.teamId].substr(18);
+        else
+            ctx.fillStyle = "gray";
+        ctx.globalAlpha = 0.6;
+        ctx.font = "14px 'Russo One'";
+        ctx.fillText(Res.Score, 31, 48);
+        ctx.globalAlpha = 1;
+        ctx.font = "18px 'Press Start 2P'";
+        ctx.translate(31, 30);
+        ctx.fillText(team.kills, 0, 0);
+        if (team.popKillsTime > 0) {
+            var phase = team.popKillsTime / 500;
+            if (phase > 1)
+                team.popKillsTime = -1;
+            else {
+                ctx.globalAlpha = 1 - phase * phase;
+                var scalePhase = 1 + Math.sin(phase * Math.PI/2) * 2;
+                ctx.scale(scalePhase, scalePhase);
+                ctx.fillText(team.kills, 0, 0);
+            }
+        }
+        ctx.restore();
+    },
+    DrawHealthCube: function(ctx, team) {
+        if(team.Tank)
+            ctx.drawImage(App.Resources.hpLeaf, 8, 0, 16, 16);
+        var hp = 9;
+        var tankHp = team.Tank ? team.Tank.hp : 0;
+        for(var y = 16; y < 64; y += 16)
+            for(var x = 0; x < 48; x += 16) {
+                var lit = tankHp >= hp;
+                ctx.drawImage(lit ? App.Resources.hpCubeLit : App.Resources.hpCubeDim, x, y, 16, 16);
+                hp--;
+            }
+    },
+    DrawJoinTicker: function(ctx, x, y) {
+        ctx.font = "bold 14px Tahoma";
+        ctx.fillStyle = "#F00";
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        if(!urlToJoinGame)
+            urlToJoinGame = location.host;
+        ctx.save();
+        ctx.translate(x, y);
+        // 5 degrees max tilt, Pi seconds period
+        ctx.rotate(5 / 180 * Math.PI * Math.sin(this.elapsedMsec/1000));
+        // song is 128 bpm = 2,1333 bps, 1000 / Pi / 2,1333 = 149
+        var scale = 1.1 + 0.1 * Math.sin(this.elapsedMsec/149);
+        ctx.scale(scale, scale);
+        ctx.fillText(urlToJoinGame, 0, 0);
+        ctx.restore();
     },
     EndFrame: function(fps, panic) {
             if (panic) {
