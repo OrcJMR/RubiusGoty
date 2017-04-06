@@ -45,9 +45,9 @@ var Game = {
             var viewModelFunction = function () {
                 if (!Sockets.ViewModel.teams)
                     return null;
-                if (Sockets.ViewModel.teams.length <= team.TeamId)
+                if (Sockets.ViewModel.teams.length <= team.teamId)
                     return null;
-                return Sockets.ViewModel.teams[team.TeamId];
+                return Sockets.ViewModel.teams[team.teamId];
             };
             team.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward');
             team.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft');
