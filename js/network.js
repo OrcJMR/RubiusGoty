@@ -1,7 +1,8 @@
 
-function NetworkCooldownInputKeyboardStub(team, property) {
+function NetworkCooldownInputKeyboardStub(team, property, position) {
     this.team = team;
     this.property = property;
+    this.position = position;
     this.vacant = true;
 }
 NetworkCooldownInputKeyboardStub.prototype = {
@@ -18,21 +19,22 @@ NetworkCooldownInputKeyboardStub.prototype = {
             if (!state)
                 return;
 
-            if (that.property in state) {
+            if (member.position == that.position)
                 that.vacant = false;
-                if (state[that.property] == 1) 
-                    flag1 = 1;
-            }
+            if (state[that.property] == 1) 
+                flag1 = 1;
         });
 
         return flag1;
     }
 };
 
-function NetworkBiDiInput(team, propertyForward, propertyBackward) {
+function NetworkBiDiInput(team, propertyForward, propertyBackward, positionForward, positionBackward) {
     this.team = team;
     this.propertyForward = propertyForward;
     this.propertyBackward = propertyBackward;
+    this.positionForward = positionForward;
+    this.positionBackward = positionBackward ? positionBackward : positionForward;
     this.vacantForward = true;
     this.vacantBackward = true;
 }
@@ -54,16 +56,15 @@ NetworkBiDiInput.prototype = {
             if (!state)
                 return;
 
-            if (that.propertyForward in state) {
+            if (member.position == that.positionForward)
                 that.vacantForward = false;
-                if (state[that.propertyForward] == 1)
-                    that.valueForward = 1;
-            }
-            if (that.propertyBackward in state) {
+            if (state[that.propertyForward] == 1)
+                that.valueForward = 1;
+            
+            if (member.position == that.positionBackward)
                 that.vacantBackward = false;
-                if (state[that.propertyBackward] == 1)
-                    that.valueBackward = 1;
-            }            
+            if (state[that.propertyBackward] == 1)
+                that.valueBackward = 1;
         });
 
         if(this.valueForward == this.valueBackward)

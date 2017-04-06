@@ -39,7 +39,7 @@ var Sockets = (function() {
         var data = JSON.parse(msg.data);
 
 
-        console.log(msg);
+        //console.log(data);
 
         if (data.type == 'ViewModel') {
             Sockets.ViewModel = data;
@@ -58,9 +58,11 @@ var Sockets = (function() {
             ClientViewModel.name = name;
             ClientViewModel.team = team;
             ClientViewModel.position = position;
+            //console.log(ClientViewModel);
             _socket.sendJson(ClientViewModel);
         },
         sendJson: function(data) {
+            //console.log(data);
             _socket.sendJson(data);
         },
         Close: function() {

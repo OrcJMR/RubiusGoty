@@ -87,10 +87,16 @@
             })
             this.actions = this.position.actions;
 
+            var timeToCheckPosition = Date.now() + 5000;
+            
             Sockets.Init(this.name, this.teamId, this.positionId);
             Sockets.UpdateCallback = function () {
                 that.team = Sockets.ViewModel.gameState.teams[that.teamId - 1];
                 that.set('gameStarted', Sockets.ViewModel.gameState.state);
+                // avoid insta-kick
+                if(Date.now() > timeToCheckPosition && Sockets.ViewModel.position == "") {
+                    window.history.back();
+                }
             };
             Sockets.UpdateCallback();
 
@@ -100,7 +106,7 @@
 
             unfocusListener = function () {
                 // if(document[hiddenProp])
-                    that.actions.foreEach(function (act) {
+                    that.actions.forEach(function (act) {
                         model[act.action] = 0;
                         Sockets.sendJson(model);
                     });
