@@ -1,12 +1,12 @@
 var Game = {
     Map: new Map(),
     RootEntity: new ObjectGroup(0, 0, 0, [], []),
+    Teams: [],
     Setup: function () {
-        this.spawnTank1();
-        this.spawnTank2();
-        this.spawnTank3();
-        this.spawnTankDefault();
-        this.Tanks = [this.Tank1, this.Tank2, this.Tank3, this.Tank];
+        this.Teams.push(this.SetupTeam("1", 0, 72, 640, 180, 1000));
+        this.Teams.push(this.SetupTeam("2", 1, 520, 64, 0, 1500));
+        this.Teams.push(this.SetupTeam("3", 2, 1008 - 40, 640, 180, 2000));
+        this.Teams.push(this.SetupTeam("boss", -1, 520, 736, 180, 0));
 
         // var tankBot = new Sprite(300, 200, 45, 32, 32, "./images/tank.png", [new Behavior.Move(0,-0.01,-0.01)]);
         // tankBot.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
@@ -14,30 +14,51 @@ var Game = {
         // this.RootEntity.addChild(tankBot);
 
     },
-    spawnTank1: function () {
-        this.Tank1 = this.spawnTank(72, 640, 180, "1", 0);
-        this.RootEntity.addChild(this.Tank1);
-    },
-    spawnTank2: function () {
-        this.Tank2 = this.spawnTank(1008 - 40, 640, 180, "2", 1);
-        this.RootEntity.addChild(this.Tank2);
-    },
-    spawnTank3: function () {
-        this.Tank3 = this.spawnTank(520, 64, 0, "3", 2);
-        this.RootEntity.addChild(this.Tank3);
-    },
-    spawnTankDefault: function () {
-        //this.Tank = this.spawnTank(80, 600, 0, "dimgray", 30); // right before enemy
-        this.Tank = this.spawnTank(520, 736, 180, "boss", -1);
-        this.RootEntity.addChild(this.Tank);
-        Game.Tank.Inputs = {};
-        Game.Tank.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
-        Game.Tank.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
-        Game.Tank.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'Q', 'Z');
-        Game.Tank.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'C');
-        //Game.Tank.Inputs.StrafeInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'Q');
-        Game.Tank.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'L', 'J');
-        Game.Tank.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'I', 400, false);
+    SetupTeam: function(name, networkIndex, spawnX, spawnY, spawnAngle, spawnCountdown) {
+        if(typeof spawnCountdown == 'undefined')
+            spawnCountdown = -1; // never
+        var team = {
+            teamId: networkIndex,
+            name: name,
+            spawnX: spawnX,
+            spawnY: spawnY,
+            spawnAngle: spawnAngle,
+            kills: 0,
+            deaths: 0,
+            Inputs: {},
+            tanksSpawnsIn: spawnCountdown,
+            SpawnTank: function() {
+                this.Tank = Game.spawnTank(this.spawnX, this.spawnY, this.spawnAngle, this.name, this.networkIndex);
+                Game.RootEntity.addChild(this.Tank);
+            }            
+        };
+        if(name == "boss") {
+            team.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
+            team.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
+            team.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'Q', 'Z');
+            team.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'C');
+            team.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'L', 'J');
+            team.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'I', 400, false);
+        } else {
+            if(team.teamId < 0)
+                throw "Misconfigured team";
+            var viewModelFunction = function () {
+                if (!Sockets.ViewModel.teams)
+                    return null;
+                if (Sockets.ViewModel.teams.length <= team.TeamId)
+                    return null;
+                return Sockets.ViewModel.teams[team.TeamId];
+            };
+            team.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward');
+            team.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft');
+            team.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
+            team.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
+            team.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretRight', 'turretLeft');
+            team.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 800, true);
+            team.Inputs.ManagerGood = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood'), '2', 5000, true);
+            team.Inputs.ManagerBad = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerBad'), '2', 5000, true);
+        }
+        return team;
     },
     spawnTank: function (x, y, angle, type, networkTeamId) {
         var tank;
@@ -80,32 +101,6 @@ var Game = {
         tank.height = tank.width;
         tank.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
         tank.class = "tank";
-        if (networkTeamId >= 0) {
-            var viewModelFunction = function () {
-                if (!Sockets.ViewModel.teams)
-                    return null;
-
-                if (Sockets.ViewModel.teams.length <= networkTeamId)
-                    return null;
-
-                return Sockets.ViewModel.teams[networkTeamId];
-            };
-
-            if (!tank.boss) {
-                tank.Inputs = {};
-                tank.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward');
-                tank.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft');
-                tank.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
-                tank.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
-                //tank.Inputs.StrafeInput = new NetworkBiDiInput(viewModelFunction, 'strafeRight', 'strafeLeft');
-                tank.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretRight', 'turretLeft');
-                tank.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire'), '2', 800, true);
-                tank.Inputs.ManagerGood = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood'), '2', 5000, true);
-                tank.Inputs.ManagerBad = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerBad'), '2', 5000, true);
-                tank.teamId = networkTeamId;
-            }
-        }
-
 
         //todo fix loop sound gap problem
         tank.throttleSound = Sound.Play('./sound/engine working long.mp3', 0, 1, type);
@@ -166,35 +161,36 @@ var Game = {
         bullet.OnObjectCollision = function (obj) {
             Game.spawnExplosion(this.x, this.y, null, obj.class == "tank" ? "tank" : null);
             if (obj.class == "tank") {
-                obj.hp -= 1;
-                if (obj.hp == 0) {
-                    obj.addBehavior(new Behavior.TimedLife(3000));
-                    obj.addBehavior(new Behavior.SpawnExplosions(200, 10));
-                    obj.items[2].color = "black";
-                    if (obj == Game.Tank1)
-                        Game.spawnTank1();
-                    if (obj == Game.Tank2)
-                        Game.spawnTank2();
-                    if (obj == Game.Tank3)
-                        Game.spawnTank3();
-                    if (obj == Game.Tank)
-                        Game.spawnTankDefault();
-                    Game.Tanks = [Game.Tank1, Game.Tank2, Game.Tank3, Game.Tank];
+                var tank = obj;
+                tank.hp -= 1;
+                if (tank.hp == 0) {
+                    tank.addBehavior(new Behavior.TimedLife(3000));
+                    tank.addBehavior(new Behavior.SpawnExplosions(200, 10));
+                    tank.Barrel.dead = true;
+                    tank.Barrel = null;
+                    // tank.items[2].color = "black";
+                    for(var i in Game.Teams) {
+                        var team = Game.Teams[i];
+                        if(tank == team.Tank) {
+                            team.Tank = null;
+                            team.tanksSpawnsIn = 2500;
+                        }
+                    }
                 }
-                obj.moveXSpeed = 0;
-                obj.moveYSpeed = 0;
-                obj.moveAngSpeed = 0;
+                // obj.moveXSpeed = 0;
+                // obj.moveYSpeed = 0;
+                // obj.moveAngSpeed = 0;
             }
-            if (obj.class == "tankbot") {
-                obj.moveXSpeed /= 3;
-                obj.moveYSpeed /= 3;
-                obj.moveAngSpeed /= 3;
-                obj.class = "deadtankbot";
-                if (obj.setImage) {
-                    obj.setImage("./images/deadtank.png");
-                }
-                obj.addBehavior(new Behavior.TimedLife(3000));
-            }
+            // if (obj.class == "tankbot") {
+            //     obj.moveXSpeed /= 3;
+            //     obj.moveYSpeed /= 3;
+            //     obj.moveAngSpeed /= 3;
+            //     obj.class = "deadtankbot";
+            //     if (obj.setImage) {
+            //         obj.setImage("./images/deadtank.png");
+            //     }
+            //     obj.addBehavior(new Behavior.TimedLife(3000));
+            // }
             this.dead = true;
             //PlaySound("./sound/splat.wav", 100);
         }
@@ -255,10 +251,13 @@ var Game = {
         var driveSpeed = 60 / 1000; //px/msec
         var turnSpeed = 90 / 1000; //deg/msec
 
-        Game.Tanks.forEach(function (tank) {
+        Game.Teams.forEach(function (team) {
+            if(!team.Tank)
+                return;
+            var tank = team.Tank;
 
-            var throttle = tank.Inputs.ThrottleInput.read(timestamp);
-            var turning = tank.Inputs.TankTurnInput.read(timestamp);
+            var throttle = team.Inputs.ThrottleInput.read(timestamp);
+            var turning = team.Inputs.TankTurnInput.read(timestamp);
 
             tank.setMovementSound(throttle);
 
@@ -273,8 +272,8 @@ var Game = {
                 tank.RightTrack.torque = (throttle - turning) / 2;
             }
 
-            tank.LeftTrack.torque += tank.Inputs.LeftTrackInput.read(timestamp);
-            tank.RightTrack.torque += tank.Inputs.RightTrackInput.read(timestamp);
+            tank.LeftTrack.torque += team.Inputs.LeftTrackInput.read(timestamp);
+            tank.RightTrack.torque += team.Inputs.RightTrackInput.read(timestamp);
 
             // torques are stored in wrong tracks
             tank.LeftTrack.animDelay = tank.RightTrack.torque == 0 ? 0 : 100;
@@ -283,56 +282,67 @@ var Game = {
             //tank.moveYSpeed = driveSpeed * tank.Inputs.LeftTrackInput.read(timestamp);
             //tank.moveXSpeed = driveSpeed/2 * tank.Inputs.StrafeInput.read(timestamp);
             //tank.moveAngSpeed = turnSpeed * tank.Inputs.RightTrackInput.read(timestamp);
-            tank.Barrel.moveAngSpeed = turnSpeed * tank.Inputs.TurretTurnInput.read(timestamp);
-            var fireState = tank.Inputs.FireInput.read(timestamp);
+            tank.Barrel.moveAngSpeed = turnSpeed * 0.75 * team.Inputs.TurretTurnInput.read(timestamp);
+            var fireState = team.Inputs.FireInput.read(timestamp);
             if (fireState == 1)
                 tank.Barrel.firing = true;
             if (!tank.boss)
                 tank.Barrel.recoil = Math.min(fireState, 0);
 
-            var replics = null;
-            if (tank.Inputs.ManagerGood && (tank.Inputs.ManagerGood.read(timestamp) == 1)) {
-                replics = Res.ManagerGoodPhrases;
-            } else if (tank.Inputs.ManagerBad && (tank.Inputs.ManagerBad.read(timestamp) == 1)) {
-                replics = Res.ManagerBadPhrases;
+            var phrases = null;
+            if (team.Inputs.ManagerGood && (team.Inputs.ManagerGood.read(timestamp) == 1)) {
+                phrases = Res.ManagerGoodPhrases;
+            } else if (team.Inputs.ManagerBad && (team.Inputs.ManagerBad.read(timestamp) == 1)) {
+                phrases = Res.ManagerBadPhrases;
             }
-            if (replics) {
-                var replicId =  Math.floor(Math.random() * replics.length);
-                var replic = replics[replicId];
-                Game.showBalloonMessage(tank, replic);
+            if (phrases) {
+                var phraseId =  Math.floor(Math.random() * phrases.length);
+                var phrase = phrases[phraseId];
+                Game.showBalloonMessage(tank, phrase);
             }
         });
     },
     Logic: function (delta) {
-        Game.Tanks.forEach(function (tank) {
-            //var tank = this.Tank;
+        Game.Teams.forEach(function (team) {
+            if(!team.Tank) {
+                // if already <0, abort and never spawn
+                if(team.tanksSpawnsIn < 0)
+                    return;
+                else {
+                    team.tanksSpawnsIn -= delta;
+                    if(team.tanksSpawnsIn <= 0)
+                        team.SpawnTank();
+                }
+            } else { // if can has tank
+                var tank = team.Tank;
 
-            if (Math.abs(tank.LeftTrack.torque) > 1E-02) {
-                var back = tank.LeftTrack.torque > 0;
-                this.spawnDirt(tank.RightTrack, back, true);
-            }
+                if (Math.abs(tank.LeftTrack.torque) > 1E-02) {
+                    var back = tank.LeftTrack.torque > 0;
+                    this.spawnDirt(tank.RightTrack, back, true);
+                }
 
-            if (Math.abs(tank.RightTrack.torque) > 1E-02) {
-                var back = tank.RightTrack.torque > 0;
-                this.spawnDirt(tank.LeftTrack, back, true);
-            }
+                if (Math.abs(tank.RightTrack.torque) > 1E-02) {
+                    var back = tank.RightTrack.torque > 0;
+                    this.spawnDirt(tank.LeftTrack, back, true);
+                }
 
-            if (tank.Barrel.firing) {
-                this.spawnBullet(tank);
-                this.spawnMuzzleBlast(tank, tank.boss);
-                tank.Barrel.firing = false;
+                if (tank.Barrel.firing) {
+                    this.spawnBullet(tank);
+                    this.spawnMuzzleBlast(tank, tank.boss);
+                    tank.Barrel.firing = false;
+
+                    if (tank.boss) {
+                        Sound.Play("./sound/shot3.mp3", 100);
+                    } else {
+                        Sound.Play("./sound/shot2.mp3", 80);
+                    }
+                }
+                tank.Barrel.items[0].y = 7 + tank.Barrel.recoil * 6;
 
                 if (tank.boss) {
-                    Sound.Play("./sound/shot3.mp3", 100);
-                } else {
-                    Sound.Play("./sound/shot2.mp3", 80);
+                    tank.Head.angle = tank.Barrel.angle / 4 - Math.PI / 2;
+                    if (tank.Head.angle < -Math.PI / 4) tank.Head.angle += Math.PI / 2;
                 }
-            }
-            tank.Barrel.items[0].y = 7 + tank.Barrel.recoil * 6;
-
-            if (tank.boss) {
-                tank.Head.angle = tank.Barrel.angle / 4 - Math.PI / 2;
-                if (tank.Head.angle < -Math.PI / 4) tank.Head.angle += Math.PI / 2;
             }
         }, this);
     },

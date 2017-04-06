@@ -1,7 +1,4 @@
 
-// Behaviors store their parameters inside target object.
-// Constructors construct init() with initial values, everything else is static.
-
 function NetworkCooldownInputKeyboardStub(team, property) {
     this.team = team;
     this.property = property;

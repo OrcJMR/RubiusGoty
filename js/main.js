@@ -25,30 +25,37 @@ var App = {
 
         ctx = App.ContextHud;
         ctx.clearRect(0, 0, App.CanvasHud.width, App.CanvasHud.height);
-        App.DrawTankGui(ctx, Game.Tank1, 0, 0);
-        App.DrawTankGui(ctx, Game.Tank2, 256, 0);
-        App.DrawTankGui(ctx, Game.Tank3, 512, 0);
+        App.DrawTankGui(ctx, Game.Teams[0], 0, 0);
+        App.DrawTankGui(ctx, Game.Teams[1], 256, 0);
+        App.DrawTankGui(ctx, Game.Teams[2], 512, 0);
         App.DrawJoinTicker(ctx, 896, 32);
     },
-    DrawTankGui: function(ctx, tank, x, y) {
+    DrawTankGui: function(ctx, team, x, y) {
         ctx.save();
         ctx.translate(x, y);
+        var tank = team.Tank;
         if(tank && !tank.hidden) {
             var scale = 32 / tank.width;
             ctx.drawImage(App.Canvas, tank.x - tank.width, tank.y - tank.width,  tank.width*2, tank.width*2, 0, 0, 64, 64);
-            ctx.translate(190, 0);
-            App.DrawHealthCube(ctx, tank);
-            ctx.translate(-96, 0);
-            App.DrawInputs(ctx, tank);
+        } else {
+            var phase = Math.floor( this.elapsedMsec / 50 % 4 );
+            //l("debugText").innerHTML = "phase: " + phase;
+            ctx.drawImage(App.Resources.noise, phase * 32, 0, 32, 32, 0, 0, 64, 64);
         }
+        ctx.translate(94, 0);
+        App.DrawInputs(ctx, team);
+        ctx.translate(96, 0);
+        App.DrawHealthCube(ctx, team);
         ctx.restore();
     },
-    DrawHealthCube: function(ctx, tank) {
-        ctx.drawImage(App.Resources.hpLeaf, 8, 0, 16, 16);
+    DrawHealthCube: function(ctx, team) {
+        if(team.Tank)
+            ctx.drawImage(App.Resources.hpLeaf, 8, 0, 16, 16);
         var hp = 9;
+        var tankHp = team.Tank ? team.Tank.hp : 0;
         for(var y = 16; y < 64; y += 16)
             for(var x = 0; x < 48; x += 16) {
-                var lit = tank.hp >= hp;
+                var lit = tankHp >= hp;
                 ctx.drawImage(lit ? App.Resources.hpCubeLit : App.Resources.hpCubeDim, x, y, 16, 16);
                 hp--;
             }
@@ -70,11 +77,11 @@ var App = {
         ctx.fillText(urlToJoinGame, 0, 0);
         ctx.restore();
     },
-    DrawInputs: function(ctx, tank) {
-        if(typeof tank.teamId == 'undefined')
+    DrawInputs: function(ctx, team) {
+        if(team.teamId < 0)
             return;
         if(!Sockets.ViewModel.teams) return;
-        var team = Sockets.ViewModel.teams[tank.teamId];
+        var teamModel = Sockets.ViewModel.teams[team.teamId];
         if(!team) return;
         var positions = { // recreated each time to reset .taken
             turn1:   {x: 0, y:42, icon: App.Resources.arrowTop, rot:-Math.PI/2},
@@ -85,8 +92,8 @@ var App = {
             fire:    {x:21, y: 0, icon: App.Resources.arrowShot},
             manager: {x:42, y:21, icon: App.Resources.arrowFlag},
         };
-        if(team.members)
-            team.members.forEach(function(member) {
+        if(teamModel.members)
+            teamModel.members.forEach(function(member) {
                 var memPos = member.position;
                 var guiPos = positions[memPos];
                 if(guiPos)
@@ -140,6 +147,8 @@ var App = {
         App.Resources.arrowShot.src = "./images/arrow-shot.png";
         App.Resources.arrowFlag = new Image();
         App.Resources.arrowFlag.src = "./images/arrow-flag.png";
+        App.Resources.noise = new Image();
+        App.Resources.noise.src = "./images/noise.png";
 
         var sounds = [
             "./sound/crash.wav",
