@@ -36,13 +36,24 @@
 </dom-module>
 
 <script>
+    // Set the name of the hidden property and the change event for visibility
+    // var hiddenProp, visibilityChange; 
+    // if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+    //     hiddenProp = "hidden";
+    //     visibilityChange = "visibilitychange";
+    // } else if (typeof document.msHidden !== "undefined") {
+    //     hiddenProp = "msHidden";
+    //     visibilityChange = "msvisibilitychange";
+    // } else if (typeof document.webkitHidden !== "undefined") {
+    //     hiddenProp = "webkitHidden";
+    //     visibilityChange = "webkitvisibilitychange";
+    // }
+
     var model = {
         type: 'clientState'
     };
-    var actions = ['fire', 'turretLeft', 'turretRight', 'strafeRight', 'strafeLeft', 'rightTrackForward', 'rightTrackBackward'
-        , 'moveForward', 'moveBackward', 'leftTrackForward', 'leftTrackBackward'];
-    var listener;
-    var interval;
+    var unfocusListener;
+    var pingInterval;
     Polymer({
         is: 'controls-page',
         ready: function () {
@@ -83,14 +94,19 @@
             };
             Sockets.UpdateCallback();
 
-            listener = function () {
-                actions.forEach(function (action) {
-                    model[action] = 0;
-                    Sockets.sendJson(model);
-                })
+            // if (typeof document.addEventListener !== "undefined" && typeof document[hiddenProp] !== "undefined") {
+            //     document.addEventListener(visibilityChange, unfocusListener, false);
+            // }
+
+            unfocusListener = function () {
+                // if(document[hiddenProp])
+                    that.actions.foreEach(function (act) {
+                        model[act.action] = 0;
+                        Sockets.sendJson(model);
+                    });
             };
-            window.addEventListener('blur', listener, false);
-            interval = setInterval(function () {
+            window.addEventListener('blur', unfocusListener, false);
+            pingInterval = setInterval(function () {
                 Sockets.sendJson({type: 'ping'});
             }, 5000);
         },
@@ -102,9 +118,11 @@
         },
         detached: function () {
             Sockets.Close();
-            window.removeEventListener('blur', listener, false);
-            clearInterval(interval);
-
+            // if (typeof document.addEventListener !== "undefined" && typeof document[hidden] !== "undefined") {
+            //     document.removeEventListener(visibilityChange, unfocusListener, false);
+            // }
+            window.removeEventListener('blur', unfocusListener, false);
+            clearInterval(pingInterval);
         },
         buttonDownAction: function (e) {
             var action = e.target.dataset.action;
