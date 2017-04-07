@@ -44,17 +44,16 @@ Behavior.Move.prototype = {
             if (colliderRetVal){
                 apply = false;
 
-                if (colliderRetVal.tileX){
-                    if (obj.OnMapCollision){
+                if (colliderRetVal.tileX > -10000) { // detect if exists and number
+                    if (obj.OnMapCollision) {
                         obj.OnMapCollision( colliderRetVal.tileX, colliderRetVal.tileY );
                     }
                 } else {
-                    if (obj.owner && obj.owner == colliderRetVal){
+                    if (obj.owner && obj.owner == colliderRetVal.object) {
                         apply = true;
+                    } else if (obj.OnObjectCollision) {
+                        obj.OnObjectCollision(colliderRetVal.object);
                     }
-                    else if (obj.OnObjectCollision){
-                            obj.OnObjectCollision(colliderRetVal);
-                        }
                 }
             }
         }
@@ -127,8 +126,7 @@ Behavior.MoveTank.prototype = {
                 newAngle -= Math.PI * 2;
         }
 
-        if (obj.LeftTrack.torque + obj.RightTrack.torque == 0)
-        {
+        if (obj.LeftTrack.torque + obj.RightTrack.torque == 0) {
             obj.speed *= 1 - (0.10 * traction);
         }
 
@@ -138,36 +136,35 @@ Behavior.MoveTank.prototype = {
             obj.rotationSpeed *= 0.9;
         }
 
-        var apply = true;
+        var colliderRetVal = false;
 
-        if (obj.collider){
+        if (obj.collider) {
             var objRect = new Geom.Rect(newx, newy, obj.width, obj.height, newAngle);
-            var colliderRetVal = obj.collider.IsCollided(objRect, obj);
-            if (colliderRetVal){
-                apply = false;
-                if (colliderRetVal.tileX){
-                    if (obj.OnMapCollision){
-                        obj.OnMapCollision( colliderRetVal.tileX, colliderRetVal.tileY );
-                    }
-                } else{
-                    if (obj.OnObjectCollision){
-                            obj.OnObjectCollision(colliderRetVal);
-                        }
-                }
-            }
+            colliderRetVal = obj.collider.IsCollided(objRect, obj);
         }
 
-        if (apply){
+        if (!colliderRetVal) {
             obj.x = newx;
             obj.y = newy;
             obj.angle = newAngle;
-        } else{
+        } else {
+            if (colliderRetVal.tileX > -10000) { // detect if exists and number
+                if (obj.OnMapCollision) {
+                    obj.OnMapCollision( colliderRetVal.tileX, colliderRetVal.tileY );
+                }
+            } else if (obj.OnObjectCollision) {
+                obj.OnObjectCollision(colliderRetVal.object);
+            }
+
             var s = Math.max(
                 Math.abs(obj.speed)*800,
                 Math.abs(obj.rotationSpeed)*200);
-            // if (s > 25) s = 25;
-            // if (s > 100) s = 100;
+            // only play collision sound if it was significant
             if (s > 10) Sound.Play("./sound/crash.wav", 70);
+            // can spawn sparks as much as we want, it is throttled in Game
+            Game.spawnSparks(colliderRetVal.points);
+            Game.scrapeDetected = true;
+
             obj.speed = 0;
             obj.rotationSpeed = 0;
         }

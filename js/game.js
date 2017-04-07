@@ -9,11 +9,7 @@ var Game = {
         this.Teams.push(this.SetupTeam("boss", -1, 520, 736, 180, 0));
         //this.Teams.push(this.SetupTeam("boss", -1, 520, 300, 180, 0));
 
-        // var tankBot = new Sprite(300, 200, 45, 32, 32, "./images/tank.png", [new Behavior.Move(0,-0.01,-0.01)]);
-        // tankBot.collider = new Collider(this.Map, "B", this.RootEntity, ["tank", "tankbot"]);
-        // tankBot.class = "tankbot";
-        // this.RootEntity.addChild(tankBot);
-
+        //this.ScrapeSound = Sound.Play("./sound/metal-scrape.mp3", 0, true);
     },
     SetupTeam: function(name, networkIndex, spawnX, spawnY, spawnAngle, spawnCountdown) {
         if(typeof spawnCountdown == 'undefined')
@@ -95,16 +91,19 @@ var Game = {
         tank.RightTrack.torque = 0;
         tank.Barrel = tank.items[offset + 3];
         tank.Barrel.recoil = 0;
-        if (tank.boss)
+        if (tank.boss) {
             tank.Head = tank.items[0];
-
-        tank.width = tank.boss ? 48 : 32; //this is for collision detection
-        tank.height = tank.width;
+            tank.width = 48; // this is for collision detection
+            tank.height = 44;
+        } else {
+            tank.width = 32; // this is for collision detection
+            tank.height = 32;
+        }
         tank.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
         tank.class = "tank";
 
         //todo fix loop sound gap problem
-        tank.throttleSound = Sound.Play('./sound/engine working long.mp3', 0, 1, type);
+        tank.throttleSound = Sound.Play('./sound/engine working long.mp3', 0, true, type);
         //tank.idleSound = PlaySound('./sound/engine working2.mp3', 0, 1, type);
 
         tank.started = false;
@@ -140,6 +139,30 @@ var Game = {
         ]);
         this.RootEntity.changeCoordinatesFromDescendant(dirt, parent);
         this.RootEntity.addChild(dirt, 0);
+    },
+    sparksCooldown: 0,
+    spawnSparks: function (points) {
+        var i = 0;
+        while (this.sparksCooldown > 0) {
+            var p = points[i];
+            var speed = Math.random() * 0.06;
+            var color = '#FFFF' + (0x100 + Math.random() * 0xFF).toString(16).substr(1,2); 
+            var spark = new Box(p.x, p.y, Math.random() * 360, 2, 3, color, [
+                new Behavior.Move,
+                new Behavior.TimedLife(300),
+                new Behavior.Custom(function () {
+                    this.alpha = this.lifeTimeout / 100;
+                })
+            ]);
+            spark.moveYSpeed = speed;
+            //this.RootEntity.changeCoordinatesFromDescendant(spark, parent);
+            this.RootEntity.addChild(spark);
+
+            this.sparksCooldown -= 10;
+            i++;
+            if (i == points.length)
+                i = 0;
+        }
     },
     spawnBullet: function (tank, team) {
         var bullet = new ObjectGroup(0, 20, 0, [
@@ -310,8 +333,16 @@ var Game = {
             }
         });
     },
+    //scrapeDetected: false,
     Logic: function (delta) {
-        Game.Teams.forEach(function (team) {
+
+        if (this.sparksCooldown < 100) {
+            this.sparksCooldown += delta;
+            if (this.sparksCooldown > 100)
+                this.sparksCooldown == 100;
+        }
+
+        this.Teams.forEach(function (team) {
 
             if (team.popKillsTime >= 0)
                 team.popKillsTime += delta;
@@ -366,6 +397,10 @@ var Game = {
                 }
             }
         }, this);
+
+        //this.scrapeDetected = false;
+        this.RootEntity.update(delta);
+        //this.ScrapeSound.volume = this.scrapeDetected ? 1 : 0;
     },
 }
 

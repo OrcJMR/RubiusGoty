@@ -86,23 +86,72 @@ Geom.Rect.prototype.GetMbr = function(){
     return new Geom.Mbr(xmin, xmax, ymin, ymax);    
 }
 
+Geom.OverlapMbr = function (r1, r2){
+    var rotrect = r2.Translate(-r1.x, -r1.y).Rotate(-r1.angle); //in this coords r1 is in the origin and along axis
+    var mbr = rotrect.GetMbr();
+
+    var xmin = -r1.width/2;
+    var xmax = r1.width/2;
+    var ymin = -r1.height/2;
+    var ymax = r1.height/2;
+
+    // if r2 projection on r1 edges overlaps the edges
+    return (mbr.xmax > xmin) && (mbr.xmin < xmax) && (mbr.ymax > ymin) && (mbr.ymin < ymax);
+}
+
 Geom.Intersect = function(rect1, rect2){
-    var IntersectPart = function (r1, r2){
-        var rotrect = r2.Translate(-r1.x, -r1.y).Rotate(-r1.angle); //in this coords r1 is in the origin and along axis
-        var mbr = rotrect.GetMbr();
-
-        var xmin = -r1.width/2;
-        var xmax = r1.width/2;
-        var ymin = -r1.height/2;
-        var ymax = r1.height/2;
-
-        return (mbr.xmax > xmin) && (mbr.xmin < xmax) && (mbr.ymax > ymin) && (mbr.ymin < ymax); //if r2 projection on r1 edges overlaps the edges
-    }
-
-    if (!IntersectPart(rect1, rect2)) return false;
-    if (!IntersectPart(rect2, rect1)) return false;
+    if (!Geom.OverlapMbr(rect1, rect2)) return false;
+    if (!Geom.OverlapMbr(rect2, rect1)) return false;
 
     return true;
+}
+
+Geom.FindPointsInRect = function(r1, r2) {
+    var rotrect = r2.Translate(-r1.x, -r1.y).Rotate(-r1.angle);
+    // dbg += printRect(rotrect) + "<br/>";
+
+    var xmin = -r1.width/2;
+    var xmax = r1.width/2;
+    var ymin = -r1.height/2;
+    var ymax = r1.height/2;
+
+    var w = rotrect.width;
+    var h = rotrect.height;
+    var p;
+    var retval = [];
+    var testFunc = function(p, retval) {
+        // dbg += "&nbsp;&nbsp;x" + p.x.toFixed(2) + " y" + p.y.toFixed(2);
+        if(p.x < xmax && p.x > xmin && p.y < ymax && p.y > ymin) {
+            var cpoint = p.Rotate(r1.angle).Translate(r1.x, r1.y);//.Rotate(r1.angle).Translate(r1.x, r1.y);
+            // dbg += " hit.</br>&nbsp;&nbsp;&nbsp;x" + cpoint.x.toFixed(2) + " y" + cpoint.y.toFixed(2) + "<br/>";
+            retval.push(cpoint);
+        } //else {
+        //     dbg += " miss.</br>"
+        // }
+    };
+    p = (new Geom.Point(w/2, -h/2)).Rotate(rotrect.angle).Translate(rotrect.x, rotrect.y);
+    testFunc(p, retval);
+    p = (new Geom.Point(w/2, h/2)).Rotate(rotrect.angle).Translate(rotrect.x, rotrect.y);
+    testFunc(p, retval);
+    p = (new Geom.Point(-w/2, h/2)).Rotate(rotrect.angle).Translate(rotrect.x, rotrect.y);
+    testFunc(p, retval);
+    p = (new Geom.Point(-w/2, -h/2)).Rotate(rotrect.angle).Translate(rotrect.x, rotrect.y);
+    testFunc(p, retval);
+    return retval;    
+}
+// var dbg;
+// var printRect = function(r) {
+//     return "R: x" + r.x.toFixed(0) + " y" + r.y.toFixed(0) + " a" + r.angle.toFixed(2) + " w" + r.width + " h" + r.height;
+}
+Geom.Intersect2 = function(rect1, rect2){
+    // dbg = printRect(rect1) + "<br/>" + printRect(rect2) + "<br/><br/>";
+    var arr1 = Geom.FindPointsInRect(rect1, rect2);
+    var arr2 = Geom.FindPointsInRect(rect2, rect1);
+    var arr = arr1.concat(arr2);
+    if (arr.length == 0)
+        return false;
+    // l("debugText").innerHTML = dbg;
+    return arr;
 }
 
 

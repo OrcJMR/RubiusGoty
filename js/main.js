@@ -7,7 +7,6 @@ var App = {
     UpdateFrame: function(delta) {
         App.GuiLogic(delta);
         Game.Logic(delta);
-        Game.RootEntity.update(delta);
     },
     globalScale: 1,
     elapsedMsec: 0,
@@ -205,7 +204,8 @@ var App = {
             "./sound/blast2.mp3",
             "./sound/tank-fire.wav",
             "./sound/shot2.mp3",
-            "./sound/shot3.mp3"
+            "./sound/shot3.mp3",
+            //"./sound/metal-scrape.mp3",
         ];
         var target = sounds.length + 1;
         var onloaded = function() {

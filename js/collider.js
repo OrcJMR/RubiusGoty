@@ -33,9 +33,10 @@ Collider.prototype.IsCollided = function(rect, sourceObject){
                         0
                     )
 
-                    if (Geom.Intersect(rect, tileRect))
+                    var intersection = Geom.Intersect2(rect, tileRect);
+                    if (intersection)
                     {
-                        return {tileX: tileX, tileY: tileY};
+                        return {tileX: tileX, tileY: tileY, points: intersection};
                     }
                 }
             }
@@ -49,9 +50,11 @@ Collider.prototype.IsCollided = function(rect, sourceObject){
             var obj = this.rootEntity.items[i];
             if (obj != sourceObject && obj.class && this.impassableObjects.indexOf(obj.class) > -1){
                 var objRect = new Geom.Rect(obj.x, obj.y, obj.width, obj.height, obj.angle);
-                if (Geom.Intersect(rect, objRect))
+                
+                var intersection = Geom.Intersect2(rect, objRect);
+                if (intersection)
                 {
-                    return obj;
+                    return {object: obj, points: intersection};
                 }
             }
         }
