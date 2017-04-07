@@ -142,7 +142,7 @@ Geom.FindPointsInRect = function(r1, r2) {
 // var dbg;
 // var printRect = function(r) {
 //     return "R: x" + r.x.toFixed(0) + " y" + r.y.toFixed(0) + " a" + r.angle.toFixed(2) + " w" + r.width + " h" + r.height;
-}
+// }
 Geom.Intersect2 = function(rect1, rect2){
     // dbg = printRect(rect1) + "<br/>" + printRect(rect2) + "<br/><br/>";
     var arr1 = Geom.FindPointsInRect(rect1, rect2);
