@@ -115,7 +115,7 @@
             window.addEventListener('blur', unfocusListener, false);
             pingInterval = setInterval(function () {
                 Sockets.sendJson({type: 'ping'});
-            }, 5000);
+            }, 4000);
         },
         _equals: function (val1, val2) {
             if (val1 == val2)

@@ -30,8 +30,8 @@ teams.push(new Team(1));
 teams.push(new Team(2));
 teams.push(new Team(3));
 
-var actions = ['fire', 'turretLeft', 'turretRight', 'strafeRight', 'strafeLeft', 'rightTrackForward', 'rightTrackBackward'
-    , 'moveForward', 'moveBackward', 'leftTrackForward', 'leftTrackBackward'];
+var actions = ['fire', 'turretLeft', 'turretRight', 'moveForward', 'moveBackward',
+    'turnLeft', 'turnRight', 'managerGood', 'managerBad'];
 var serverModel = {
     teams: teams
 };
@@ -174,6 +174,8 @@ wss.on('connection', function connection(ws) {
             SendServerModel();
         }
 
+        model.ping = new Date();
+
         if (data.type == 'join') {
             model.name = data.name;
             model.position = data.position;
@@ -182,7 +184,6 @@ wss.on('connection', function connection(ws) {
 
             SendServerModel();
         } else if (data.type == 'ping') {
-            model.ping = new Date();
             UpdateTeamPositions(model.team);
             client.SendClientModel();
         } else if (data.type == 'close') {
