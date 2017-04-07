@@ -12,7 +12,7 @@
                 <br/>
                 <template is="dom-repeat" items="{{positions}}" as="position">
                     <div class='row'>
-                        <button type='submit' class$='col s12 btn btn-large waves-effect {{position.color}}' disabled="{{position.taken}}" data-position$="{{position.id}}" on-tap="setPosition">{{position.title}}</button>
+                        <button type='submit' class$='col s12 btn waves-effect {{position.color}}' disabled="{{position.taken}}" data-position$="{{position.id}}" on-tap="setPosition">{{position.title}}</button>
                     </div>
                 </template>
 
