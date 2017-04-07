@@ -205,6 +205,7 @@ var App = {
             "./sound/tank-fire.wav",
             "./sound/shot2.mp3",
             "./sound/shot3.mp3",
+            "./sound/spawn.ogg",
             //"./sound/metal-scrape.mp3",
         ];
         var target = sounds.length + 1;

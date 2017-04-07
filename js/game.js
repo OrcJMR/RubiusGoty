@@ -3,9 +3,9 @@ var Game = {
     RootEntity: new ObjectGroup(0, 0, 0, [], []),
     Teams: [],
     Setup: function () {
-        this.Teams.push(this.SetupTeam("1", 0, 72, 640, 180, 1000));
-        this.Teams.push(this.SetupTeam("2", 1, 520, 64, 0, 1500));
-        this.Teams.push(this.SetupTeam("3", 2, 1008 - 40, 640, 180, 2000));
+        this.Teams.push(this.SetupTeam("1", 0, 72, 640, 180, 1700));
+        this.Teams.push(this.SetupTeam("2", 1, 520, 64, 0, 2600));
+        this.Teams.push(this.SetupTeam("3", 2, 1008 - 40, 640, 180, 3500));
         this.Teams.push(this.SetupTeam("boss", -1, 520, 736, 180, 0));
         //this.Teams.push(this.SetupTeam("boss", -1, 520, 300, 180, 0));
 
@@ -252,6 +252,14 @@ var Game = {
                 Sound.Play("./sound/blast2.mp3", 100);
         }
     },
+    spawnFlash: function (x, y, size) {
+        if (!size)
+            size = 40
+        var flash = new Sprite(x, y, Math.random() * 360, size, size, "./images/flash.png", [new Behavior.Animate(40, 8, 70), new Behavior.TimedLife(539)]);
+        Game.RootEntity.addChild(flash);
+
+        Sound.Play("./sound/spawn.ogg", 100);
+    },
     showBalloonMessage: function (tank, message) {
         if (!message || tank.baloonShown)
             return;
@@ -359,6 +367,8 @@ var Game = {
                     team.tanksSpawnsIn -= delta;
                     if(team.tanksSpawnsIn <= 0) {
                         team.SpawnTank();
+                        if (team.name != "boss")
+                            this.spawnFlash(team.spawnX, team.spawnY, 80);
                         if (!team.poppedOnStart) {
                             team.popKills = true;
                             team.poppedOnStart = true;
