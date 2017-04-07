@@ -97,7 +97,7 @@ var App = {
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
         var tank = team.Tank;
-        if(tank && !tank.hidden)
+        if(tank && !tank.hidden && team.teamId >= 0)
             ctx.fillStyle = Res.TeamStyles[team.teamId];
         else
             ctx.fillStyle = "gray";
