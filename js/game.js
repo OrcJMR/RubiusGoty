@@ -5,7 +5,7 @@ var Game = {
     Setup: function () {
         this.Teams.push(this.SetupTeam("1", 0, 72, 640, 180, 1700));
         this.Teams.push(this.SetupTeam("2", 1, 520, 64, 0, 2600));
-        this.Teams.push(this.SetupTeam("3", 2, 1008 - 40, 640, 180, 3500));
+        this.Teams.push(this.SetupTeam("3", 2, 1008 - 40, 640, 180, 3400));
         this.Teams.push(this.SetupTeam("boss", -1, 520, 736, 180, 0));
         //this.Teams.push(this.SetupTeam("boss", -1, 520, 300, 180, 0));
 
@@ -62,23 +62,23 @@ var Game = {
         if (type == "boss")
             tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank], [
                 new ObjectGroup(0, 22, 0, [new Behavior.Move], [
-                    new Sprite(0, 7, 180, 26, 26, "./images/tank-head.png")
+                    new Sprite(0, 7, 180, 26, 26, App.Images.tankHead)
                 ]),
-                new Sprite(-18, -1, 0, 10, 38, "./images/tank-track.png", [new Behavior.Animate(5, 2)]),
-                new Sprite(18, -1, 0, 10, 38, "./images/tank-track.png", [new Behavior.Animate(5, 2)]),
-                new Sprite(0, -0.5, 180, 42, 48, "./images/tank-body.png"),
+                new Sprite(-18, -1, 0, 10, 38, App.Images.tankTrack, [new Behavior.Animate(5, 2)]),
+                new Sprite(18, -1, 0, 10, 38, App.Images.tankTrack, [new Behavior.Animate(5, 2)]),
+                new Sprite(0, -0.5, 180, 42, 48, App.Images.tankBody),
                 //new Box(  0,-12, 0, 12, 8, "darkgreen"),
                 new ObjectGroup(0, 0.5, 0, [new Behavior.Move], [
-                    new Sprite(0, 7, 180, 22, 36, "./images/tank-turret.png")
+                    new Sprite(0, 7, 180, 22, 36, App.Images.tankTurret)
                 ])
             ]);
         else
             tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank], [
-                new Sprite(-11, -1, 0, 10, 30, "./images/tank-track-small.png", [new Behavior.Animate(5, 2)]),
-                new Sprite(11, -1, 0, 10, 30, "./images/tank-track-small.png", [new Behavior.Animate(5, 2)]),
-                new Sprite(0, 1, 180, 24, 34, "./images/tank-body-small-" + type + ".png"),
+                new Sprite(-11, -1, 0, 10, 30, App.Images.tankTrackSmall, [new Behavior.Animate(5, 2)]),
+                new Sprite(11, -1, 0, 10, 30, App.Images.tankTrackSmall, [new Behavior.Animate(5, 2)]),
+                new Sprite(0, 1, 180, 24, 34, App.Images["tankBodySmall" + type]),
                 new ObjectGroup(0, -2, 0, [new Behavior.Move], [
-                    new Sprite(0, 7, 180, 18, 38, "./images/tank-turret-small.png")
+                    new Sprite(0, 7, 180, 18, 38, App.Images.tankTurretSmall)
                 ])
             ]);
         tank.boss = type == "boss";
@@ -231,14 +231,14 @@ var Game = {
     },
     spawnMuzzleBlast: function (tank, big) {
         big = big || false;
-        var blast = new Sprite(0, big ? 16 : 22, 180, 34, 62, "./images/" + (big ? "big-" : "") + "tank-fire.png", [new Behavior.Animate(17, 6, 50), new Behavior.TimedLife(299)]);
+        var blast = new Sprite(0, big ? 16 : 22, 180, 34, 62, big ? App.Images.tankFireBig : App.Images.tankFire, [new Behavior.Animate(17, 6, 50), new Behavior.TimedLife(299)]);
         tank.changeCoordinatesFromDescendant(blast, tank.Barrel);
         tank.addChild(blast);
     },
     spawnExplosion: function (x, y, size, type) {
         if (!size)
             size = 24
-        var blast = new Sprite(x, y, Math.random() * 90, size, size, "./images/explosion.png", [new Behavior.Animate(18, 8, 50), new Behavior.TimedLife(399)]);
+        var blast = new Sprite(x, y, Math.random() * 90, size, size, App.Images.explosion, [new Behavior.Animate(18, 8, 50), new Behavior.TimedLife(399)]);
         Game.RootEntity.addChild(blast);
 
         if (type == "echo") {
@@ -255,7 +255,7 @@ var Game = {
     spawnFlash: function (x, y, size) {
         if (!size)
             size = 40
-        var flash = new Sprite(x, y, Math.random() * 360, size, size, "./images/flash.png", [new Behavior.Animate(40, 8, 70), new Behavior.TimedLife(539)]);
+        var flash = new Sprite(x, y, Math.random() * 360, size, size, App.Images.flash, [new Behavior.Animate(40, 8, 70), new Behavior.TimedLife(539)]);
         Game.RootEntity.addChild(flash);
 
         Sound.Play("./sound/spawn.ogg", 100);

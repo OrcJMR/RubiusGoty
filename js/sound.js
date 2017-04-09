@@ -34,10 +34,13 @@ var Sound = {
         // all cached are playing
         return null;
     },
-    Load: function(url, onloaded, id) {
+    Load: function(url, onloaded, id, onlyStart) {
         var key = this.GetKey(url, id);
         var audio = new Audio(url);
-        audio.oncanplaythrough = onloaded;
+        if (onlyStart)
+            audio.oncanplay = onloaded;
+        else
+            audio.oncanplaythrough = onloaded;
         this.PutAudio(key, audio);
     },
     Play: function(url, vol, loops, id) {

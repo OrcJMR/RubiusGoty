@@ -106,8 +106,6 @@ function Map(){
     "                                                                 "  +
     "                                                                 ";
 
-    this.tilesImage = new Image();
-    this.tilesImage.src = "./images/tiles-winter.png"
     if(terrain.length != this.width * this.height)
         throw "Cannot load map from string!";
 

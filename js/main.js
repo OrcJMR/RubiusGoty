@@ -3,7 +3,7 @@ function l(what) {return document.getElementById(what);}
 
 var App = {
     Inputs: {},
-    Resources: {},
+    Images: {},
     UpdateFrame: function(delta) {
         App.GuiLogic(delta);
         Game.Logic(delta);
@@ -39,7 +39,7 @@ var App = {
         } else {
             var phase = Math.floor( this.elapsedMsec / 50 % 4 );
             //l("debugText").innerHTML = "phase: " + phase;
-            ctx.drawImage(App.Resources.noise, phase * 30, 0, 30, 30, 2, 1, 60, 60);
+            ctx.drawImage(App.Images.noise, phase * 30, 0, 30, 30, 2, 1, 60, 60);
         }
 
         ctx.translate(64, 0);
@@ -48,7 +48,7 @@ var App = {
         ctx.translate(64, 0);
         App.DrawScore(ctx, team);
 
-        ctx.translate(62, 0);
+        ctx.translate(62, -2);
         App.DrawHealthCube(ctx, team);
 
         ctx.restore();
@@ -122,13 +122,13 @@ var App = {
     },
     DrawHealthCube: function(ctx, team) {
         if(team.Tank)
-            ctx.drawImage(App.Resources.hpLeaf, 8, 0, 16, 16);
+            ctx.drawImage(App.Images.hpLeaf, 8, 0, 16, 16);
         var hp = 9;
         var tankHp = team.Tank ? team.Tank.hp : 0;
         for(var y = 16; y < 64; y += 16)
             for(var x = 0; x < 48; x += 16) {
                 var lit = tankHp >= hp;
-                ctx.drawImage(lit ? App.Resources.hpCubeLit : App.Resources.hpCubeDim, x, y, 16, 16);
+                ctx.drawImage(lit ? App.Images.hpCubeLit : App.Images.hpCubeDim, x, y, 16, 16);
                 hp--;
             }
     },
@@ -155,6 +155,7 @@ var App = {
                 console.warn('Main loop panicked, probably because the browser tab was put in the background. Discarding ' + discardedTime + 'ms');
             }
     },
+    assetsLoaded: 0,
     EntryPoint: function() {
 
         App.Keyboard = new Keyboard();
@@ -167,36 +168,6 @@ var App = {
         App.CanvasHud = document.getElementById('topCanvas');
         App.ContextHud = App.CanvasHud.getContext('2d');
 
-        App.Resources.hpCubeLit = new Image();
-        App.Resources.hpCubeLit.src = "./images/hp-cube.png";
-        App.Resources.hpCubeDim = new Image();
-        App.Resources.hpCubeDim.src = "./images/hp-cube-off.png";
-        App.Resources.hpLeaf = new Image();
-        App.Resources.hpLeaf.src = "./images/hp-leaf.png";
-        App.Resources.arrowTop = new Image();
-        App.Resources.arrowTop.src = "./images/arrow-top.png";
-        App.Resources.arrowLeft = new Image();
-        App.Resources.arrowLeft.src = "./images/arrow-rot-left.png";
-        App.Resources.arrowShot = new Image();
-        App.Resources.arrowShot.src = "./images/arrow-shot.png";
-        App.Resources.arrowChevron = new Image();
-        App.Resources.arrowChevron.src = "./images/arrow-flag.png";
-        App.Resources.noise = new Image();
-        App.Resources.noise.src = "./images/noise.png";
-
-        this.GuiPositions = [
-            {name: "TankTurnInput", p:"Backward",   x: 0, y:42, icon: App.Resources.arrowTop, rot:-Math.PI/2},
-            {name: "TankTurnInput", p:"Forward",    x:42, y:42, icon: App.Resources.arrowTop, rot:Math.PI/2},
-            {name: "ThrottleInput", p:"Forward",    x:21, y:21, icon: App.Resources.arrowTop},
-            {name: "ThrottleInput", p:"Backward",   x:21, y:42, icon: App.Resources.arrowTop, rot:Math.PI},
-            {name: "TurretTurnInput", p:"Backward", x: 0, y: 0, icon: App.Resources.arrowLeft},
-            {name: "TurretTurnInput", p:"Forward",  x:42, y: 0, icon: App.Resources.arrowLeft, flipx:true},
-            {name: "FireInput",                     x:21, y: 0, icon: App.Resources.arrowShot},
-            {name: "ManagerGood",                   x: 0, y:21, icon: App.Resources.arrowChevron},
-            {name: "ManagerBad",                    x:42, y:21, icon: App.Resources.arrowChevron, rot:Math.PI},
-            {name: "ManagerBoss",                   x:42, y:21, icon: App.Resources.arrowChevron},
-        ];
-
         var sounds = [
             "./sound/crash.wav",
             "./sound/longblast.mp3",
@@ -208,17 +179,64 @@ var App = {
             "./sound/spawn.ogg",
             //"./sound/metal-scrape.mp3",
         ];
-        var target = sounds.length + 1;
+
+        var assetCount = sounds.length + 2; // "engine working" and music
+
         var onloaded = function() {
-            App.soundsLoaded++;
-            if(App.soundsLoaded == target)
+            App.assetsLoaded++;
+            if(App.assetsLoaded == assetCount)
                 App.FinishEntry();
-        }
+        };
+        var loadImage = function(url) {
+            var img = new Image();
+            img.src = url;
+            img.onloaded = onloaded;
+            return img;
+        };
+
+        App.Images.hpCubeLit = loadImage("./images/hp-cube.png");
+        App.Images.hpCubeDim = loadImage("./images/hp-cube-off.png");
+        App.Images.hpLeaf = loadImage("./images/hp-leaf.png");
+        App.Images.arrowTop = loadImage("./images/arrow-top.png");
+        App.Images.arrowLeft = loadImage("./images/arrow-rot-left.png");
+        App.Images.arrowShot = loadImage("./images/arrow-shot.png");
+        App.Images.arrowChevron = loadImage("./images/arrow-flag.png");
+        App.Images.noise = loadImage("./images/noise.png");
+
+        Game.Map.tilesImage = loadImage("./images/tiles-winter.png");
+
+        App.Images.tankHead = loadImage("./images/tank-head.png")
+        App.Images.tankTrack = loadImage("./images/tank-track.png")
+        App.Images.tankTrackSmall = loadImage("./images/tank-track-small.png")
+        App.Images.tankBody = loadImage("./images/tank-body.png")
+        App.Images.tankBodySmall1 = loadImage("./images/tank-body-small-1.png")
+        App.Images.tankBodySmall2 = loadImage("./images/tank-body-small-2.png")
+        App.Images.tankBodySmall3 = loadImage("./images/tank-body-small-3.png")
+        App.Images.tankTurret = loadImage("./images/tank-turret.png")
+        App.Images.tankTurretSmall = loadImage("./images/tank-turret-small.png")
+        App.Images.explosion = loadImage("./images/explosion.png")
+        App.Images.flash = loadImage("./images/flash.png")
+        App.Images.tankFire = loadImage("./images/tank-fire.png")
+        App.Images.tankFireBig = loadImage("./images/big-tank-fire.png")
+
+        this.GuiPositions = [
+            {name: "TankTurnInput", p:"Backward",   x: 0, y:42, icon: App.Images.arrowTop, rot:-Math.PI/2},
+            {name: "TankTurnInput", p:"Forward",    x:42, y:42, icon: App.Images.arrowTop, rot:Math.PI/2},
+            {name: "ThrottleInput", p:"Forward",    x:21, y:21, icon: App.Images.arrowTop},
+            {name: "ThrottleInput", p:"Backward",   x:21, y:42, icon: App.Images.arrowTop, rot:Math.PI},
+            {name: "TurretTurnInput", p:"Backward", x: 0, y: 0, icon: App.Images.arrowLeft},
+            {name: "TurretTurnInput", p:"Forward",  x:42, y: 0, icon: App.Images.arrowLeft, flipx:true},
+            {name: "FireInput",                     x:21, y: 0, icon: App.Images.arrowShot},
+            {name: "ManagerGood",                   x: 0, y:21, icon: App.Images.arrowChevron},
+            {name: "ManagerBad",                    x:42, y:21, icon: App.Images.arrowChevron, rot:Math.PI},
+            {name: "ManagerBoss",                   x:42, y:21, icon: App.Images.arrowChevron},
+        ];
+
         for(var i in sounds)
             Sound.Load(sounds[i], onloaded);
         Sound.Load("./sound/engine working long.mp3", onloaded, "1");
+        Sound.Load("./sound/background.mp3", onloaded, false, true);
     },
-    soundsLoaded: 0,
     FinishEntry: function() {
 
         Game.Setup();
