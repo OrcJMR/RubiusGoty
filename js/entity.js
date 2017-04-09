@@ -8,13 +8,18 @@ var EntityBase = {
     },
 
     draw: function(ctx) {
+        var that = this;
         if(typeof this.items != 'undefined')
             this.items.forEach(function(item, i, arr){
                 ctx.save();
                 if(typeof item.alpha != 'undefined')
                     ctx.globalAlpha = item.alpha;
-                ctx.translate(item.x, item.y);
-                ctx.rotate(item.angle);
+                if(item.balloonText) {
+                    ctx.rotate(-that.angle);
+                } else {
+                    ctx.translate(item.x, item.y);
+                    ctx.rotate(item.angle);
+                }
                 item.draw(ctx);
                 ctx.restore();
             });
@@ -25,11 +30,23 @@ var EntityBase = {
             else
                 ctx.drawImage(this.image, this.spriteIndex * this.spriteWidth, 0, this.spriteWidth, this.image.height,
                                           -this.width / 2, -this.height / 2, this.width, this.height);
+
         } else if(typeof this.color != 'undefined') {
-            ctx.save();
             ctx.fillStyle = this.color;
             ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
-            ctx.restore();
+
+        } else if(this.balloonText) {
+            ctx.font = "16px 'Russo One'";
+            ctx.fillStyle = "black";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            if(!this.balloonWidth)
+                this.balloonWidth = ctx.measureText(this.balloonText).width + 20;
+            ctx.scale(this.scaleX, this.scaleY);
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, this.balloonWidth, -30);
+            ctx.fillStyle = "black";
+            ctx.fillText(this.balloonText, this.balloonWidth / 2, -15);
         }
         //else if (typeof this.speed != 'undefined'){
         //    ctx.fillText(this.speed, 0, 0);
@@ -124,6 +141,17 @@ function Box(x, y, angle, width, height, color, behaviors) {
             this.addBehavior(behaviors[i]);
 }
 
+function Balloon(text, behaviors) {
+    this.x = 0;
+    this.y = 0;
+    this.balloonText = text;
+    this._behaviors = {};
+    this.addBehavior(new Behavior.TextBalloon(500));
+    if(typeof behaviors != 'undefined')
+        for(var i = 0; i < behaviors.length; i++)
+            this.addBehavior(behaviors[i]);
+}
+
 ObjectGroup.prototype = EntityBase;
 Sprite.prototype = {
     __proto__: EntityBase,
@@ -137,3 +165,4 @@ Sprite.prototype = {
     }
 };
 Box.prototype = EntityBase;
+Balloon.prototype = EntityBase;

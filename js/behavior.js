@@ -277,3 +277,26 @@ Behavior.SpawnExplosions.prototype = {
         obj.explosionCurrentTime %= obj.explosionDelay;
     }
 }
+
+// required to render balloon at all
+Behavior.TextBalloon = function(spawnDuration) {
+    this.init = function(obj) {
+        obj.balloonSpawnMax = spawnDuration;
+        obj.balloonSpawnCurrent = 0;
+        obj.scaleX = 0;
+        obj.scaleY = 0;
+    };
+};
+
+Behavior.TextBalloon.prototype = {
+    name: "textballoon",
+    exec: function(obj, delta) {
+        if(obj.balloonSpawnCurrent == obj.balloonSpawnMax)
+            return;
+        obj.balloonSpawnCurrent = Math.min(obj.balloonSpawnCurrent + delta, obj.balloonSpawnMax);
+        var phase = obj.balloonSpawnCurrent / obj.balloonSpawnMax;
+        obj.scaleY = Math.sin(phase * Math.PI / 2);
+        obj.scaleX = obj.scaleY;
+        obj.scaleY *= obj.scaleY;
+    }
+}

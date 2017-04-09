@@ -3,9 +3,9 @@ var Game = {
     RootEntity: new ObjectGroup(0, 0, 0, [], []),
     Teams: [],
     Setup: function () {
-        this.Teams.push(this.SetupTeam("1", 0, 72, 640, 180, 1700));
-        this.Teams.push(this.SetupTeam("2", 1, 520, 64, 0, 2600));
-        this.Teams.push(this.SetupTeam("3", 2, 1008 - 40, 640, 180, 3400));
+        this.Teams.push(this.SetupTeam("1", 0, 72, 640, 180, 1400));
+        this.Teams.push(this.SetupTeam("2", 1, 520, 64, 0, 2300));
+        this.Teams.push(this.SetupTeam("3", 2, 1008 - 40, 640, 180, 3200));
         this.Teams.push(this.SetupTeam("boss", -1, 520, 736, 180, 0));
         //this.Teams.push(this.SetupTeam("boss", -1, 520, 300, 180, 0));
 
@@ -261,10 +261,12 @@ var Game = {
         Sound.Play("./sound/spawn.ogg", 100);
     },
     showBalloonMessage: function (tank, message) {
-        if (!message || tank.baloonShown)
+        //tank.addChild( new Balloon(message, [new Behavior.TimedLife(5000)]));
+        
+        if (!message || tank.balloonShown)
             return;
 
-        tank.baloonShown = true;
+        tank.balloonShown = true;
         var div = $('<div style="position: absolute;" class="balloon-frame"><div class="balloon-frame-inner">' + message + '</div></div>');
         div.appendTo($('body'));
         div.offset({top: tank.y + 10, left: tank.x + 10});
