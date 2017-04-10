@@ -243,7 +243,7 @@ var Game = {
     showBalloonMessage: function (tank, message) {
         var tanks = [];
         this.Teams.forEach(function(team) {
-            if(team.Tank && team.tank != tank)
+            if(team.Tank && team.Tank != tank)
                 tanks.push(team.Tank);
         });
         var newBalloon = new Balloon(message, [
