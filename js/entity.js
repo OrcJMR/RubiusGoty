@@ -8,18 +8,13 @@ var EntityBase = {
     },
 
     draw: function(ctx) {
-        var that = this;
         if(typeof this.items != 'undefined')
             this.items.forEach(function(item, i, arr){
                 ctx.save();
                 if(typeof item.alpha != 'undefined')
                     ctx.globalAlpha = item.alpha;
-                if(item.balloonText) {
-                    ctx.rotate(-that.angle);
-                } else {
-                    ctx.translate(item.x, item.y);
-                    ctx.rotate(item.angle);
-                }
+                ctx.translate(item.x, item.y);
+                ctx.rotate(item.angle);
                 item.draw(ctx);
                 ctx.restore();
             });
@@ -35,18 +30,6 @@ var EntityBase = {
             ctx.fillStyle = this.color;
             ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
 
-        } else if(this.balloonText) {
-            ctx.font = "16px 'Russo One'";
-            ctx.fillStyle = "black";
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            if(!this.balloonWidth)
-                this.balloonWidth = ctx.measureText(this.balloonText).width + 20;
-            ctx.scale(this.scaleX, this.scaleY);
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, this.balloonWidth, -30);
-            ctx.fillStyle = "black";
-            ctx.fillText(this.balloonText, this.balloonWidth / 2, -15);
         }
         //else if (typeof this.speed != 'undefined'){
         //    ctx.fillText(this.speed, 0, 0);
@@ -142,17 +125,15 @@ function Box(x, y, angle, width, height, color, behaviors) {
 }
 
 function Balloon(text, behaviors) {
-    this.x = 0;
-    this.y = 0;
     this.balloonText = text;
     this._behaviors = {};
-    this.addBehavior(new Behavior.TextBalloon(500));
     if(typeof behaviors != 'undefined')
         for(var i = 0; i < behaviors.length; i++)
             this.addBehavior(behaviors[i]);
 }
 
 ObjectGroup.prototype = EntityBase;
+Box.prototype = EntityBase;
 Sprite.prototype = {
     __proto__: EntityBase,
     setImage: function(image){
@@ -164,5 +145,100 @@ Sprite.prototype = {
         this.image = image;
     }
 };
-Box.prototype = EntityBase;
-Balloon.prototype = EntityBase;
+Balloon.prototype = {
+    __proto__: EntityBase,
+    draw: function(ctx) {
+        // if not measured
+        if(!this.balloonTextWidth) {
+            ctx.font = "16px 'Russo One'";
+            this.balloonTextWidth = ctx.measureText(this.balloonText).width;
+            console.log("Balloon.draw - init");
+        // if text was measured and direction was resolved
+        } else if(this.balloonLeft) {
+            console.log("Balloon.draw - draw");
+            ctx.lineCap = "round";
+            ctx.lineWidth = 30;
+            var spawnPhase = this.lifeSpawnPhase || 0;
+            var deathPhase = this.lifeDiePhase || 1;
+            ctx.lineWidth *= spawnPhase;
+            var calloutWidth = spawnPhase * deathPhase * 10;
+            var calloutHeight = spawnPhase * deathPhase * 30;
+            var balloonY =
+                Math.max(this.balloonMinY - this.y + 20,
+                Math.min(this.balloonMaxY - this.y - 20, this.balloonY));
+            var balloonLeft = this.balloonLeft;
+            var balloonRight = this.balloonRight;
+            var overshootRight = this.balloonRight + this.x + 20 - this.balloonMaxX;
+            if (overshootRight > 0) {
+                balloonRight -= overshootRight;
+                balloonLeft -= overshootRight;
+            } else {
+                var overshootLeft = this.balloonMinX - this.balloonLeft - this.x + 20;
+                if (overshootLeft > 0) {
+                    balloonRight += overshootLeft;
+                    balloonLeft += overshootLeft;
+                }
+            }
+            var originX = Math.max(balloonLeft, Math.min(balloonRight, 0));
+            calloutHeight *= Math.sqrt(balloonY*balloonY + originX*originX) / 45;
+            var calloutAngle = Math.atan2(-balloonY, -originX) - Math.PI/2;
+
+            var drawFunc = function() {
+                ctx.globalAlpha = deathPhase;
+                if (deathPhase == 1) {
+                    ctx.save();
+                    ctx.translate(originX, balloonY);
+                    ctx.rotate(calloutAngle);
+                    ctx.beginPath();
+                    ctx.moveTo(-calloutWidth, 0);
+                    ctx.lineTo(0, calloutHeight);
+                    ctx.lineTo(calloutWidth, 0);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.restore();
+                }
+                ctx.beginPath();
+                var y = Math.max()
+                ctx.moveTo(balloonLeft, balloonY);
+                ctx.lineTo(balloonRight, balloonY);
+                ctx.stroke();
+            };
+
+            ctx.strokeStyle = "black";
+            ctx.fillStyle = "black";
+            ctx.shadowColor = "rgba(0,0,0,0.5)";
+            ctx.shadowBlur = 20;
+            if (deathPhase > 0.7)
+                drawFunc();
+            ctx.shadowBlur = 0;
+            ctx.lineWidth -= 2;
+            calloutWidth -= 1;
+            calloutHeight -= 4;
+            ctx.strokeStyle = "dimgray";
+            ctx.fillStyle = "dimgray";
+            if (deathPhase > 0.5)
+                drawFunc();
+            ctx.lineWidth -= 2;
+            calloutWidth -= 1;
+            calloutHeight -= 4;
+            ctx.strokeStyle = "darkgray";
+            ctx.fillStyle = "darkgray";
+            if (deathPhase > 0.3)
+                drawFunc();
+            ctx.lineWidth -= 2;
+            calloutWidth -= 1;
+            calloutHeight -= 4;
+            ctx.strokeStyle = "white";
+            ctx.fillStyle = "white";
+            drawFunc();
+
+            if (spawnPhase > 0.8) {
+                ctx.font = "16px 'Russo One'";
+                ctx.fillStyle = "black";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+                ctx.fillText(this.balloonText, (balloonRight + balloonLeft) / 2, balloonY);
+            }
+        }
+    }
+};

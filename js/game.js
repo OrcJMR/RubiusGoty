@@ -1,6 +1,7 @@
 var Game = {
     Map: new Map(),
     RootEntity: new ObjectGroup(0, 0, 0, [], []),
+    GuiEntity: new ObjectGroup(0, 0, 0, [], []),
     Teams: [],
     Setup: function () {
         this.Teams.push(this.SetupTeam("1", 0, 72, 640, 180, 1400));
@@ -32,8 +33,6 @@ var Game = {
         if(name == "boss") {
             team.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
             team.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
-            // team.Inputs.LeftTrackInput = new KeyboardBiDiInput(App.Keyboard, 'Q', 'Z');
-            // team.Inputs.RightTrackInput = new KeyboardBiDiInput(App.Keyboard, 'E', 'C');
             team.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'L', 'J');
             team.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'I', 400, false);
         } else {
@@ -48,8 +47,6 @@ var Game = {
             };
             team.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward', 'move1', 'move2');
             team.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft', 'turn2', 'turn1');
-            // team.Inputs.LeftTrackInput = new NetworkBiDiInput(viewModelFunction, 'leftTrackForward', 'leftTrackBackward');
-            // team.Inputs.RightTrackInput = new NetworkBiDiInput(viewModelFunction, 'rightTrackForward', 'rightTrackBackward');
             team.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretRight', 'turretLeft', 'turret');
             team.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire', 'fire'), '2', 800, true);
             team.Inputs.ManagerGood = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood', 'manager'), '2', 5000, true);
@@ -104,7 +101,6 @@ var Game = {
 
         //todo fix loop sound gap problem
         tank.throttleSound = Sound.Play('./sound/engine working long.mp3', 0, true, type);
-        //tank.idleSound = PlaySound('./sound/engine working2.mp3', 0, 1, type);
 
         tank.started = false;
 
@@ -155,7 +151,6 @@ var Game = {
                 })
             ]);
             spark.moveYSpeed = speed;
-            //this.RootEntity.changeCoordinatesFromDescendant(spark, parent);
             this.RootEntity.addChild(spark);
 
             this.sparksCooldown -= 10;
@@ -195,7 +190,6 @@ var Game = {
                     tank.addBehavior(new Behavior.SpawnExplosions(200, 10));
                     tank.Barrel.dead = true;
                     tank.Barrel = null;
-                    // tank.items[2].color = "black";
                     for(var i in Game.Teams) {
                         var team = Game.Teams[i];
                         if(tank == team.Tank) {
@@ -208,22 +202,8 @@ var Game = {
                 tank.RightTrack.torque = 0;
                 tank.LeftTrack.animDelay = 0;
                 tank.RightTrack.animDelay = 0;
-                // obj.moveXSpeed = 0;
-                // obj.moveYSpeed = 0;
-                // obj.moveAngSpeed = 0;
             }
-            // if (obj.class == "tankbot") {
-            //     obj.moveXSpeed /= 3;
-            //     obj.moveYSpeed /= 3;
-            //     obj.moveAngSpeed /= 3;
-            //     obj.class = "deadtankbot";
-            //     if (obj.setImage) {
-            //         obj.setImage("./images/deadtank.png");
-            //     }
-            //     obj.addBehavior(new Behavior.TimedLife(3000));
-            // }
             this.dead = true;
-            //PlaySound("./sound/splat.wav", 100);
         }
 
         this.RootEntity.changeCoordinatesFromDescendant(bullet, tank.Barrel);
@@ -261,32 +241,22 @@ var Game = {
         Sound.Play("./sound/spawn.ogg", 100);
     },
     showBalloonMessage: function (tank, message) {
-        //tank.addChild( new Balloon(message, [new Behavior.TimedLife(5000)]));
+        var tanks = [];
+        this.Teams.forEach(function(team) {
+            if(team.Tank && team.tank != tank)
+                tanks.push(team.Tank);
+        });
+        var newBalloon = new Balloon(message, [
+            new Behavior.PositionBalloon(tank, tanks, 8, 8, 1032, 776), // 688 height?
+            new Behavior.TimedLife(6000, 300, 600)]);
         
-        if (!message || tank.balloonShown)
-            return;
-
-        tank.balloonShown = true;
-        var div = $('<div style="position: absolute;" class="balloon-frame"><div class="balloon-frame-inner">' + message + '</div></div>');
-        div.appendTo($('body'));
-        div.offset({top: tank.y + 10, left: tank.x + 10});
-
-        var width = Game.Map.width * Game.Map.tileWidth;
-        var height = Game.Map.height * Game.Map.tileHeight;
-        var divRight = div.width() + div.position().left;
-        var divBottom = div.height() + div.position().top;
-        var diffX = 0;
-        if (divRight > width)
-            diffX = divRight - width;
-        var diffY = 0;
-        if (divBottom > height)
-            diffY = divBottom - height;
-        div.offset({top: div.position().top - diffY, left: div.position().left - diffX});
-
-        setTimeout(function () {
-            div.remove();
-            tank.baloonShown = false;
-        }, 5000);
+        // soft-kill the previous balloon for same tank
+        for (var i = 0; i < this.GuiEntity.items.length; i++) {
+            var oldBalloon = this.GuiEntity.items[i];
+            if (oldBalloon.balloonTank == tank)
+                oldBalloon.lifeTimeout = oldBalloon.lifeDieTimeout || 0;
+        }
+        this.GuiEntity.addChild(newBalloon);
     },
     ConsumeInputs: function (timestamp) {
         var driveSpeed = 60 / 1000; //px/msec
@@ -313,16 +283,10 @@ var Game = {
                 tank.RightTrack.torque = (throttle - turning) / 2;
             }
 
-            // tank.LeftTrack.torque += team.Inputs.LeftTrackInput.read(timestamp);
-            // tank.RightTrack.torque += team.Inputs.RightTrackInput.read(timestamp);
-
             // torques are stored in wrong tracks
             tank.LeftTrack.animDelay = tank.RightTrack.torque == 0 ? 0 : 100;
             tank.RightTrack.animDelay = tank.LeftTrack.torque == 0 ? 0 : 100;
 
-            //tank.moveYSpeed = driveSpeed * tank.Inputs.LeftTrackInput.read(timestamp);
-            //tank.moveXSpeed = driveSpeed/2 * tank.Inputs.StrafeInput.read(timestamp);
-            //tank.moveAngSpeed = turnSpeed * tank.Inputs.RightTrackInput.read(timestamp);
             tank.Barrel.moveAngSpeed = turnSpeed * 0.75 * team.Inputs.TurretTurnInput.read(timestamp);
             var fireState = team.Inputs.FireInput.read(timestamp);
             if (fireState == 1)
@@ -412,6 +376,7 @@ var Game = {
 
         //this.scrapeDetected = false;
         this.RootEntity.update(delta);
+        this.GuiEntity.update(delta);
         //this.ScrapeSound.volume = this.scrapeDetected ? 1 : 0;
     },
 }

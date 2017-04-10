@@ -171,9 +171,16 @@ Behavior.MoveTank.prototype = {
     }
 };
 
-Behavior.TimedLife = function(time) {
+Behavior.TimedLife = function(time, spawnTime, dieTime) {
     this.init = function(obj){
-        obj.lifeTimeout = time || -1;
+        obj.lifeTimeout = time || 0;
+        if(spawnTime) {
+            obj.lifeSpawnTimeout = spawnTime;
+            obj.lifeSpawnPassed = 0;
+        }
+        if(dieTime) {
+            obj.lifeDieTimeout = dieTime;
+        }
     }
 };
 Behavior.TimedLife.prototype = {
@@ -185,6 +192,17 @@ Behavior.TimedLife.prototype = {
         obj.lifeTimeout -= delta;
         if(obj.lifeTimeout <= 0)
             obj.dead = true;
+        if(obj.lifeSpawnTimeout) {
+            obj.lifeSpawnPassed += delta;
+            // spawn phase increases from 0 to 1
+            obj.lifeSpawnPhase = Math.min(obj.lifeSpawnPassed / obj.lifeSpawnTimeout, 1);
+            if(obj.lifeSpawnPhase == 1)
+                delete obj.lifeSpawnTimeout;
+        }
+        if(obj.lifeDieTimeout && obj.lifeTimeout < obj.lifeDieTimeout) {
+            // die phase appears at < 1 and decreases to 0
+            obj.lifeDiePhase = Math.max(obj.lifeTimeout / obj.lifeDieTimeout, 0);
+        }
     }
 };
 
@@ -278,25 +296,161 @@ Behavior.SpawnExplosions.prototype = {
     }
 }
 
-// required to render balloon at all
-Behavior.TextBalloon = function(spawnDuration) {
+Behavior.PositionBalloon = function(tank, otherTanks, minx, miny, maxx, maxy) {
     this.init = function(obj) {
-        obj.balloonSpawnMax = spawnDuration;
-        obj.balloonSpawnCurrent = 0;
-        obj.scaleX = 0;
-        obj.scaleY = 0;
+        obj.x = 0;
+        obj.y = 0;
+        obj.angle = 0;
+        obj.balloonTank = tank;
+        obj.balloonOtherTanks = otherTanks;
+        obj.balloonMinX = minx;
+        obj.balloonMinY = miny;
+        obj.balloonMaxX = maxx;
+        obj.balloonMaxY = maxy;
     };
 };
 
-Behavior.TextBalloon.prototype = {
-    name: "textballoon",
-    exec: function(obj, delta) {
-        if(obj.balloonSpawnCurrent == obj.balloonSpawnMax)
-            return;
-        obj.balloonSpawnCurrent = Math.min(obj.balloonSpawnCurrent + delta, obj.balloonSpawnMax);
-        var phase = obj.balloonSpawnCurrent / obj.balloonSpawnMax;
-        obj.scaleY = Math.sin(phase * Math.PI / 2);
-        obj.scaleX = obj.scaleY;
-        obj.scaleY *= obj.scaleY;
+Behavior.PositionBalloon.prototype = {
+    name: "positionballoon",
+    exec: function (obj, delta) {
+        // first try to init
+        if (typeof obj.balloonY == 'undefined' && obj.balloonTextWidth) {
+            console.log("Behavior.PositionBalloon - init");
+            var balloonWidth = obj.balloonTextWidth;
+            var offset = 45;
+            var tankY = obj.balloonTank.y;
+            var tankX = obj.balloonTank.x;
+
+            // check for boundaries
+            var canUp = tankY > obj.balloonMinY + 60;
+            var canDown = tankY < obj.balloonMaxY - 60;
+            var mustLeft = tankX > obj.balloonMaxX - 100;
+            var mustRight = tankX < obj.balloonMinX + 100;
+
+            // check if enemies are near
+            var enemyInTL = false;
+            var enemyInTR = false;
+            var enemyToLeft = false;
+            var enemyToRight = false;
+            var enemyInBL = false;
+            var enemyInBR = false;            
+            for (var i=0; i<obj.balloonOtherTanks.length; i++) {
+                var enemyY = obj.balloonOtherTanks[i].y;
+                var enemyX = obj.balloonOtherTanks[i].x;
+                var toLeft = tankX - balloonWidth - 80 < enemyX && enemyX < tankX;
+                var toRight = tankX < enemyX && enemyX < tankX + 80 + balloonWidth;
+                // top and bottom stripes are wider because they include diagonal positions
+                if (tankY - 80 < enemyY && enemyY < tankY)
+                    if (toLeft) enemyInTL = true;
+                    else if (toRight) enemyInTR = true;
+                if (tankY - 30 < enemyY && enemyY < tankY + 30)
+                    if (toLeft) enemyToLeft = true;
+                    else if (toRight) enemyToRight = true;
+                if (tankY< enemyY && enemyY < tankY + 80)
+                    if (toLeft) enemyInBL = true;
+                    else if (toRight) enemyInBR = true;
+            }
+
+            var setLeft = function() {
+                obj.balloonLeft = -offset - balloonWidth;
+                obj.balloonRight = -offset;
+            }
+            var setRight = function() {
+                obj.balloonLeft = offset;
+                obj.balloonRight = offset + balloonWidth;
+            }
+            var setMiddle = function() {
+                if (tankX < obj.balloonMinX + 100 + balloonWidth / 2) {
+                    obj.balloonLeft = obj.balloonMinX + 100 - tankX;
+                    obj.balloonRight = obj.balloonLeft + balloonWidth;
+                } else if (tankX > obj.balloonMaxX - 100 - balloonWidth / 2) {
+                    obj.balloonRight = obj.balloonMaxX - 100 - tankX;
+                    obj.balloonLeft = obj.balloonRight - balloonWidth;
+                } else {
+                    obj.balloonLeft = -balloonWidth / 2;
+                    obj.balloonRight = -obj.balloonLeft;
+                }
+            }
+
+            // solve direction
+            if (mustLeft) {
+                setLeft();
+
+                if (canUp && !enemyInTL)
+                    obj.balloonY = -offset;
+                else if (!enemyToLeft)
+                    obj.balloonY = 0;
+                else if (canDown && !enemyInBL)
+                    obj.balloonY = offset;
+                else
+                    obj.balloonY = canUp ? -offset : 0;
+
+            } else if (mustRight) {
+                setRight();
+
+                if (canUp && !enemyInTR)
+                    obj.balloonY = -offset;
+                else if (!enemyToRight)
+                    obj.balloonY = 0;
+                else if (canDown && !enemyInBR)
+                    obj.balloonY = offset;
+                else
+                    obj.balloonY = canUp ? -offset : 0;
+
+            } else { // can mid
+                if (canUp && !(enemyInTL && enemyInTR)) {
+                    obj.balloonY = -offset;
+                    if (enemyInTL)
+                        setRight();
+                    else if (enemyInTR)
+                        setLeft();
+                    else
+                        setMiddle();
+
+                } else if (canDown && !(enemyInBL && enemyInBR)) {
+                    obj.balloonY = offset;
+                    if (enemyInBL)
+                        setRight();
+                    else if (enemyInBR)
+                        setLeft();
+                    else 
+                        setMiddle();
+
+                } else if (!enemyToLeft || !enemyToRight) {
+                    obj.balloonY = 0;
+                    if (enemyToLeft)
+                        setRight();
+                    else if (enemyToRight)
+                        setLeft();
+
+                } else {
+                    obj.balloonY = canUp ? -offset : offset;
+                    setMiddle();
+                }
+            }
+            // adjust diagonal positions
+            if (obj.balloonY != 0) {
+                if (obj.balloonLeft > 0) {
+                    var multiplier = 45 / Math.sqrt(obj.balloonY*obj.balloonY + obj.balloonLeft*obj.balloonLeft);
+                    obj.balloonY *= multiplier;
+                    var xShift = (1 - multiplier) * obj.balloonLeft;
+                    obj.balloonLeft -= xShift;
+                    obj.balloonRight -= xShift;
+                }
+                else if (obj.balloonRight < 0) {
+                    var multiplier = 45 / Math.sqrt(obj.balloonY*obj.balloonY + obj.balloonRight*obj.balloonRight);
+                    obj.balloonY *= multiplier;
+                    var xShift = (1 - multiplier) * obj.balloonRight;
+                    obj.balloonLeft -= xShift;
+                    obj.balloonRight -= xShift;
+                }
+            }
+        } else { // if initialized and not dead, follow tank
+            console.log("Behavior.PositionBalloon - follow");
+            if (!("lifeDiePhase" in obj)) {
+                obj.x = obj.balloonTank.x;
+                obj.y = obj.balloonTank.y;
+            }
+        }
     }
-}
+};

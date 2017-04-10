@@ -28,17 +28,6 @@ body{
     border-image: url("../images/border-blue.png") 8 repeat;
 }
 
-.balloon-frame{
-    border: 8px solid;
-    border-image: url("../images/border-balloon.png") 8 repeat;
-    font-family: "Tahoma"
-}
-
-.balloon-frame-inner{
-    background-color: #fff;
-    padding: 0px 20px 0px 20px;
-}
-
 .game-frame{
     position: absolute;
     top: 80px;

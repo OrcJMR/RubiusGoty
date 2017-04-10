@@ -20,6 +20,7 @@ var App = {
         ctx.scale(App.globalScale, App.globalScale);
         Game.Map.drawMap(ctx, 0, 0);
         Game.RootEntity.draw(ctx);
+        Game.GuiEntity.draw(ctx);
         ctx.restore();
 
         ctx = App.ContextHud;
