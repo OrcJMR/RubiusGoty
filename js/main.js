@@ -219,6 +219,9 @@ var App = {
         App.Images.flash = loadImage("./images/flash.png")
         App.Images.tankFire = loadImage("./images/tank-fire.png")
         App.Images.tankFireBig = loadImage("./images/big-tank-fire.png")
+        App.Images.bonusHp = loadImage("./images/bonus-hp.png")
+        App.Images.heal = loadImage("./images/heal.png")
+        App.Images.bonusDamage = loadImage("./images/bonus-damage.png")
 
         this.GuiPositions = [
             {name: "TankTurnInput", p:"Backward",   x: 0, y:42, icon: App.Images.arrowTop, rot:-Math.PI/2},

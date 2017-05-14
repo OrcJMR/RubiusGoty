@@ -159,6 +159,52 @@ var Game = {
                 i = 0;
         }
     },
+    bonusCooldown: 10000,
+    spawnBonus: function () {
+        var x, y;
+        var randomNum = (minimum, maximum) => Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+        while (true) {
+            x = randomNum(1, this.Map.width - 2);
+            y = randomNum(1, this.Map.height - 2);
+            var isPassable = true;
+            for (var i = x - 1; isPassable && i <= x + 1; i++) {
+                for (var j = y - 1; j <= y + 1; j++) {
+                    if (!this.Map.getTile(i, j).passable) {
+                        isPassable = false;
+                        break;
+                    }
+                }
+            }
+            if (isPassable) {
+                x = x * this.Map.tileWidth - 4;
+                y = y * this.Map.tileHeight - 4;
+                break;
+            }
+        }
+        var effectType = randomNum(0, 100) < 60 ? "hp" : "damage"; // ~60%
+        var bonusSprite = effectType === "hp" ? App.Images.bonusHp : App.Images.bonusDamage;        
+        var bonus = new Sprite(x, y, 0, 24, 24, bonusSprite, [ new Behavior.Move ]);
+        bonus.effectType = effectType;
+        bonus.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
+        bonus.OnObjectCollision = function (obj) {
+            var flashSprite = bonus.effectType === "hp" ? App.Images.heal : App.Images.flash;
+            var flash = new Sprite(this.x, this.y, Math.random() * 360, 40, 40, flashSprite, [
+                new Behavior.Animate(40, 8, 70), 
+                new Behavior.TimedLife(539)
+            ]);
+            Game.RootEntity.addChild(flash);
+            Sound.Play("./sound/bonus.ogg", 100);
+            if (obj.class == "tank") {
+                if (bonus.effectType === "hp") {
+                    obj.hp = Math.min(obj.hp + 1, 9);
+                } else if (bonus.effectType === "damage") {
+                    obj.damageBonusTime = 30000;
+                }
+            }
+            this.dead = true;
+        }
+        Game.RootEntity.addChild(bonus);
+    },
     spawnBullet: function (tank, team) {
         var bullet = new ObjectGroup(0, 20, 0, [
             new Behavior.Move(0, 0.3),
@@ -178,11 +224,15 @@ var Game = {
             //PlaySound("./sound/splat.wav", 100);
         };
         var ourTeam = team;
+        var missileDamage = 1;
+        if (bullet.owner.damageBonusTime && bullet.owner.damageBonusTime > 0) {
+            missileDamage = 4;
+        }
         bullet.OnObjectCollision = function (obj) {
             Game.spawnExplosion(this.x, this.y, null, obj.class == "tank" ? "tank" : null);
             if (obj.class == "tank") {
                 var tank = obj;
-                tank.hp -= 1;
+                tank.hp = Math.max(0, tank.hp - missileDamage);
                 if (tank.hp == 0) {
                     ourTeam.kills ++;
                     ourTeam.popKills = true;
@@ -316,6 +366,12 @@ var Game = {
                 this.sparksCooldown == 100;
         }
 
+        this.bonusCooldown -= delta;
+        if (this.bonusCooldown < 0) {
+            this.spawnBonus();
+            this.bonusCooldown = 10000;
+        }
+
         this.Teams.forEach(function (team) {
 
             if (team.popKillsTime >= 0)
@@ -366,6 +422,10 @@ var Game = {
                     }
                 }
                 tank.Barrel.items[0].y = 7 + tank.Barrel.recoil * 6;
+
+                if (tank.damageBonusTime && tank.damageBonusTime > 0) {
+                    tank.damageBonusTime -= delta;
+                }
 
                 if (tank.boss) {
                     tank.Head.angle = tank.Barrel.angle / 4 - Math.PI / 2;
