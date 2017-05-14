@@ -45,8 +45,8 @@ var Game = {
                     return null;
                 return Sockets.ViewModel.teams[team.teamId];
             };
-            team.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward', 'move1', 'move2');
-            team.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft', 'turn2', 'turn1');
+            team.Inputs.ThrottleInput = new NetworkBiDiInput(viewModelFunction, 'moveForward', 'moveBackward', 'move1');
+            team.Inputs.TankTurnInput = new NetworkBiDiInput(viewModelFunction, 'turnRight', 'turnLeft', 'turn1');
             team.Inputs.TurretTurnInput = new NetworkBiDiInput(viewModelFunction, 'turretRight', 'turretLeft', 'turret');
             team.Inputs.FireInput = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'fire', 'fire'), '2', 800, true);
             team.Inputs.ManagerGood = new KeyboardCooldownInput(new NetworkCooldownInputKeyboardStub(viewModelFunction, 'managerGood', 'manager'), '2', 5000, true);

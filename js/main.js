@@ -223,6 +223,7 @@ var App = {
         App.Images.heal = loadImage("./images/heal.png")
         App.Images.bonusDamage = loadImage("./images/bonus-damage.png")
 
+        // for input definitions, see Game.SetupTeam()
         this.GuiPositions = [
             {name: "TankTurnInput", p:"Backward",   x: 0, y:42, icon: App.Images.arrowTop, rot:-Math.PI/2},
             {name: "TankTurnInput", p:"Forward",    x:42, y:42, icon: App.Images.arrowTop, rot:Math.PI/2},

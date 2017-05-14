@@ -38,31 +38,19 @@ var _positions = [
         ]
     },
     {
-        title: Res.Roles.ForwardRole,
+        title: Res.Roles.MoveRole,
         id: 'move1',
         actions: [
-            {action:'moveForward', text: Res.Roles.Forward, icon: 'button-forward.png'}
-        ]
-    },
-    {
-        title: Res.Roles.BackwardRole,
-        id: 'move2',
-        actions: [
+            {action:'moveForward', text: Res.Roles.Forward, icon: 'button-forward.png'},
             {action:'moveBackward', text: Res.Roles.Backward, icon: 'button-backward.png'}
         ]
     },
 
     {
-        title: Res.Roles.LeftRole,
+        title: Res.Roles.TurnRole,
         id: 'turn1',
         actions: [
-            {action:'turnLeft', text: Res.Roles.Left, icon: 'button-left.png'}
-        ]
-    },
-    {
-        title: Res.Roles.RightRole,
-        id: 'turn2',
-        actions: [
+            {action:'turnLeft', text: Res.Roles.Left, icon: 'button-left.png'},
             {action:'turnRight', text: Res.Roles.Right, icon: 'button-right.png'}
         ]
     }
