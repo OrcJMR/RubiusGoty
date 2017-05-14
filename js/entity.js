@@ -15,6 +15,8 @@ var EntityBase = {
                     ctx.globalAlpha = item.alpha;
                 ctx.translate(item.x, item.y);
                 ctx.rotate(item.angle);
+                if(typeof item.scaleX != 'undefined')
+                    ctx.scale(item.scaleX, item.scaleY);
                 item.draw(ctx);
                 ctx.restore();
             });

@@ -268,6 +268,24 @@ Behavior.Animate.prototype = {
     }
 }
 
+Behavior.Wobble = function(rotateAngle, rotatePeriod, scaleFactor, scalePeriod) {
+    this.init = function(obj) {
+        obj.wobbleAngle = rotateAngle;
+        obj.wobbleAnglePeriod = rotatePeriod;
+        obj.wobbleScale = scaleFactor;
+        obj.wobbleScalePeriod = scalePeriod;
+    };
+};
+
+Behavior.Wobble.prototype = {
+    name: "wobble",
+    exec: function(obj, delta) {
+        obj.angle = obj.wobbleAngle / 180 * Math.sin(App.elapsedMsec/1000*Math.PI*obj.wobbleAnglePeriod);
+        obj.scaleX = 1 + obj.wobbleScale * Math.sin(App.elapsedMsec/1000*Math.PI*obj.wobbleScalePeriod);
+        obj.scaleY = obj.scaleX;
+    }
+}
+
 Behavior.SpawnExplosions = function(delay, count) {
     this.init = function(obj) {
         obj.explosionCurrentTime = 0;

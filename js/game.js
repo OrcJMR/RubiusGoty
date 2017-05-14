@@ -183,7 +183,7 @@ var Game = {
         }
         var effectType = randomNum(0, 100) < 60 ? "hp" : "damage"; // ~60%
         var bonusSprite = effectType === "hp" ? App.Images.bonusHp : App.Images.bonusDamage;        
-        var bonus = new Sprite(x, y, 0, 24, 24, bonusSprite, [ new Behavior.Move ]);
+        var bonus = new Sprite(x, y, 0, 24, 24, bonusSprite, [ new Behavior.Move, new Behavior.Wobble(10, 1, 0.1, 3) ]);
         bonus.effectType = effectType;
         bonus.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
         bonus.OnObjectCollision = function (obj) {
