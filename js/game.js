@@ -159,56 +159,51 @@ var Game = {
                 i = 0;
         }
     },
-    bonusCooldown: 10000,
-    spawnBonus: function () {
-        var x, y;
-        var randomNum = (minimum, maximum) => Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
-        while (true) {
-            x = randomNum(1, this.Map.width - 2);
-            y = randomNum(1, this.Map.height - 2);
-            var isPassable = true;
-            for (var i = x - 1; isPassable && i <= x + 1; i++) {
-                for (var j = y - 1; j <= y + 1; j++) {
-                    if (!this.Map.getTile(i, j).passable) {
-                        isPassable = false;
-                        break;
-                    }
-                }
-            }
-            if (isPassable) {
-                x = x * this.Map.tileWidth - 4;
-                y = y * this.Map.tileHeight - 4;
-                break;
-            }
-        }
-        var effectType = randomNum(0, 100) < 60 ? "hp" : "damage"; // ~60%
-        var bonusSprite = effectType === "hp" ? App.Images.bonusHp : App.Images.bonusDamage;        
-        var bonus = new Sprite(x, y, 0, 24, 24, bonusSprite, [ new Behavior.Move, new Behavior.Wobble(10, 1, 0.1, 3) ]);
-        bonus.effectType = effectType;
-        bonus.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank"]);
-        bonus.OnObjectCollision = function (obj) {
-            var flashSprite = bonus.effectType === "hp" ? App.Images.heal : App.Images.flash;
-            var flash = new Sprite(this.x, this.y, Math.random() * 360, 40, 40, flashSprite, [
-                new Behavior.Animate(40, 8, 70), 
-                new Behavior.TimedLife(539)
-            ]);
-            Game.RootEntity.addChild(flash);
-            Sound.Play("./sound/bonus.ogg", 100);
-            if (obj.class == "tank") {
-                if (bonus.effectType === "hp") {
-                    obj.hp = Math.min(obj.hp + 1, 9);
-                } else if (bonus.effectType === "damage") {
-                    obj.damageBonusTime = 30000;
-                    if (obj.Head)
-                        obj.Head.items[0].imageGlow = true;
-                    if (obj.Barrel)
-                        obj.Barrel.items[0].imageGlow = true;
-                }
-            }
-            this.dead = true;
-        }
+    powerupTimings: {
+        h: {period:10000, cooldown:1000},
+        M: {period:30000, cooldown:3000},
+    },
+    spawnBonus: function (key) {
+        var points = this.Map.powerupPoints[key];
+        var i = Math.floor(Math.random() * points.length);
+        if(points[i].powerup)
+            return;
+
+        var bonus = new Sprite(points[i].x * this.Map.tileWidth, points[i].y * this.Map.tileHeight, 0, 24, 24,
+            key == 'h' ? App.Images.bonusHp : App.Images.arrowChevron, [new Behavior.Wobble(10, 1, 0.1, 3)]);
+        bonus.class = 'pickup';
+        bonus.effectType = key;
+        points[i].powerup = bonus;
+        bonus.spawn = points[i];
+
+        // var effectType = randomNum(0, 100) < 60 ? "hp" : "damage"; // ~60%
+        // var bonusSprite = effectType === "hp" ? App.Images.bonusHp : App.Images.bonusDamage;        
+        // var bonus = new Sprite(x, y, 0, 24, 24, bonusSprite, [ new Behavior.Move, new Behavior.Wobble(10, 1, 0.1, 3) ]);
+        // bonus.effectType = effectType;
+        // bonus.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank"]);
+        // bonus.OnObjectCollision = function (obj) {
+        //     var flashSprite = bonus.effectType === "hp" ? App.Images.heal : App.Images.flash;
+        //     var flash = new Sprite(this.x, this.y, Math.random() * 360, 40, 40, flashSprite, [
+        //         new Behavior.Animate(40, 8, 70), 
+        //         new Behavior.TimedLife(539)
+        //     ]);
+        //     Game.RootEntity.addChild(flash);
+        //     Sound.Play("./sound/bonus.ogg", 100);
+        //     if (obj.class == "tank") {
+        //         if (bonus.effectType === "hp") {
+        //             obj.hp = Math.min(obj.hp + 1, 9);
+        //         } else if (bonus.effectType === "damage") {
+        //             obj.damageBonusTime = 30000;
+        //             if (obj.Head)
+        //                 obj.Head.items[0].imageGlow = true;
+        //             if (obj.Barrel)
+        //                 obj.Barrel.items[0].imageGlow = true;
+        //         }
+        //     }
+        //     this.dead = true;
+        // }
         Game.RootEntity.addChild(bonus);
-        this.spawnFlash(x, y, 60);
+        this.spawnFlash(bonus.x, bonus.y, 60);
     },
     spawnBullet: function (tank, team) {
         var damage = 1;
@@ -444,6 +439,15 @@ var Game = {
                 }
             }
         }, this); 
+
+        Object.keys(this.powerupTimings).forEach(function(key) {
+            var spawnTiming = this.powerupTimings[key];
+            spawnTiming.cooldown -= delta;
+            if(spawnTiming.cooldown <= 0) {
+                Game.spawnBonus(key);
+                spawnTiming.cooldown = spawnTiming.period;
+            }
+        }, this);
 
         //this.scrapeDetected = false;
         this.RootEntity.update(delta);

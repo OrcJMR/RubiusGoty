@@ -59,7 +59,7 @@ function Map(){
     "                                                                 "  +
     "                                                                 "  +
     "                                                                 "  +
-    "                                                                 "  +
+    "               h                                  h              "  +
     "                                                                 "  +
     "                                                                 "  +
     "                                                                 "  +
@@ -72,11 +72,11 @@ function Map(){
     "            x                                                    "  +
     "             x                                                   "  +
     "              x                                                  "  +
-    "                                                 x               "  +
+    "   h                                             x            h  "  +
     "                                                x                "  +
     "                                               x                 "  +
     "                                                                 "  +
-    "                                                                 "  +
+    "                          M            M                         "  +
     "                                                                 "  +
     "            xx                                     xx            "  +
     "                                                                 "  +
@@ -97,7 +97,7 @@ function Map(){
     "                                                                 "  +
     "                                                                 "  +
     "                                                                 "  +
-    "                                                                 "  +
+    "               h                                  h              "  +
     "                                                                 "  +
     "                                                                 "  +
     "                                                                 "  +
@@ -126,7 +126,25 @@ function Map(){
     this.tileDictionary['c'] = {tileX: 0, tileY: 8, variants: 4, traction: 0.95};
     this.tileDictionary['f'] = {tileX: 4, tileY: 8, variants: 4, traction: 0.95};
 
+    // all buildings not listed in dictionary are considered powerup points and are removed from map
     this.tileDictionary['x'] = {tileX:  0, tileY: 3, variants: 4};
+
+    for(var i=0; i<this.buildingArray.length; i++) {
+        var char = this.buildingArray[i];
+        if(char == ' ')
+            continue;
+        if(char in this.tileDictionary)
+            continue;
+        var array;
+        if(char in this.powerupPoints)
+            array = this.powerupPoints[char];
+        else {
+            array = [];
+            this.powerupPoints[char] = array;
+        }
+        array.push(new PowerupPoint(i%this.width, Math.floor(i/this.width)));
+        this.buildingArray[i] = ' ';
+    }
 
     return this;
 }
@@ -229,5 +247,12 @@ Map.prototype = {
 
         ctx.drawImage(this.tilesImage, (tileCfg.tileX + randomOffset) * this.tileArtWidth, tileCfg.tileY * this.tileArtHeight, this.tileArtWidth, this.tileArtHeight,
             x * this.tileWidth, y * this.tileHeight, this.tileWidth, this.tileHeight);
-    }
+    },
+    powerupPoints: {},
+}
+
+function PowerupPoint(x, y) {
+    this.x = x;
+    this.y = y;
+    this.powerup = null;
 }
