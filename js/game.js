@@ -204,6 +204,7 @@ var Game = {
             this.dead = true;
         }
         Game.RootEntity.addChild(bonus);
+        this.spawnFlash(x, y, 60);
     },
     spawnBullet: function (tank, team) {
         var bullet = new ObjectGroup(0, 20, 0, [
