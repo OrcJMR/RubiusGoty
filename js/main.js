@@ -178,6 +178,7 @@ var App = {
             "./sound/shot2.mp3",
             "./sound/shot3.mp3",
             "./sound/spawn.ogg",
+            "./sound/bonus.ogg",
             //"./sound/metal-scrape.mp3",
         ];
 

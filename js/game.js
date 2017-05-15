@@ -185,7 +185,7 @@ var Game = {
         var bonusSprite = effectType === "hp" ? App.Images.bonusHp : App.Images.bonusDamage;        
         var bonus = new Sprite(x, y, 0, 24, 24, bonusSprite, [ new Behavior.Move, new Behavior.Wobble(10, 1, 0.1, 3) ]);
         bonus.effectType = effectType;
-        bonus.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
+        bonus.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank"]);
         bonus.OnObjectCollision = function (obj) {
             var flashSprite = bonus.effectType === "hp" ? App.Images.heal : App.Images.flash;
             var flash = new Sprite(this.x, this.y, Math.random() * 360, 40, 40, flashSprite, [
@@ -199,6 +199,10 @@ var Game = {
                     obj.hp = Math.min(obj.hp + 1, 9);
                 } else if (bonus.effectType === "damage") {
                     obj.damageBonusTime = 30000;
+                    if (obj.Head)
+                        obj.Head.items[0].imageGlow = true;
+                    if (obj.Barrel)
+                        obj.Barrel.items[0].imageGlow = true;
                 }
             }
             this.dead = true;
@@ -207,34 +211,33 @@ var Game = {
         this.spawnFlash(x, y, 60);
     },
     spawnBullet: function (tank, team) {
+        var damage = 1;
+        if (tank.damageBonusTime) {
+            damage = 2;
+        }
         var bullet = new ObjectGroup(0, 20, 0, [
             new Behavior.Move(0, 0.3),
             new Behavior.LifeInBounds(-8, -8, 1032, 856)
         ], [
-            new Box(0, 0, 0, 5, 7, "black"),
-            new Box(0, 0, 0, 3, 5, "orange")
+            new Box(0, 0, 0, 3 + damage*2, 4 + damage*3, "black"),
+            new Box(0, 0, 0, 1 + damage*2, 2 + damage*3, damage>1 ? "yellow" : "orange")
         ]);
         bullet.owner = tank;
-        bullet.width = 3;
-        bullet.height = 5;
-        bullet.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
+        bullet.width = 1 + damage*2;
+        bullet.height = 2 + damage*3;
+        bullet.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank"]);
         bullet.OnMapCollision = function (x, y) {
-            Game.spawnExplosion(this.x, this.y);
+            Game.spawnExplosion(this.x, this.y, 12 + damage*12);
             Game.Map.degradeTile(x, y);
             this.dead = true;
-            //PlaySound("./sound/splat.wav", 100);
         };
         var ourTeam = team;
-        var missileDamage = 1;
-        if (bullet.owner.damageBonusTime && bullet.owner.damageBonusTime > 0) {
-            missileDamage = 4;
-        }
         bullet.OnObjectCollision = function (obj) {
-            Game.spawnExplosion(this.x, this.y, null, obj.class == "tank" ? "tank" : null);
+            Game.spawnExplosion(this.x, this.y, 12 + damage*12, obj.class == "tank" ? "tank" : null);
             if (obj.class == "tank") {
                 var tank = obj;
-                tank.hp = Math.max(0, tank.hp - missileDamage);
-                if (tank.hp == 0) {
+                tank.hp = Math.max(0, tank.hp - damage);
+                if (tank.hp <= 0) {
                     ourTeam.kills ++;
                     ourTeam.popKills = true;
                     tank.addBehavior(new Behavior.TimedLife(3000));
@@ -424,8 +427,15 @@ var Game = {
                 }
                 tank.Barrel.items[0].y = 7 + tank.Barrel.recoil * 6;
 
-                if (tank.damageBonusTime && tank.damageBonusTime > 0) {
+                if (tank.damageBonusTime) {
                     tank.damageBonusTime -= delta;
+                    if(tank.damageBonusTime <= 0) {
+                        delete tank.damageBonusTime;
+                        if (tank.Head)
+                            delete tank.Head.items[0].imageGlow;
+                        if (tank.Barrel)
+                            delete tank.Barrel.items[0].imageGlow;
+                    }
                 }
 
                 if (tank.boss) {
@@ -433,7 +443,7 @@ var Game = {
                     if (tank.Head.angle < -Math.PI / 4) tank.Head.angle += Math.PI / 2;
                 }
             }
-        }, this);
+        }, this); 
 
         //this.scrapeDetected = false;
         this.RootEntity.update(delta);

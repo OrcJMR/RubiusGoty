@@ -27,6 +27,15 @@ var EntityBase = {
             else
                 ctx.drawImage(this.image, this.spriteIndex * this.spriteWidth, 0, this.spriteWidth, this.image.height,
                                           -this.width / 2, -this.height / 2, this.width, this.height);
+            if(this.imageGlow) {
+                ctx.globalCompositeOperation = 'color-dodge'; // 'color-dodge' for turrets 'lighter' for tracks
+                    if(!this.spriteWidth)
+                        ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
+                    else
+                        ctx.drawImage(this.image, this.spriteIndex * this.spriteWidth, 0, this.spriteWidth, this.image.height,
+                                                -this.width / 2, -this.height / 2, this.width, this.height);
+                ctx.globalCompositeOperation = 'source-over';
+            }
 
         } else if(typeof this.color != 'undefined') {
             ctx.fillStyle = this.color;
