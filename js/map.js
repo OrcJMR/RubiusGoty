@@ -13,14 +13,14 @@ function Map(){
     "SffffBBBBBB.c||||.......S.,;fffffffff;,.S......c||||c.BBBBBBffffS" +
     "SffffBBBBBB.c|||........S..,SfffffffS,..S......c||||c.BBBBBBffffS" +
     "SffffffffBB.c|||....B...S..,SSSSSSSSS,..S...B..c||||c.BBffffffffS" +
-    "SffffffffBB.c||||..BB.......................BB.c||||c.BBffffffffS" +
-    "SffffffffBB.c||||c.BB.......................BB.c||||c.BBffffffffS" +
-    "SBBBBffffBB.c||||c.BBBBBBBBBB,,,,,BBBBBBBBBBBB.c||||c.BBffffBBBBS" +
-    "SBBBBffffBB.c||||c.BBBBBBBBBB;;;;;BBBBBBBBBBBB.c||||c.BBffffBBBBS" +
-    "S....,,,,...c||||c.BB.......,;;,;;,.........BB.c||||c...,,ff,...S" +
-    "Sccccccccccc.||||c.BB.....,;,,...,;,,.......BB.c||||ccccccccccccS" +
-    "S------------.+||c.BB...,;,,......,;;,,,....BB.c||++------------S" +
-    "S------------+++|c.BB.,;;,.........,,,;;,,..BB..|+++------------S" +
+    "SffffffffBB.c||||..BB...BBBBBBBBBBBBBBBBB...BB.c||||c.BBffffffffS" +
+    "SffffffffBB.c||||c.BB.......BBBBBBBBB.......BB.c||||c.BBffffffffS" +
+    "SBBBBffffBB.c||||c,,,,......,,,,,..............c||||c.BBffffBBBBS" +
+    "SBBBBffffBB.c||||c...............,,,,,.........c||||c.BBffffBBBBS" +
+    "S....,,,,...c||||c.....B.................B.....c||||c...,,ff,...S" +
+    "Sccccccccccc.||||c....BSB......,,;,.....BSB....c||||ccccccccccccS" +
+    "S------------.+||c.BBBBBBBBBBBBBbbBBBBBBBBBBBB.c||++------------S" +
+    "S------------+++|c.BBBBBBBBBBBBbbBBBBBBBBBBBBB..|+++------------S" +
     "S------------+++|c.BBfffffffffffffffffffffffBB....++------------S" +
     "S------------++||c.,faaffffffffffbbffbbfffbfBB...|++------------S" +
     "Scccccccccccc||||c,;fafaffaffafafbfbfbfbfbfbf,,.||||cccc..ccccccS" +
