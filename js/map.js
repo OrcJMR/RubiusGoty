@@ -75,8 +75,8 @@ function Map(){
     "   h                                             x            h  "  +
     "                                                x                "  +
     "                                               x                 "  +
+    "                                D                                "  +
     "                                                                 "  +
-    "                          M            M                         "  +
     "                                                                 "  +
     "            xx                                     xx            "  +
     "                                                                 "  +
@@ -90,7 +90,7 @@ function Map(){
     "                        x               xx                       "  +
     "            xx                                     xx            "  +
     "                                                                 "  +
-    "                                                                 "  +
+    "                                H                                "  +
     "                                                                 "  +
     "                                                                 "  +
     "                                                                 "  +

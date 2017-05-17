@@ -161,7 +161,8 @@ var Game = {
     },
     powerupTimings: {
         h: {period:10000, cooldown:10000},
-        M: {period:30000, cooldown:30000},
+        D: {period:30000, cooldown:30000},
+        H: {period:15000, cooldown:30000},
     },
     spawnBonus: function (key) {
         var points = this.Map.powerupPoints[key];
@@ -170,20 +171,23 @@ var Game = {
             return;
         var sprite;
         var angle;
+        var offset = 0.5;
         if(key == 'h') {
             key = 'hp',
             sprite = App.Images.bonusHp;
             angle = 0;
-        } else if (Math.random() < 0.5) {
+            offset = 0;
+        } else if (key == 'D') {
             key = 'damage';
             sprite = App.Images.bonusDamage;
             angle = 0;
-        } else {
+        } else if (key == 'H') {
             key = 'speed';
             sprite = App.Images.arrowChevron;
             angle = 90;
         }
-        var bonus = new Sprite(points[i].x * this.Map.tileWidth, points[i].y * this.Map.tileHeight, angle, 24, 24,
+        var bonus = new Sprite(
+            (points[i].x + offset) * this.Map.tileWidth, (points[i].y + offset) * this.Map.tileHeight, angle, 24, 24,
             sprite, [new Behavior.Move(), new Behavior.Wobble(10, 1, 0.1, 3)]);
         bonus.class = 'pickup';
         bonus.effectType = key;
@@ -194,7 +198,7 @@ var Game = {
         bonus.OnObjectCollision = function (obj) {
             var flashSprite = bonus.effectType === "hp" ? App.Images.heal : App.Images.flash;
             // let's try pickup flash on tank itself
-            var flash = new Sprite(0, 0, Math.random() * 360, 60, 60, flashSprite, [
+            var flash = new Sprite(0, 0, Math.random() * 360, 80, 80, flashSprite, [
                 new Behavior.Animate(40, 8, 70), 
                 new Behavior.TimedLife(539)
             ]);
@@ -205,7 +209,7 @@ var Game = {
                 if (this.effectType === "hp") {
                     obj.hp = Math.min(obj.hp + 2, 9);
                 } else if (this.effectType === "damage") {
-                    obj.damageBonusTime = 30000;
+                    obj.damageBonusTime = 20000;
                     if (obj.Head) obj.Head.items[0].imageGlow = true;
                     if (obj.Barrel) obj.Barrel.items[0].imageGlow = true;
                     obj.damageBonusEnd = function() {
@@ -214,7 +218,7 @@ var Game = {
                         if (this.Barrel) delete this.Barrel.items[0].imageGlow;
                     }
                 } else if(this.effectType === "speed") {
-                    obj.speedBonusTime = 30000;
+                    obj.speedBonusTime = 20000;
                     obj.RightTrack.imageGlow = true;
                     obj.LeftTrack.imageGlow = true;
                     obj.speedBonusEnd = function() {
