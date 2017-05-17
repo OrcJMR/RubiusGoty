@@ -96,7 +96,7 @@ var Game = {
             tank.width = 32; // this is for collision detection
             tank.height = 32;
         }
-        tank.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank", "tankbot"]);
+        tank.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank"]);
         tank.class = "tank";
 
         //todo fix loop sound gap problem
@@ -168,40 +168,65 @@ var Game = {
         var i = Math.floor(Math.random() * points.length);
         if(points[i].powerup)
             return;
-
-        var bonus = new Sprite(points[i].x * this.Map.tileWidth, points[i].y * this.Map.tileHeight, 0, 24, 24,
-            key == 'h' ? App.Images.bonusHp : App.Images.arrowChevron, [new Behavior.Wobble(10, 1, 0.1, 3)]);
+        var sprite;
+        var angle;
+        if(key == 'h') {
+            key = 'hp',
+            sprite = App.Images.bonusHp;
+            angle = 0;
+        } else if (Math.random() < 0.5) {
+            key = 'damage';
+            sprite = App.Images.bonusDamage;
+            angle = 0;
+        } else {
+            key = 'speed';
+            sprite = App.Images.arrowChevron;
+            angle = 90;
+        }
+        var bonus = new Sprite(points[i].x * this.Map.tileWidth, points[i].y * this.Map.tileHeight, angle, 24, 24,
+            sprite, [new Behavior.Move(), new Behavior.Wobble(10, 1, 0.1, 3)]);
         bonus.class = 'pickup';
         bonus.effectType = key;
         points[i].powerup = bonus;
         bonus.spawn = points[i];
 
-        // var effectType = randomNum(0, 100) < 60 ? "hp" : "damage"; // ~60%
-        // var bonusSprite = effectType === "hp" ? App.Images.bonusHp : App.Images.bonusDamage;        
-        // var bonus = new Sprite(x, y, 0, 24, 24, bonusSprite, [ new Behavior.Move, new Behavior.Wobble(10, 1, 0.1, 3) ]);
-        // bonus.effectType = effectType;
-        // bonus.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank"]);
-        // bonus.OnObjectCollision = function (obj) {
-        //     var flashSprite = bonus.effectType === "hp" ? App.Images.heal : App.Images.flash;
-        //     var flash = new Sprite(this.x, this.y, Math.random() * 360, 40, 40, flashSprite, [
-        //         new Behavior.Animate(40, 8, 70), 
-        //         new Behavior.TimedLife(539)
-        //     ]);
-        //     Game.RootEntity.addChild(flash);
-        //     Sound.Play("./sound/bonus.ogg", 100);
-        //     if (obj.class == "tank") {
-        //         if (bonus.effectType === "hp") {
-        //             obj.hp = Math.min(obj.hp + 1, 9);
-        //         } else if (bonus.effectType === "damage") {
-        //             obj.damageBonusTime = 30000;
-        //             if (obj.Head)
-        //                 obj.Head.items[0].imageGlow = true;
-        //             if (obj.Barrel)
-        //                 obj.Barrel.items[0].imageGlow = true;
-        //         }
-        //     }
-        //     this.dead = true;
-        // }
+        bonus.collider = new Collider(this.Map, null, this.RootEntity, ["tank"]);
+        bonus.OnObjectCollision = function (obj) {
+            var flashSprite = bonus.effectType === "hp" ? App.Images.heal : App.Images.flash;
+            // let's try pickup flash on tank itself
+            var flash = new Sprite(0, 0, Math.random() * 360, 60, 60, flashSprite, [
+                new Behavior.Animate(40, 8, 70), 
+                new Behavior.TimedLife(539)
+            ]);
+            obj.addChild(flash);
+
+            Sound.Play("./sound/bonus.ogg", 100);
+            if (obj.class == "tank") {
+                if (this.effectType === "hp") {
+                    obj.hp = Math.min(obj.hp + 2, 9);
+                } else if (this.effectType === "damage") {
+                    obj.damageBonusTime = 30000;
+                    if (obj.Head) obj.Head.items[0].imageGlow = true;
+                    if (obj.Barrel) obj.Barrel.items[0].imageGlow = true;
+                    obj.damageBonusEnd = function() {
+                        delete this.damageBonusTime;
+                        if (this.Head) delete this.Head.items[0].imageGlow;
+                        if (this.Barrel) delete this.Barrel.items[0].imageGlow;
+                    }
+                } else if(this.effectType === "speed") {
+                    obj.speedBonusTime = 30000;
+                    obj.RightTrack.imageGlow = true;
+                    obj.LeftTrack.imageGlow = true;
+                    obj.speedBonusEnd = function() {
+                        delete this.speedBonusTime;
+                        delete this.RightTrack.imageGlow;
+                        delete this.LeftTrack.imageGlow;
+                    }                    
+                }
+            }
+            this.spawn.powerup = null;
+            this.dead = true;
+        }
         Game.RootEntity.addChild(bonus);
         this.spawnFlash(bonus.x, bonus.y, 60);
     },
@@ -424,13 +449,13 @@ var Game = {
 
                 if (tank.damageBonusTime) {
                     tank.damageBonusTime -= delta;
-                    if(tank.damageBonusTime <= 0) {
-                        delete tank.damageBonusTime;
-                        if (tank.Head)
-                            delete tank.Head.items[0].imageGlow;
-                        if (tank.Barrel)
-                            delete tank.Barrel.items[0].imageGlow;
-                    }
+                    if(tank.damageBonusTime <= 0)
+                        tank.damageBonusEnd();
+                }
+                if (tank.speedBonusTime) {
+                    tank.speedBonusTime -= delta;
+                    if(tank.speedBonusTime <= 0)
+                        tank.speedBonusEnd();
                 }
 
                 if (tank.boss) {

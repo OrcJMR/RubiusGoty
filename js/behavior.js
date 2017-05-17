@@ -95,6 +95,8 @@ Behavior.MoveTank.prototype = {
 
         var traction = (ltraction + rtraction) / 2;
         var limit = (llimit + rlimit) / 2;
+        if( obj.speedBonusTime )
+            limit *= 2;
 
         if( Math.random() < 0.01 && obj.LeftTrack.torque != 0 )
             Game.Map.degradeTileAt(ltx, lty);
@@ -270,6 +272,7 @@ Behavior.Animate.prototype = {
 
 Behavior.Wobble = function(rotateAngle, rotatePeriod, scaleFactor, scalePeriod) {
     this.init = function(obj) {
+        obj.wobbleBaseAngle = obj.angle;
         obj.wobbleAngle = rotateAngle;
         obj.wobbleAnglePeriod = rotatePeriod;
         obj.wobbleScale = scaleFactor;
@@ -280,7 +283,8 @@ Behavior.Wobble = function(rotateAngle, rotatePeriod, scaleFactor, scalePeriod) 
 Behavior.Wobble.prototype = {
     name: "wobble",
     exec: function(obj, delta) {
-        obj.angle = obj.wobbleAngle / 180 * Math.sin(App.elapsedMsec/1000*Math.PI*obj.wobbleAnglePeriod);
+        obj.angle = obj.wobbleBaseAngle +
+            obj.wobbleAngle / 180 * Math.sin(App.elapsedMsec/1000*Math.PI*obj.wobbleAnglePeriod);
         obj.scaleX = 1 + obj.wobbleScale * Math.sin(App.elapsedMsec/1000*Math.PI*obj.wobbleScalePeriod);
         obj.scaleY = obj.scaleX;
     }
