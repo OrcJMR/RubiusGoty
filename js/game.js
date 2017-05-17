@@ -160,8 +160,8 @@ var Game = {
         }
     },
     powerupTimings: {
-        h: {period:10000, cooldown:1000},
-        M: {period:30000, cooldown:3000},
+        h: {period:10000, cooldown:10000},
+        M: {period:30000, cooldown:30000},
     },
     spawnBonus: function (key) {
         var points = this.Map.powerupPoints[key];
