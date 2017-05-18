@@ -57,7 +57,7 @@
     Polymer({
         is: 'controls-page',
         ready: function () {
-            CheckClientNavigationShouldExit();
+            req.CheckClientNavigationShouldExit();
         },
         behaviors: [
             Polymer.AppLocalizeBehavior
@@ -69,7 +69,7 @@
             resources: {
                 value: function () {
                     return {
-                        'en': Res
+                        'en': req.Res
                     }
                 }
             },
@@ -78,11 +78,12 @@
                 computed: "_teamName(team.id)"
             }
         },
-        _teamName: function(teamNumber) { return Res.Teams[teamNumber - 1]; },
+        _teamName: function(teamNumber) { return req.Res.Teams[teamNumber - 1]; },
         attached: function () {
+            var Sockets = req.Sockets;
             this.name = localStorage.getItem("username");
             var that = this;
-            this.position = _positions.find(function (item) {
+            this.position = req._positions.find(function (item) {
                 return item.id == that.positionId;
             })
             this.actions = this.position.actions;
@@ -124,7 +125,7 @@
             return false;
         },
         detached: function () {
-            Sockets.Close();
+            req.Sockets.Close();
             // if (typeof document.addEventListener !== "undefined" && typeof document[hidden] !== "undefined") {
             //     document.removeEventListener(visibilityChange, unfocusListener, false);
             // }
@@ -134,12 +135,12 @@
         buttonDownAction: function (e) {
             var action = e.target.dataset.action;
             model[action] = 1;
-            Sockets.sendJson(model);
+            req.Sockets.sendJson(model);
         },
         buttonUpAction: function (e) {
             var action = e.target.dataset.action;
             model[action] = 0;
-            Sockets.sendJson(model);
+            req.Sockets.sendJson(model);
         },
     });
 </script>

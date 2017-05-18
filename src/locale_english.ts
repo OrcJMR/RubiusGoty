@@ -115,3 +115,5 @@ var Res = {
         "leader"],
     
 }
+
+export default Res;

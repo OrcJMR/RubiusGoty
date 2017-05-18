@@ -1,19 +1,30 @@
+import Behavior from "./behavior";
+import Collider from "./collider";
+import { Balloon, Box, EntityBase, ObjectGroup, Sprite } from "./entity";
+import Geom from "./geom";
+import { Keyboard, KeyboardBiDiInput, KeyboardCooldownInput } from "./keyboard";
+import Res from "./locale_russian";
+import App from "./main";
+import Map from "./map";
+import { NetworkBiDiInput, NetworkCooldownInputKeyboardStub, Sockets } from "./network";
+import Sound from "./sound";
+
 var Game = {
     Map: new Map(),
     RootEntity: new ObjectGroup(0, 0, 0, [], []),
     GuiEntity: new ObjectGroup(0, 0, 0, [], []),
     Teams: [],
-    Setup: function () {
+    Setup() {
         this.Teams.push(this.SetupTeam("1", 0, 72, 640, 180, 1400));
         this.Teams.push(this.SetupTeam("2", 1, 520, 64, 0, 2300));
         this.Teams.push(this.SetupTeam("3", 2, 1008 - 40, 640, 180, 3200));
         this.Teams.push(this.SetupTeam("boss", -1, 520, 736, 180, 0));
-        //this.Teams.push(this.SetupTeam("boss", -1, 520, 300, 180, 0));
+        // this.Teams.push(this.SetupTeam("boss", -1, 520, 300, 180, 0));
 
         //this.ScrapeSound = Sound.Play("./sound/metal-scrape.mp3", 0, true);
     },
-    SetupTeam: function(name, networkIndex, spawnX, spawnY, spawnAngle, spawnCountdown) {
-        if(typeof spawnCountdown == 'undefined')
+    SetupTeam(name, networkIndex, spawnX, spawnY, spawnAngle, spawnCountdown) {
+        if (typeof spawnCountdown == 'undefined')
             spawnCountdown = -1; // never
         var team = {
             teamId: networkIndex,
@@ -25,20 +36,20 @@ var Game = {
             deaths: 0,
             Inputs: {},
             tanksSpawnsIn: spawnCountdown,
-            SpawnTank: function() {
+            SpawnTank() {
                 this.Tank = Game.spawnTank(this.spawnX, this.spawnY, this.spawnAngle, this.name, this.networkIndex);
                 Game.RootEntity.addChild(this.Tank);
-            }            
+            }
         };
-        if(name == "boss") {
+        if (name == "boss") {
             team.Inputs.ThrottleInput = new KeyboardBiDiInput(App.Keyboard, 'W', 'S');
             team.Inputs.TankTurnInput = new KeyboardBiDiInput(App.Keyboard, 'D', 'A');
             team.Inputs.TurretTurnInput = new KeyboardBiDiInput(App.Keyboard, 'L', 'J');
             team.Inputs.FireInput = new KeyboardCooldownInput(App.Keyboard, 'I', 400, false);
         } else {
-            if(team.teamId < 0)
+            if (team.teamId < 0)
                 throw "Misconfigured team";
-            var viewModelFunction = function () {
+            var viewModelFunction = () => {
                 if (!Sockets.ViewModel.teams)
                     return null;
                 if (Sockets.ViewModel.teams.length <= team.teamId)
@@ -54,30 +65,31 @@ var Game = {
         }
         return team;
     },
-    spawnTank: function (x, y, angle, type, networkTeamId) {
+    spawnTank(x, y, angle, type, networkTeamId) {
         var tank;
-        if (type == "boss")
-            tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank], [
-                new ObjectGroup(0, 22, 0, [new Behavior.Move], [
+        if (type === "boss") {
+            tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank()], [
+                new ObjectGroup(0, 22, 0, [new Behavior.Move()], [
                     new Sprite(0, 7, 180, 26, 26, App.Images.tankHead)
                 ]),
                 new Sprite(-18, -1, 0, 10, 38, App.Images.tankTrack, [new Behavior.Animate(5, 2)]),
                 new Sprite(18, -1, 0, 10, 38, App.Images.tankTrack, [new Behavior.Animate(5, 2)]),
                 new Sprite(0, -0.5, 180, 42, 48, App.Images.tankBody),
-                //new Box(  0,-12, 0, 12, 8, "darkgreen"),
-                new ObjectGroup(0, 0.5, 0, [new Behavior.Move], [
+                // new Box(  0,-12, 0, 12, 8, "darkgreen"),
+                new ObjectGroup(0, 0.5, 0, [new Behavior.Move()], [
                     new Sprite(0, 7, 180, 22, 36, App.Images.tankTurret)
                 ])
             ]);
-        else
-            tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank], [
+        } else {
+            tank = new ObjectGroup(x, y, angle, [new Behavior.MoveTank()], [
                 new Sprite(-11, -1, 0, 10, 30, App.Images.tankTrackSmall, [new Behavior.Animate(5, 2)]),
                 new Sprite(11, -1, 0, 10, 30, App.Images.tankTrackSmall, [new Behavior.Animate(5, 2)]),
                 new Sprite(0, 1, 180, 24, 34, App.Images["tankBodySmall" + type]),
-                new ObjectGroup(0, -2, 0, [new Behavior.Move], [
+                new ObjectGroup(0, -2, 0, [new Behavior.Move()], [
                     new Sprite(0, 7, 180, 18, 38, App.Images.tankTurretSmall)
                 ])
             ]);
+        }
         tank.boss = type == "boss";
         if (tank.boss) tank.hidden = true;
         var offset = tank.boss ? 1 : 0;
@@ -99,7 +111,7 @@ var Game = {
         tank.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank"]);
         tank.class = "tank";
 
-        //todo fix loop sound gap problem
+        // todo fix loop sound gap problem
         tank.throttleSound = Sound.Play('./sound/engine working long.mp3', 0, true, type);
 
         tank.started = false;
@@ -120,13 +132,13 @@ var Game = {
 
         return tank;
     },
-    spawnDirt: function (parent, back, move) {
+    spawnDirt(parent, back, move) {
         var sign = back ? -1 : 1;
         var offset = move ? 14 : 14;
         var speed = move ? -0.03 : -0.05;
         var rnd = Math.random() / 2 + 0.5;
         var dirt = new Box(-3 + Math.random() * 6, offset * sign, 160 + Math.random() * 40, 3, 3, "darkgoldenrod", [
-            new Behavior.Move,
+            new Behavior.Move(),
             new Behavior.TimedLife(300),
             new Behavior.Custom(function () {
                 this.alpha = this.lifeTimeout / 100;
@@ -137,14 +149,14 @@ var Game = {
         this.RootEntity.addChild(dirt, 0);
     },
     sparksCooldown: 0,
-    spawnSparks: function (points) {
+    spawnSparks(points) {
         var i = 0;
-        while (this.sparksCooldown > 0) {
+        while (this.sparksCooldown > 0 && points.length > 0) {
             var p = points[i];
             var speed = Math.random() * 0.06;
-            var color = '#FFFF' + (0x100 + Math.random() * 0xFF).toString(16).substr(1,2); 
+            var color = '#FFFF' + (0x100 + Math.random() * 0xFF).toString(16).substr(1, 2);
             var spark = new Box(p.x, p.y, Math.random() * 360, 2, 3, color, [
-                new Behavior.Move,
+                new Behavior.Move(),
                 new Behavior.TimedLife(300),
                 new Behavior.Custom(function () {
                     this.alpha = this.lifeTimeout / 100;
@@ -160,21 +172,21 @@ var Game = {
         }
     },
     powerupTimings: {
-        h: {period:10000, cooldown:10000},
-        D: {period:30000, cooldown:30000},
-        H: {period:15000, cooldown:30000},
+        h: { period: 10000, cooldown: 10000 },
+        D: { period: 30000, cooldown: 30000 },
+        H: { period: 15000, cooldown: 30000 },
     },
-    spawnBonus: function (key) {
+    spawnBonus(key) {
         var points = this.Map.powerupPoints[key];
         var i = Math.floor(Math.random() * points.length);
-        if(points[i].powerup)
+        if (points[i].powerup)
             return;
         var sprite;
         var angle;
         var offset = 0.5;
-        if(key == 'h') {
+        if (key == 'h') {
             key = 'hp',
-            sprite = App.Images.bonusHp;
+                sprite = App.Images.bonusHp;
             angle = 0;
             offset = 0;
         } else if (key == 'D') {
@@ -199,7 +211,7 @@ var Game = {
             var flashSprite = bonus.effectType === "hp" ? App.Images.heal : App.Images.flash;
             // let's try pickup flash on tank itself
             var flash = new Sprite(0, 0, Math.random() * 360, 80, 80, flashSprite, [
-                new Behavior.Animate(40, 8, 70), 
+                new Behavior.Animate(40, 8, 70),
                 new Behavior.TimedLife(539)
             ]);
             obj.addChild(flash);
@@ -212,29 +224,29 @@ var Game = {
                     obj.damageBonusTime = 20000;
                     if (obj.Head) obj.Head.items[0].imageGlow = true;
                     if (obj.Barrel) obj.Barrel.items[0].imageGlow = true;
-                    obj.damageBonusEnd = function() {
+                    obj.damageBonusEnd = function () {
                         delete this.damageBonusTime;
                         if (this.Head) delete this.Head.items[0].imageGlow;
                         if (this.Barrel) delete this.Barrel.items[0].imageGlow;
                     }
-                } else if(this.effectType === "speed") {
+                } else if (this.effectType === "speed") {
                     obj.speedBonusTime = 20000;
                     obj.RightTrack.imageGlow = true;
                     obj.LeftTrack.imageGlow = true;
-                    obj.speedBonusEnd = function() {
+                    obj.speedBonusEnd = function () {
                         delete this.speedBonusTime;
                         delete this.RightTrack.imageGlow;
                         delete this.LeftTrack.imageGlow;
-                    }                    
+                    }
                 }
             }
             this.spawn.powerup = null;
             this.dead = true;
-        }
+        };
         Game.RootEntity.addChild(bonus);
         this.spawnFlash(bonus.x, bonus.y, 60);
     },
-    spawnBullet: function (tank, team) {
+    spawnBullet(tank, team) {
         var damage = 1;
         if (tank.damageBonusTime) {
             damage = 2;
@@ -243,34 +255,33 @@ var Game = {
             new Behavior.Move(0, 0.3),
             new Behavior.LifeInBounds(-8, -8, 1032, 856)
         ], [
-            new Box(0, 0, 0, 3 + damage*2, 4 + damage*3, "black"),
-            new Box(0, 0, 0, 1 + damage*2, 2 + damage*3, damage>1 ? "yellow" : "orange")
-        ]);
+                new Box(0, 0, 0, 3 + damage * 2, 4 + damage * 3, "black"),
+                new Box(0, 0, 0, 1 + damage * 2, 2 + damage * 3, damage > 1 ? "yellow" : "orange")
+            ]);
         bullet.owner = tank;
-        bullet.width = 1 + damage*2;
-        bullet.height = 2 + damage*3;
+        bullet.width = 1 + damage * 2;
+        bullet.height = 2 + damage * 3;
         bullet.collider = new Collider(this.Map, "BS", this.RootEntity, ["tank"]);
         bullet.OnMapCollision = function (x, y) {
-            Game.spawnExplosion(this.x, this.y, 12 + damage*12);
+            Game.spawnExplosion(this.x, this.y, 12 + damage * 12);
             Game.Map.degradeTile(x, y);
             this.dead = true;
         };
         var ourTeam = team;
         bullet.OnObjectCollision = function (obj) {
-            Game.spawnExplosion(this.x, this.y, 12 + damage*12, obj.class == "tank" ? "tank" : null);
+            Game.spawnExplosion(this.x, this.y, 12 + damage * 12, obj.class == "tank" ? "tank" : null);
             if (obj.class == "tank") {
                 var tank = obj;
                 tank.hp = Math.max(0, tank.hp - damage);
                 if (tank.hp <= 0) {
-                    ourTeam.kills ++;
+                    ourTeam.kills++;
                     ourTeam.popKills = true;
                     tank.addBehavior(new Behavior.TimedLife(3000));
                     tank.addBehavior(new Behavior.SpawnExplosions(200, 10));
                     tank.Barrel.dead = true;
-                    tank.Barrel = null;
-                    for(var i in Game.Teams) {
+                    for (var i in Game.Teams) {
                         var team = Game.Teams[i];
-                        if(tank == team.Tank) {
+                        if (tank == team.Tank) {
                             team.Tank = null;
                             team.tanksSpawnsIn = 2500;
                         }
@@ -287,13 +298,13 @@ var Game = {
         this.RootEntity.changeCoordinatesFromDescendant(bullet, tank.Barrel);
         this.RootEntity.addChild(bullet);
     },
-    spawnMuzzleBlast: function (tank, big) {
+    spawnMuzzleBlast(tank, big) {
         big = big || false;
         var blast = new Sprite(0, big ? 16 : 22, 180, 34, 62, big ? App.Images.tankFireBig : App.Images.tankFire, [new Behavior.Animate(17, 6, 50), new Behavior.TimedLife(299)]);
         tank.changeCoordinatesFromDescendant(blast, tank.Barrel);
         tank.addChild(blast);
     },
-    spawnExplosion: function (x, y, size, type) {
+    spawnExplosion(x, y, size, type) {
         if (!size)
             size = 24
         var blast = new Sprite(x, y, Math.random() * 90, size, size, App.Images.explosion, [new Behavior.Animate(18, 8, 50), new Behavior.TimedLife(399)]);
@@ -310,7 +321,7 @@ var Game = {
                 Sound.Play("./sound/blast2.mp3", 100);
         }
     },
-    spawnFlash: function (x, y, size) {
+    spawnFlash(x, y, size) {
         if (!size)
             size = 40
         var flash = new Sprite(x, y, Math.random() * 360, size, size, App.Images.flash, [new Behavior.Animate(40, 8, 70), new Behavior.TimedLife(539)]);
@@ -318,16 +329,16 @@ var Game = {
 
         Sound.Play("./sound/spawn.ogg", 100);
     },
-    showBalloonMessage: function (tank, message) {
+    showBalloonMessage(tank, message) {
         var tanks = [];
-        this.Teams.forEach(function(team) {
-            if(team.Tank && team.Tank != tank)
+        this.Teams.forEach(team => {
+            if (team.Tank && team.Tank != tank)
                 tanks.push(team.Tank);
         });
         var newBalloon = new Balloon(message, [
             new Behavior.PositionBalloon(tank, tanks, 8, 8, 1032, 776), // 688 height?
             new Behavior.TimedLife(6000, 300, 600)]);
-        
+
         // soft-kill the previous balloon for same tank
         for (var i = 0; i < this.GuiEntity.items.length; i++) {
             var oldBalloon = this.GuiEntity.items[i];
@@ -336,12 +347,12 @@ var Game = {
         }
         this.GuiEntity.addChild(newBalloon);
     },
-    ConsumeInputs: function (timestamp) {
-        var driveSpeed = 60 / 1000; //px/msec
-        var turnSpeed = 90 / 1000; //deg/msec
+    ConsumeInputs(timestamp) {
+        var driveSpeed = 60 / 1000; // px/msec
+        var turnSpeed = 90 / 1000; // deg/msec
 
-        Game.Teams.forEach(function (team) {
-            if(!team.Tank)
+        Game.Teams.forEach(team => {
+            if (!team.Tank)
                 return;
             var tank = team.Tank;
 
@@ -379,25 +390,19 @@ var Game = {
                 phrases = Res.ManagerBadPhrases;
             }
             if (phrases) {
-                var phraseId =  Math.floor(Math.random() * phrases.length);
+                var phraseId = Math.floor(Math.random() * phrases.length);
                 var phrase = phrases[phraseId];
                 Game.showBalloonMessage(tank, phrase);
             }
         });
     },
-    //scrapeDetected: false,
-    Logic: function (delta) {
+    // scrapeDetected: false,
+    Logic(delta) {
 
         if (this.sparksCooldown < 100) {
             this.sparksCooldown += delta;
             if (this.sparksCooldown > 100)
                 this.sparksCooldown == 100;
-        }
-
-        this.bonusCooldown -= delta;
-        if (this.bonusCooldown < 0) {
-            this.spawnBonus();
-            this.bonusCooldown = 10000;
         }
 
         this.Teams.forEach(function (team) {
@@ -409,13 +414,13 @@ var Game = {
                 team.popKills = false;
             }
 
-            if(!team.Tank) {
+            if (!team.Tank) {
                 // if already <0, abort and never spawn
-                if(team.tanksSpawnsIn < 0)
+                if (team.tanksSpawnsIn < 0)
                     return;
                 else {
                     team.tanksSpawnsIn -= delta;
-                    if(team.tanksSpawnsIn <= 0) {
+                    if (team.tanksSpawnsIn <= 0) {
                         team.SpawnTank();
                         if (team.name != "boss")
                             this.spawnFlash(team.spawnX, team.spawnY, 80);
@@ -453,12 +458,12 @@ var Game = {
 
                 if (tank.damageBonusTime) {
                     tank.damageBonusTime -= delta;
-                    if(tank.damageBonusTime <= 0)
+                    if (tank.damageBonusTime <= 0)
                         tank.damageBonusEnd();
                 }
                 if (tank.speedBonusTime) {
                     tank.speedBonusTime -= delta;
-                    if(tank.speedBonusTime <= 0)
+                    if (tank.speedBonusTime <= 0)
                         tank.speedBonusEnd();
                 }
 
@@ -467,21 +472,22 @@ var Game = {
                     if (tank.Head.angle < -Math.PI / 4) tank.Head.angle += Math.PI / 2;
                 }
             }
-        }, this); 
+        }, this);
 
-        Object.keys(this.powerupTimings).forEach(function(key) {
+        Object.keys(this.powerupTimings).forEach(function (key) {
             var spawnTiming = this.powerupTimings[key];
             spawnTiming.cooldown -= delta;
-            if(spawnTiming.cooldown <= 0) {
+            if (spawnTiming.cooldown <= 0) {
                 Game.spawnBonus(key);
                 spawnTiming.cooldown = spawnTiming.period;
             }
         }, this);
 
-        //this.scrapeDetected = false;
+        // this.scrapeDetected = false;
         this.RootEntity.update(delta);
         this.GuiEntity.update(delta);
-        //this.ScrapeSound.volume = this.scrapeDetected ? 1 : 0;
+        // this.ScrapeSound.volume = this.scrapeDetected ? 1 : 0;
     },
-}
+};
 
+export default Game;

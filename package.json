@@ -2,16 +2,19 @@
   "//1": "describes your app and its dependencies",
   "//2": "https://docs.npmjs.com/files/package.json",
   "//3": "updating this file will download and update your packages",
-
   "name": "rubius-goty",
   "version": "1.0.0",
   "description": "Message server",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "prepublish": "typings install",
+    "watch": "webpack --watch"
   },
   "dependencies": {
     "express": "^4.14.0",
+    "tslint": "^5.2.0",
+    "typescript": "^2.3.2",
     "ws": "^1.1.1"
   },
   "engines": {
@@ -25,5 +28,11 @@
   "bugs": {
     "url": "https://github.com/OrcJMR/RubiusGoty/issues"
   },
-  "homepage": "https://github.com/OrcJMR/RubiusGoty#readme"
+  "homepage": "https://github.com/OrcJMR/RubiusGoty#readme",
+  "devDependencies": {
+    "ts-loader": "^2.0.3",
+    "typescript": "^2.4.0-dev.20170513",
+    "typings": "^2.1.1",
+    "webpack": "^2.5.1"
+  }
 }

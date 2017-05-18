@@ -1,3 +1,4 @@
+import Res from "./locale_russian";
 
 var urlToJoinGame = null; // put the url to connect to here
 var webSocketUrl;
@@ -61,24 +62,25 @@ var _socket;
 if(webSocketUrl != "ws://") { // opened from disk?
     _socket = new ReconnectingWebSocket(webSocketUrl);
 
-    _socket.sendJson = function (message, callback) {
-        _socket.waitForConnection(function () {
-            _socket.send(JSON.stringify(message));
-            if (typeof callback !== 'undefined') {
-                callback();
-            }
-        }, 300);
+    _socket.sendJson = (message, callback) => {
+	    _socket.waitForConnection(() => {
+		    _socket.send(JSON.stringify(message));
+		    if (typeof callback !== 'undefined') {
+			    callback();
+		    }
+	    }, 300);
     };
 
     _socket.waitForConnection = function (callback, interval) {
         if (_socket.readyState === 1) {
             callback();
         } else {
-            var that = this;
-            // optional: implement backoff for interval here
-            setTimeout(function () {
-                that.waitForConnection(callback, interval);
+	        // optional: implement backoff for interval here
+            setTimeout(() => {
+	            this.waitForConnection(callback, interval);
             }, interval);
         }
     };
 }
+
+export { _socket, _positions, urlToJoinGame, webSocketUrl };

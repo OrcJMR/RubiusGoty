@@ -57,13 +57,14 @@
             resources: {
                 value: function () {
                     return {
-                        'en': Res
+                        'en': req.Res
                     }
                 }
             }
         },
-        _teamName: function(teamNumber) { return Res.Teams[teamNumber - 1]; },
+        _teamName: function(teamNumber) { return req.Res.Teams[teamNumber - 1]; },
         ready: function () {
+            var Sockets = req.Sockets;
             this.model = Sockets.ViewModel;
 
 
@@ -75,7 +76,7 @@
                         var positions = [];
                         var positionsDictionary = {};
 
-                        _positions.forEach(function (position) {
+                        req._positions.forEach(function (position) {
                             position = Object.assign({}, position);
                             position.color = 'background-color: gray;';
                             positions.push(position);
@@ -103,10 +104,10 @@
             return i + 1;
         },
         kickAll: function() {
-            _socket.sendJson({type: 'kickAll'});
+            req._socket.sendJson({type: 'kickAll'});
         },
         startGame: function() {
-            _socket.sendJson({
+            req._socket.sendJson({
                 type: 'gameState',
                 state: 1,
             });

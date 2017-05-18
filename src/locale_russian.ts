@@ -1,22 +1,22 @@
 var Res = {
-    inviteLine1: "Join the game at",
-    inviteLine3: "from your phone browser!",
-    volumeOff: "&nbsp;&nbsp;OFF",
+    inviteLine1: "Присоединяйтесь, заходите на",
+    inviteLine3: "в браузере своего сотового!",
+    volumeOff: "ВЫКЛ",
     Score: "PTS",
-    HiNameChooseYourTeam: "Hi, <b>{name}</b>!<br/>Choose your team:",//hi, name, choose your team - choose-team-page
-    HiNameYouAreInTeamChooseYourRole: "Привет, <b>{name}</b>!<br/>You are in <b>{team}</b>.<br/>Choose your role:", //hi, name, you are in team, choose your role - choose-position-page
-    back:"Back", //back - change-name
+    HiNameChooseYourTeam: "Привет, <b>{name}</b>!<br/>Выбирай свою команду:",//hi, name, choose your team - choose-team-page
+    HiNameYouAreInTeamChooseYourRole: "Привет, <b>{name}</b>!<br/>Ты в команде <b>{team}</b>.<br/>Выбери свою роль:", //hi, name, you are in team, choose your role - choose-position-page
+    back:"Назад", //back - change-name
     HiNameYouAreInATeamAndShouldAct: "Привет, <b>{name}</b>!<br/>Ты в команде <b>{team}</b>,<br/>и должен <b>{position}</b>.",    //hi, name, your are in team and have to act - controls-page
-    EnterYourName: "Enter your name", //enter your name - login-page
-    Enter: "Enter",//enter - login-page
-    KickAll: "Kick All",//- server-info
-    StartGame: "Start game",//- server-info
-    Name: "Name",//- server-info
+    EnterYourName: "Введи свой позывной:", //enter your name - login-page
+    Enter: "Войти",//enter - login-page
+    KickAll: "Выбить всех",//- server-info
+    StartGame: "Открыть карты",//- server-info
+    Name: "Имя",//- server-info
 
     Teams: [
-        "Team Gold",
-        "Team Purple",
-        "Team Jade"
+        "золото",
+        "пурпур",
+        "нефрит"
     ],
     TeamStyles: [
         "gold",
@@ -25,24 +25,24 @@ var Res = {
     ],
 
     Roles: {
-        ManageRole:'Руководить',
+        ManageRole:'руководить',
         ManageGood:'Хвалить',
         ManageBad:'Ругать',
-        ShootRole:'Коммитить',
-        Shoot:'Коммит!',
-        TurretRole:'Проводить код-ревью',
-        TurretLeft:'Принять',
-        TurretRight:'Отклонить',
-        MoveRole:'-move-',
-        ForwardRole:'Писать новые фичи',
-        Forward:'Написать фичу',
-        BackwardRole:'Переписывать всё заново',
-        Backward:'Переписать заново',
-        TurnRole:'-turn-',
-        LeftRole:'Делать как С.Ю.',
-        Left:'Сделать как С.Ю.',
-        RightRole:'Делать как С.Е.',
-        Right:'Сделать как С.Е.'
+        ShootRole:'атаковать',
+        Shoot:'Огонь!',
+        TurretRole:'наводить',
+        TurretLeft:'Орудие влево',
+        TurretRight:'Орудие вправо',
+        MoveRole:'вести',
+        ForwardRole:'-вести вперёд-',
+        Forward:'В атаку!',
+        BackwardRole:'-вести назад-',
+        Backward:'Отступаем!',
+        TurnRole:'направлять',
+        LeftRole:'-левее-',
+        Left:'Лево руля!',
+        RightRole:'-правее-',
+        Right:'Право руля!'
     },
 
     ManagerGoodPhrases: [
@@ -50,29 +50,29 @@ var Res = {
         "Так держать!",
         "Молодцы!",
         "Всем по премии!",
-        "Коэффициент 1,5 каждому!",
-        "Больше плюшек!",
+        "Премия +50% каждому!",
+        "Больше ништяков!",
         "Страна вами гордится!",
-        "Гагарин вами бы гордился!",
+        "Гагарин бы вами гордился!",
         "Чувствуется русская инженерная школа!",
         "Быстрее! Выше! Сильнее!",
         "Вместе мы – сила!",
-        "Заказчики счастливы!"
+        "Дави их!",
     ],
     ManagerBadPhrases: [
         "Кто вас такому учил?",
-        "Срываем все сроки!",
-        "Всех уволить!",
-        "Ты работаешь хуже Семёна!",
-        "Коэффициент 0,5 каждому!",
+        "Куда это годится?!",
+        "Всех уволю!",
+        "Чем вы там рулите?",
+        "Все останетесь без премии!",
         "Вы позорите Родину!",
         "Ну, соберитесь уже!",
         "Вы – слабое звено!",
         "Гагарин смог, а вы – нет...",
-        "Это пятиминутная задача!",
+        "Тут делов на три минуты!",
         "Перехвалил!",
-        "А всё потому, что устав не читали!",
-        "А что скажет заказчик?"
+        "Вы вообще читали воинский устав?",
+        "Нам нечем ответить противнику!",
     ],
 
     generatedNamesAdjectives: 
@@ -111,6 +111,7 @@ var Res = {
         "хакер",
         "исследователь",
         "экспериментатор",
-        "лидер"],
-    
+        "лидер"],    
 }
+
+export default Res;

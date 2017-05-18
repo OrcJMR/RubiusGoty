@@ -38,27 +38,27 @@
             resources: {
                 value: function () {
                     return {
-                        'en': Res
+                        'en': req.Res
                     }
                 }
             }
         },
-        _teamName: function(teamNumber) { return Res.Teams[teamNumber - 1]; },
-        _teamStyle: function(teamNumber) { return "background-color: " + Res.TeamStyles[teamNumber - 1]; },
+        _teamName: function(teamNumber) { return req.Res.Teams[teamNumber - 1]; },
+        _teamStyle: function(teamNumber) { return "background-color: " + req.Res.TeamStyles[teamNumber - 1]; },
         ready: function() {
-            CheckClientNavigationShouldExit('choose-team');
+            req.CheckClientNavigationShouldExit('choose-team');
             this.name = localStorage.getItem("username");
         },
         attached: function() {
-            this.teams = Sockets.ViewModel.gameState.teams;
+            this.teams = req.Sockets.ViewModel.gameState.teams;
             var that = this;
-            Sockets.UpdateCallback = function () {
-                that.set('teams', Sockets.ViewModel.gameState.teams);
+            req.Sockets.UpdateCallback = function () {
+                that.set('teams', req.Sockets.ViewModel.gameState.teams);
             };
         },
         join: function(e) {
             var id = e.target.dataset.team;
-            GoTo('/team/'+id);
+            req.GoTo('/team/'+id);
         },
     });
 </script>

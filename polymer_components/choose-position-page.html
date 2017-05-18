@@ -38,7 +38,7 @@
             resources: {
                 value: function () {
                     return {
-                        'en': Res
+                        'en': req.Res
                     }
                 }
             },
@@ -47,22 +47,23 @@
                 computed: "_teamName(team.id)"
             }
         },
-        _teamName: function(teamNumber) { return Res.Teams[teamNumber - 1]; },
+        _teamName: function(teamNumber) { return req.Res.Teams[teamNumber - 1]; },
         ready: function() {
-            CheckClientNavigationShouldExit('choose-position');
+            req.CheckClientNavigationShouldExit('choose-position');
 
             this.name = localStorage.getItem("username");
 
-            _positions.forEach(function (position) {position.taken = true;});
-            this.positions = _positions;
+            req._positions.forEach(function (position) {position.taken = true;});
+            this.positions = req._positions;
         },
         attached: function() {
+            var Sockets = req.Sockets;
             var that = this;
             Sockets.sendJson({type: 'getPositions', team: that.teamId});
 
             Sockets.UpdateCallback = function () {
                 that.team = Sockets.ViewModel.gameState.teams[that.teamId - 1];
-                _positions.forEach(function (position, index) {
+                req._positions.forEach(function (position, index) {
                     position.taken = Sockets.ViewModel.positionsTaken[position.id] || false;
                     that.notifyPath('positions.'+index+".taken");
                 });
@@ -71,7 +72,7 @@
         },
         setPosition: function(e) {
             var position = e.target.dataset.position;
-            GoTo('/team/'+this.teamId+'/position/'+position);
+            req.GoTo('/team/'+this.teamId+'/position/'+position);
         },
     });
 </script>
