@@ -162,7 +162,7 @@ var Game = {
     powerupTimings: {
         h: {period:10000, cooldown:10000},
         D: {period:30000, cooldown:30000},
-        H: {period:15000, cooldown:30000},
+        H: {period:30000, cooldown:15000},
     },
     spawnBonus: function (key) {
         var points = this.Map.powerupPoints[key];
@@ -392,12 +392,6 @@ var Game = {
             this.sparksCooldown += delta;
             if (this.sparksCooldown > 100)
                 this.sparksCooldown == 100;
-        }
-
-        this.bonusCooldown -= delta;
-        if (this.bonusCooldown < 0) {
-            this.spawnBonus();
-            this.bonusCooldown = 10000;
         }
 
         this.Teams.forEach(function (team) {
