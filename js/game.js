@@ -261,7 +261,7 @@ var Game = {
             if (obj.class == "tank") {
                 var tank = obj;
                 tank.hp = Math.max(0, tank.hp - damage);
-                if (tank.hp <= 0) {
+                if (tank.hp <= 0 && tank.Barrel) {
                     ourTeam.kills ++;
                     ourTeam.popKills = true;
                     tank.addBehavior(new Behavior.TimedLife(3000));
