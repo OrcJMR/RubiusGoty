@@ -1,5 +1,5 @@
 
-var urlToJoinGame = null; // put the url to connect to here
+var urlToJoinGame = "bit.ly/rubiustanks"; // put the url to connect to here
 var webSocketUrl;
 
 if (location.host.indexOf("github.io") > -1) {
